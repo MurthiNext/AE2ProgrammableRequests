@@ -1,6 +1,9 @@
 package com.murthinext.ae2pr;
 
+import com.murthinext.ae2pr.network.RepeatOrderConfirmRoundsPacket;
 import com.murthinext.ae2pr.network.RepeatOrderFailedPacket;
+import com.murthinext.ae2pr.network.RepeatOrderFinishedPacket;
+import com.murthinext.ae2pr.network.RepeatOrderRoundPacket;
 import com.murthinext.ae2pr.network.RepeatOrderStatusPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,6 +41,24 @@ public final class ModNetwork {
                 RepeatOrderFailedPacket::encode,
                 RepeatOrderFailedPacket::decode,
                 RepeatOrderFailedPacket::handle);
+
+        CHANNEL.registerMessage(nextMessageId++,
+                RepeatOrderRoundPacket.class,
+                RepeatOrderRoundPacket::encode,
+                RepeatOrderRoundPacket::decode,
+                RepeatOrderRoundPacket::handle);
+
+        CHANNEL.registerMessage(nextMessageId++,
+                RepeatOrderFinishedPacket.class,
+                RepeatOrderFinishedPacket::encode,
+                RepeatOrderFinishedPacket::decode,
+                RepeatOrderFinishedPacket::handle);
+
+        CHANNEL.registerMessage(nextMessageId++,
+                RepeatOrderConfirmRoundsPacket.class,
+                RepeatOrderConfirmRoundsPacket::encode,
+                RepeatOrderConfirmRoundsPacket::decode,
+                RepeatOrderConfirmRoundsPacket::handle);
     }
 
     public static void sendToPlayer(ServerPlayer player, RepeatOrderStatusPacket packet) {
@@ -45,6 +66,18 @@ public final class ModNetwork {
     }
 
     public static void sendToPlayer(ServerPlayer player, RepeatOrderFailedPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, RepeatOrderRoundPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, RepeatOrderFinishedPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, RepeatOrderConfirmRoundsPacket packet) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
     }
 }

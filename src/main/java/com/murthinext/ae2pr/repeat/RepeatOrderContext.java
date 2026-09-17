@@ -36,6 +36,8 @@ public final class RepeatOrderContext {
     public int retryCount;
     /** 重试倒计时（tick） */
     public int retryCooldownTicks;
+    /** 轮次状态保活通知倒计时（tick），用于玩家重登/存档恢复后补发剩余轮数 */
+    public int notifyCooldownTicks;
     /** 当前正在执行的 AE2 任务（用于识别任务归属） */
     @Nullable
     public ExecutingCraftingJob currentJob;

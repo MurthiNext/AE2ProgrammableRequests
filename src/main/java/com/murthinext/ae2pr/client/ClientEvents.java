@@ -18,5 +18,7 @@ public final class ClientEvents {
     public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
         ClientRepeatOrderState.clear();
         ClientRepeatOrderFailures.clear();
+        ClientRepeatOrderRounds.clear();
+        ClientConfirmRounds.clear();
     }
 }

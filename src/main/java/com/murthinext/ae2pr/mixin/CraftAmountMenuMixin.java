@@ -6,6 +6,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.murthinext.ae2pr.ModNetwork;
+import com.murthinext.ae2pr.network.RepeatOrderConfirmRoundsPacket;
 import com.murthinext.ae2pr.repeat.IRepeatRoundsHolder;
 import com.murthinext.ae2pr.repeat.RepeatOrderConstants;
 import com.murthinext.ae2pr.repeat.ServerRepeatRegistry;
@@ -48,10 +50,12 @@ public abstract class CraftAmountMenuMixin extends AEBaseMenu implements IRepeat
             return;
         }
         // 只有真正打开了确认界面才登记（数量为 0 等提前返回的情况不登记，避免后续串单）
-        if (!(serverPlayer.containerMenu instanceof CraftConfirmMenu)) {
+        if (!(serverPlayer.containerMenu instanceof CraftConfirmMenu confirmMenu)) {
             return;
         }
         var rounds = Math.max(1, this.ae2pr$repeatRounds);
+        ModNetwork.sendToPlayer(serverPlayer,
+                new RepeatOrderConfirmRoundsPacket(confirmMenu.containerId, rounds));
         if (rounds <= 1) {
             ServerRepeatRegistry.clear(serverPlayer.getUUID());
         } else {

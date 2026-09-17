@@ -2,6 +2,8 @@
   "gui.ae2pr.repeat_order.button": "重复下单",
   "gui.ae2pr.repeat_order.button.enabled": "重复下单：%s 次",
   "gui.ae2pr.repeat_order.tooltip.round": "正在合成第 %s/%s 轮",
+  "gui.ae2pr.repeat_order.title_suffix": " - 重复%s轮",
+  "gui.ae2pr.repeat_order.finished.text": "%s %s × %s 轮",
   "gui.ae2pr.repeat_order.failed.title": "重复下单失败",
   "gui.ae2pr.repeat_order.failed.text": "%s × %s（已完成 %s/%s 轮）",
   "gui.ae2pr.repeat_order.failed.reason": "原因：%s",

@@ -16,7 +16,9 @@
     "CPUSelectionListAccessor",
     "CPUSelectionListMixin",
     "CraftAmountScreenMixin",
-    "MEStorageScreenMixin"
+    "CraftConfirmScreenMixin",
+    "MEStorageScreenMixin",
+    "PendingCraftingJobsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
