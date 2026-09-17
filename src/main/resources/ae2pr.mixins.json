@@ -2,11 +2,20 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.murthinext.ae2pr.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "ae2pr.refmap.json",
   "mixins": [
+    "AEBaseMenuInvoker",
+    "CraftAmountMenuMixin",
+    "CraftConfirmMenuMixin",
+    "CraftingCpuLogicMixin",
+    "CraftingStatusMenuAccessor",
+    "CraftingStatusMenuBroadcastMixin"
   ],
   "client": [
+    "CPUSelectionListAccessor",
+    "CPUSelectionListMixin",
+    "CraftAmountScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

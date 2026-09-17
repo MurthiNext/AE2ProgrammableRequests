@@ -1,0 +1,5 @@
+{
+  "gui.ae2pr.repeat_order.button": "Repeat Order",
+  "gui.ae2pr.repeat_order.button.enabled": "Repeat Order: %s Rounds",
+  "gui.ae2pr.repeat_order.tooltip.round": "Crafting round %s/%s"
+}

@@ -1,0 +1,5 @@
+{
+  "gui.ae2pr.repeat_order.button": "重复下单",
+  "gui.ae2pr.repeat_order.button.enabled": "重复下单：%s 次",
+  "gui.ae2pr.repeat_order.tooltip.round": "正在合成第 %s/%s 轮"
+}
