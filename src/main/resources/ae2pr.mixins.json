@@ -15,7 +15,8 @@
   "client": [
     "CPUSelectionListAccessor",
     "CPUSelectionListMixin",
-    "CraftAmountScreenMixin"
+    "CraftAmountScreenMixin",
+    "MEStorageScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

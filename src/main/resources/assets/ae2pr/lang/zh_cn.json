@@ -1,5 +1,14 @@
 {
   "gui.ae2pr.repeat_order.button": "重复下单",
   "gui.ae2pr.repeat_order.button.enabled": "重复下单：%s 次",
-  "gui.ae2pr.repeat_order.tooltip.round": "正在合成第 %s/%s 轮"
+  "gui.ae2pr.repeat_order.tooltip.round": "正在合成第 %s/%s 轮",
+  "gui.ae2pr.repeat_order.failed.title": "重复下单失败",
+  "gui.ae2pr.repeat_order.failed.text": "%s × %s（已完成 %s/%s 轮）",
+  "gui.ae2pr.repeat_order.failed.reason": "原因：%s",
+  "gui.ae2pr.repeat_order.failed.reason.missing": "材料不足",
+  "gui.ae2pr.repeat_order.failed.reason.cpu_small": "合成 CPU 空间不足",
+  "gui.ae2pr.repeat_order.failed.reason.cpu_busy": "合成 CPU 被占用",
+  "gui.ae2pr.repeat_order.failed.reason.cpu_offline": "合成 CPU 离线",
+  "gui.ae2pr.repeat_order.failed.reason.no_cpu": "没有可用的合成 CPU",
+  "gui.ae2pr.repeat_order.failed.reason.unknown": "未知错误"
 }

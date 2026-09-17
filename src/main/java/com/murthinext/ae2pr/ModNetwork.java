@@ -1,5 +1,6 @@
 package com.murthinext.ae2pr;
 
+import com.murthinext.ae2pr.network.RepeatOrderFailedPacket;
 import com.murthinext.ae2pr.network.RepeatOrderStatusPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,9 +32,19 @@ public final class ModNetwork {
                 RepeatOrderStatusPacket::encode,
                 RepeatOrderStatusPacket::decode,
                 RepeatOrderStatusPacket::handle);
+
+        CHANNEL.registerMessage(nextMessageId++,
+                RepeatOrderFailedPacket.class,
+                RepeatOrderFailedPacket::encode,
+                RepeatOrderFailedPacket::decode,
+                RepeatOrderFailedPacket::handle);
     }
 
     public static void sendToPlayer(ServerPlayer player, RepeatOrderStatusPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, RepeatOrderFailedPacket packet) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
     }
 }

@@ -17,5 +17,6 @@ public final class ClientEvents {
     @SubscribeEvent
     public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
         ClientRepeatOrderState.clear();
+        ClientRepeatOrderFailures.clear();
     }
 }

@@ -20,13 +20,13 @@ import net.minecraft.server.level.ServerPlayer;
 
 /**
  * 合成状态菜单：CPU 列表刷新时，把重复订单轮次同步给正在查看该菜单的玩家。
- * 仅在内容变化时发送（轮次变化不频繁，进度由原版 CPU 列表自行刷新）。
+ * 仅在内容变化时发送；首次广播必发。
  */
 @Mixin(CraftingStatusMenu.class)
 public abstract class CraftingStatusMenuBroadcastMixin {
 
     @Unique
-    private List<CpuRoundInfo> ae2pr$lastSentRounds = List.of();
+    private List<CpuRoundInfo> ae2pr$lastSentRounds;
 
     // broadcastChanges 是原版菜单方法重写，必须保留重映射
     @Inject(method = "broadcastChanges", at = @At("RETURN"))
