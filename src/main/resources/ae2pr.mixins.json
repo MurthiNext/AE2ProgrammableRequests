@@ -9,9 +9,11 @@
     "CraftAmountMenuMixin",
     "CraftConfirmMenuMixin",
     "CraftingCpuLogicMixin",
+    "CraftingJobStatusPacketMixin",
     "CraftingStatusMenuAccessor",
     "CraftingStatusMenuBroadcastMixin",
-    "MenuOpenerMixin"
+    "MenuOpenerMixin",
+    "NetworkHandlerMixin"
   ],
   "client": [
     "CPUSelectionListAccessor",

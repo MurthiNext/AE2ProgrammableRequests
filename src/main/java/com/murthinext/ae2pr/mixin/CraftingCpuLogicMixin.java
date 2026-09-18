@@ -11,15 +11,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.murthinext.ae2pr.Config;
-import com.murthinext.ae2pr.ModNetwork;
 import com.murthinext.ae2pr.ae2pr;
-import com.murthinext.ae2pr.network.RepeatOrderFailedPacket;
-import com.murthinext.ae2pr.network.RepeatOrderFinishedPacket;
-import com.murthinext.ae2pr.network.RepeatOrderRoundPacket;
 import com.murthinext.ae2pr.repeat.FailureReason;
 import com.murthinext.ae2pr.repeat.IRepeatOrderHost;
 import com.murthinext.ae2pr.repeat.RepeatOrderBinding;
 import com.murthinext.ae2pr.repeat.RepeatOrderContext;
+import com.murthinext.ae2pr.repeat.RepeatOrderNotifier;
 import com.murthinext.ae2pr.repeat.RepeatOrderState;
 
 import appeng.api.features.IPlayerRegistry;
@@ -36,7 +33,6 @@ import appeng.crafting.execution.ExecutingCraftingJob;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.service.CraftingService;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -346,18 +342,8 @@ public abstract class CraftingCpuLogicMixin implements IRepeatOrderHost {
      */
     @Unique
     private void ae2pr$sendRoundNotify(RepeatOrderContext context, int remainingRounds) {
-        if (context.what == null || context.ownerPlayerId == null) {
-            return;
-        }
-        if (!(this.cluster.getLevel() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        var player = IPlayerRegistry.getConnected(serverLevel.getServer(), context.ownerPlayerId);
-        if (player == null) {
-            return;
-        }
-        ModNetwork.sendToPlayer(player, new RepeatOrderRoundPacket(context.what, remainingRounds,
-                context.totalRounds));
+        RepeatOrderNotifier.sendRound(context.ownerPlayerId, this.cluster.getLevel(), context.what,
+                context.totalRounds, remainingRounds);
     }
 
     /**
@@ -365,18 +351,8 @@ public abstract class CraftingCpuLogicMixin implements IRepeatOrderHost {
      */
     @Unique
     private void ae2pr$sendFinishedNotify(RepeatOrderContext context) {
-        if (context.what == null || context.ownerPlayerId == null) {
-            return;
-        }
-        if (!(this.cluster.getLevel() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        var player = IPlayerRegistry.getConnected(serverLevel.getServer(), context.ownerPlayerId);
-        if (player == null) {
-            return;
-        }
-        ModNetwork.sendToPlayer(player, new RepeatOrderFinishedPacket(context.what, context.amountPerRound,
-                context.totalRounds));
+        RepeatOrderNotifier.sendFinished(context.ownerPlayerId, this.cluster.getLevel(), context.what,
+                context.amountPerRound, context.totalRounds);
     }
 
     /**
@@ -384,18 +360,8 @@ public abstract class CraftingCpuLogicMixin implements IRepeatOrderHost {
      */
     @Unique
     private void ae2pr$notifyFailure(RepeatOrderContext context, FailureReason reason) {
-        if (context.what == null || context.ownerPlayerId == null) {
-            return;
-        }
-        if (!(this.cluster.getLevel() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        var player = IPlayerRegistry.getConnected(serverLevel.getServer(), context.ownerPlayerId);
-        if (player == null) {
-            return;
-        }
-        ModNetwork.sendToPlayer(player, new RepeatOrderFailedPacket(context.what, context.amountPerRound,
-                context.totalRounds, context.completedRounds, reason));
+        RepeatOrderNotifier.sendFailure(context.ownerPlayerId, this.cluster.getLevel(), context.what,
+                context.amountPerRound, context.totalRounds, context.completedRounds, reason);
     }
 
     @Unique

@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.murthinext.ae2pr.ModNetwork;
 import com.murthinext.ae2pr.network.CpuRoundInfo;
 import com.murthinext.ae2pr.network.RepeatOrderStatusPacket;
+import com.murthinext.ae2pr.repeat.GenericRepeatOrders;
 import com.murthinext.ae2pr.repeat.IRepeatOrderHost;
 
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -39,14 +40,24 @@ public abstract class CraftingStatusMenuBroadcastMixin {
         var accessor = (CraftingStatusMenuAccessor) (Object) this;
         List<CpuRoundInfo> rounds = new ArrayList<>();
         for (var cpu : accessor.ae2pr$getLastCpuSet()) {
+            Integer round = null;
+            Integer total = null;
             if (cpu instanceof CraftingCPUCluster cluster) {
                 var context = ((IRepeatOrderHost) (Object) cluster.craftingLogic).ae2pr$getContext();
                 if (context != null) {
-                    rounds.add(new CpuRoundInfo(
-                            accessor.ae2pr$getOrAssignCpuSerial(cpu),
-                            context.currentRound(),
-                            context.totalRounds));
+                    round = context.currentRound();
+                    total = context.totalRounds;
                 }
+            } else {
+                // 通用（VCPU）重复订单：按 CPU 实例查询轮次
+                var info = GenericRepeatOrders.getRoundInfo(cpu);
+                if (info != null) {
+                    round = info.round();
+                    total = info.total();
+                }
+            }
+            if (total != null) {
+                rounds.add(new CpuRoundInfo(accessor.ae2pr$getOrAssignCpuSerial(cpu), round, total));
             }
         }
 
