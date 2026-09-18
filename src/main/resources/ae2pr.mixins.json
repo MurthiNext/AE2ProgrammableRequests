@@ -10,7 +10,8 @@
     "CraftConfirmMenuMixin",
     "CraftingCpuLogicMixin",
     "CraftingStatusMenuAccessor",
-    "CraftingStatusMenuBroadcastMixin"
+    "CraftingStatusMenuBroadcastMixin",
+    "MenuOpenerMixin"
   ],
   "client": [
     "CPUSelectionListAccessor",
