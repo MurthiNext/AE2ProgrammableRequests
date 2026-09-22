@@ -12,5 +12,6 @@
   "gui.ae2pr.repeat_order.failed.reason.cpu_busy": "合成 CPU 被占用",
   "gui.ae2pr.repeat_order.failed.reason.cpu_offline": "合成 CPU 离线",
   "gui.ae2pr.repeat_order.failed.reason.no_cpu": "没有可用的合成 CPU",
-  "gui.ae2pr.repeat_order.failed.reason.unknown": "未知错误"
+  "gui.ae2pr.repeat_order.failed.reason.unknown": "未知错误",
+  "item.ae2pr.filter_cell": "过滤元件"
 }

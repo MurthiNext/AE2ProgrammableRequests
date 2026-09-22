@@ -12,5 +12,6 @@
   "gui.ae2pr.repeat_order.failed.reason.cpu_busy": "Crafting CPU is busy",
   "gui.ae2pr.repeat_order.failed.reason.cpu_offline": "Crafting CPU is offline",
   "gui.ae2pr.repeat_order.failed.reason.no_cpu": "No suitable crafting CPU",
-  "gui.ae2pr.repeat_order.failed.reason.unknown": "Unknown error"
+  "gui.ae2pr.repeat_order.failed.reason.unknown": "Unknown error",
+  "item.ae2pr.filter_cell": "Filter Cell"
 }
