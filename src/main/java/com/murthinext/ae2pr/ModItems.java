@@ -1,9 +1,8 @@
 package com.murthinext.ae2pr;
 
-import appeng.api.ids.AECreativeTabIds;
+import com.murthinext.ae2pr.emitter.MultiLevelEmitterPartItem;
 import com.murthinext.ae2pr.filter.FilterCellItem;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -22,10 +21,7 @@ public final class ModItems {
     public static final RegistryObject<FilterCellItem> FILTER_CELL = ITEMS.register("filter_cell",
             () -> new FilterCellItem(new Item.Properties().stacksTo(1)));
 
-    /** 将本模组物品加入 AE2 主创造标签页。 */
-    public static void onBuildCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
-        if (AECreativeTabIds.MAIN.equals(event.getTabKey())) {
-            event.accept(FILTER_CELL.get());
-        }
-    }
+    /** ME 通式标准发信器：可插入过滤元件实现多触发项。 */
+    public static final RegistryObject<MultiLevelEmitterPartItem> MULTI_LEVEL_EMITTER = ITEMS.register(
+            "multi_level_emitter", () -> new MultiLevelEmitterPartItem(new Item.Properties()));
 }

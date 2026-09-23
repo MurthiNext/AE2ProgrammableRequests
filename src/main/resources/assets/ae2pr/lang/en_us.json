@@ -13,5 +13,10 @@
   "gui.ae2pr.repeat_order.failed.reason.cpu_offline": "Crafting CPU is offline",
   "gui.ae2pr.repeat_order.failed.reason.no_cpu": "No suitable crafting CPU",
   "gui.ae2pr.repeat_order.failed.reason.unknown": "Unknown error",
-  "item.ae2pr.filter_cell": "Filter Cell"
+  "item.ae2pr.filter_cell": "Filter Cell",
+  "item.ae2pr.multi_level_emitter": "ME Multi Level Emitter",
+  "gui.ae2pr.multi_level_emitter": "ME Multi Level Emitter",
+  "gui.ae2pr.multi_level_emitter.combine.and": "Match: All (AND)",
+  "gui.ae2pr.multi_level_emitter.combine.or": "Match: Any (OR)",
+  "itemGroup.ae2pr": "AE2 Programmable Requests"
 }

@@ -24,8 +24,9 @@ public class ae2pr {
     public ae2pr() {
         var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(ModItems::onBuildCreativeTabContents);
         ModItems.ITEMS.register(modEventBus);
+        ModMenus.MENUS.register(modEventBus);
+        ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         ModNetwork.register();
         // 通用（VCPU）重复订单：由服务端 tick 驱动，状态包钩子负责轮次推进
@@ -35,7 +36,13 @@ public class ae2pr {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("AE2 Programmable Requests initialized");
-        // 过滤元件的可用升级：仅模糊卡（1 张），与元件工作台的模糊模式开关联动
-        event.enqueueWork(() -> Upgrades.add(AEItems.FUZZY_CARD, ModItems.FILTER_CELL.get(), 1));
+        event.enqueueWork(() -> {
+            // 过滤元件的可用升级：仅模糊卡（1 张），与元件工作台的模糊模式开关联动
+            Upgrades.add(AEItems.FUZZY_CARD, ModItems.FILTER_CELL.get(), 1);
+            // 通式标准发信器的可用升级：模糊卡 + 合成卡（过滤元件走专用槽，不作为升级卡）
+            var emitterItem = ModItems.MULTI_LEVEL_EMITTER.get();
+            Upgrades.add(AEItems.FUZZY_CARD, emitterItem, 1);
+            Upgrades.add(AEItems.CRAFTING_CARD, emitterItem, 1);
+        });
     }
 }
