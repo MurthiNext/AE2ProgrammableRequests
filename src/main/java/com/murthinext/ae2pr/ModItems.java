@@ -1,6 +1,7 @@
 package com.murthinext.ae2pr;
 
 import com.murthinext.ae2pr.emitter.MultiLevelEmitterPartItem;
+import com.murthinext.ae2pr.emitter.MultiThresholdLevelEmitterPartItem;
 import com.murthinext.ae2pr.filter.FilterCellItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -24,4 +25,8 @@ public final class ModItems {
     /** ME 通式标准发信器：可插入过滤元件实现多触发项。 */
     public static final RegistryObject<MultiLevelEmitterPartItem> MULTI_LEVEL_EMITTER = ITEMS.register(
             "multi_level_emitter", () -> new MultiLevelEmitterPartItem(new Item.Properties()));
+
+    /** ME 通式阈值发信器：双阈值锁存 + 可插入过滤元件。 */
+    public static final RegistryObject<MultiThresholdLevelEmitterPartItem> MULTI_THRESHOLD_LEVEL_EMITTER = ITEMS.register(
+            "multi_threshold_level_emitter", () -> new MultiThresholdLevelEmitterPartItem(new Item.Properties()));
 }

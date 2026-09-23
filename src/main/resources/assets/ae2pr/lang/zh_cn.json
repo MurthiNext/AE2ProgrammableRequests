@@ -16,7 +16,12 @@
   "item.ae2pr.filter_cell": "过滤元件",
   "item.ae2pr.multi_level_emitter": "ME通式标准发信器",
   "gui.ae2pr.multi_level_emitter": "ME通式标准发信器",
+  "item.ae2pr.multi_threshold_level_emitter": "ME通式阈值发信器",
+  "gui.ae2pr.multi_threshold_level_emitter": "ME通式阈值发信器",
+  "gui.ae2pr.multi_threshold_level_emitter.upper": "上限",
+  "gui.ae2pr.multi_threshold_level_emitter.lower": "下限",
   "gui.ae2pr.multi_level_emitter.combine.and": "匹配：全部（AND）",
   "gui.ae2pr.multi_level_emitter.combine.or": "匹配：任一（OR）",
-  "itemGroup.ae2pr": "应用能源2：可编程请求"
+  "itemGroup.ae2pr": "AE2可编程请求",
+  "gui.ae2pr.open_guide": "打开本模组指南"
 }

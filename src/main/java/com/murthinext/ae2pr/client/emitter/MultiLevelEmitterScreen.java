@@ -15,6 +15,9 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.definitions.AEItems;
 
+import guideme.PageAnchor;
+
+import com.murthinext.ae2pr.client.ModGuide;
 import com.murthinext.ae2pr.emitter.MultiLevelEmitterMenu;
 
 /**
@@ -73,5 +76,11 @@ public class MultiLevelEmitterScreen extends UpgradeableScreen<MultiLevelEmitter
 
     private void saveReportingValue() {
         this.level.getLongValue().ifPresent(menu::setValue);
+    }
+
+    /** 复用 AE2 界面自带的帮助按钮，改为打开本模组指南。 */
+    @Override
+    protected void openHelp() {
+        ModGuide.open(PageAnchor.page(ModGuide.EMITTER_PAGE));
     }
 }

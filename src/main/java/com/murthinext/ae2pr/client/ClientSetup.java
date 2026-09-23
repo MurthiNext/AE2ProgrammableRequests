@@ -13,7 +13,9 @@ import appeng.items.parts.PartModelsHelper;
 import com.murthinext.ae2pr.ModMenus;
 import com.murthinext.ae2pr.ae2pr;
 import com.murthinext.ae2pr.client.emitter.MultiLevelEmitterScreen;
+import com.murthinext.ae2pr.client.emitter.MultiThresholdLevelEmitterScreen;
 import com.murthinext.ae2pr.emitter.MultiLevelEmitterPart;
+import com.murthinext.ae2pr.emitter.MultiThresholdLevelEmitterPart;
 
 /**
  * 客户端初始化：注册部件模型与界面。
@@ -27,6 +29,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerPartModels(ModelEvent.RegisterGeometryLoaders event) {
         PartModels.registerModels(PartModelsHelper.createModels(MultiLevelEmitterPart.class));
+        PartModels.registerModels(PartModelsHelper.createModels(MultiThresholdLevelEmitterPart.class));
     }
 
     @SubscribeEvent
@@ -34,5 +37,8 @@ public final class ClientSetup {
         InitScreens.register(ModMenus.MULTI_LEVEL_EMITTER.get(),
                 MultiLevelEmitterScreen::new,
                 "/screens/multi_level_emitter.json");
+        InitScreens.register(ModMenus.MULTI_THRESHOLD_LEVEL_EMITTER.get(),
+                MultiThresholdLevelEmitterScreen::new,
+                "/screens/multi_threshold_level_emitter.json");
     }
 }

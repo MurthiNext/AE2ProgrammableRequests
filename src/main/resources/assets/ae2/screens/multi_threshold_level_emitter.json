@@ -1,0 +1,43 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/level_emitter.png",
+    "srcRect": [0, 0, 176, 184]
+  },
+  "slots": {
+    "CONFIG": {
+      "left": 137,
+      "top": 40
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2pr.multi_threshold_level_emitter"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "upper_label": {
+      "text": {
+        "translate": "gui.ae2pr.multi_threshold_level_emitter.upper"
+      },
+      "position": {
+        "left": 8,
+        "top": 42
+      }
+    },
+    "lower_label": {
+      "text": {
+        "translate": "gui.ae2pr.multi_threshold_level_emitter.lower"
+      },
+      "position": {
+        "left": 8,
+        "top": 60
+      }
+    }
+  }
+}

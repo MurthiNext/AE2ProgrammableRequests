@@ -16,7 +16,13 @@
   "item.ae2pr.filter_cell": "Filter Cell",
   "item.ae2pr.multi_level_emitter": "ME Multi Level Emitter",
   "gui.ae2pr.multi_level_emitter": "ME Multi Level Emitter",
+  "item.ae2pr.multi_threshold_level_emitter": "ME Multi Threshold Emitter",
+  "gui.ae2pr.multi_threshold_level_emitter": "ME Multi Threshold Emitter",
+  "gui.ae2pr.multi_threshold_level_emitter.upper": "Upper",
+  "gui.ae2pr.multi_threshold_level_emitter.lower": "Lower",
   "gui.ae2pr.multi_level_emitter.combine.and": "Match: All (AND)",
   "gui.ae2pr.multi_level_emitter.combine.or": "Match: Any (OR)",
-  "itemGroup.ae2pr": "AE2 Programmable Requests"
+  "itemGroup.ae2pr": "AE2 Programmable Requests",
+
+  "gui.ae2pr.open_guide": "Open mod guide"
 }

@@ -1,8 +1,8 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "emitter": "ae2pr:part/multi_level_emitter_on",
-    "particle": "ae2pr:part/multi_level_emitter_on"
+    "emitter": "ae2pr:part/multi_threshold_level_emitter_on",
+    "particle": "ae2pr:part/multi_threshold_level_emitter_on"
   },
   "elements": [
     {

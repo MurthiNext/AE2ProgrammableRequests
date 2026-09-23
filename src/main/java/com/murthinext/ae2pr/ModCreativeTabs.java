@@ -25,6 +25,7 @@ public final class ModCreativeTabs {
                     .displayItems((params, output) -> {
                         output.accept(ModItems.FILTER_CELL.get());
                         output.accept(ModItems.MULTI_LEVEL_EMITTER.get());
+                        output.accept(ModItems.MULTI_THRESHOLD_LEVEL_EMITTER.get());
                     })
                     .build());
 }

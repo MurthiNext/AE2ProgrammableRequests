@@ -21,6 +21,7 @@
     "CraftAmountScreenMixin",
     "CraftConfirmScreenMixin",
     "MEStorageScreenMixin",
+    "MEStorageScreenGuideMixin",
     "PendingCraftingJobsMixin"
   ],
   "injectors": {

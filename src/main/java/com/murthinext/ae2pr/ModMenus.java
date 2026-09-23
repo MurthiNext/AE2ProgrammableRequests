@@ -6,6 +6,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.murthinext.ae2pr.emitter.MultiLevelEmitterMenu;
+import com.murthinext.ae2pr.emitter.MultiThresholdLevelEmitterMenu;
 
 /**
  * 菜单类型注册入口。
@@ -20,4 +21,7 @@ public final class ModMenus {
 
     public static final RegistryObject<MenuType<MultiLevelEmitterMenu>> MULTI_LEVEL_EMITTER = MENUS
             .register("multi_level_emitter", () -> MultiLevelEmitterMenu.TYPE);
+
+    public static final RegistryObject<MenuType<MultiThresholdLevelEmitterMenu>> MULTI_THRESHOLD_LEVEL_EMITTER = MENUS
+            .register("multi_threshold_level_emitter", () -> MultiThresholdLevelEmitterMenu.TYPE);
 }
