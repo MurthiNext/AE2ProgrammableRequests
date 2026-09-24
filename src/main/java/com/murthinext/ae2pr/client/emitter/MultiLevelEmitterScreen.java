@@ -2,6 +2,8 @@ package com.murthinext.ae2pr.client.emitter;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -17,7 +19,9 @@ import appeng.client.guidebook.PageAnchor;
 import appeng.core.definitions.AEItems;
 
 import com.murthinext.ae2pr.client.ModGuide;
+import com.murthinext.ae2pr.emitter.EmitterConfigSlot;
 import com.murthinext.ae2pr.emitter.MultiLevelEmitterMenu;
+import com.murthinext.ae2pr.filter.FilterCell;
 
 /**
  * ME 通式标准发信器界面；相比原版发信器增加了过滤槽与 AND/OR 切换按钮。
@@ -75,6 +79,23 @@ public class MultiLevelEmitterScreen extends UpgradeableScreen<MultiLevelEmitter
 
     private void saveReportingValue() {
         this.level.getLongValue().ifPresent(menu::setValue);
+    }
+
+    /**
+     * 配置槽内的过滤元件支持 shift 快速取出到玩家背包。
+     * <p>
+     * AE2 会把 FakeSlot 的 shift 点击当作普通点击处理，这里提前拦截并改发 QUICK_MOVE。
+     */
+    @Override
+    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+        if (slot instanceof EmitterConfigSlot && mouseButton == 0
+                && slot.getItem().getItem() instanceof FilterCell
+                && (clickType == ClickType.QUICK_MOVE || hasShiftDown())) {
+            this.minecraft.gameMode.handleInventoryMouseClick(this.menu.containerId, slotIdx, 0,
+                    ClickType.QUICK_MOVE, this.minecraft.player);
+            return;
+        }
+        super.slotClicked(slot, slotIdx, mouseButton, clickType);
     }
 
     /** 复用 AE2 界面自带的帮助按钮，改为打开本模组指南。 */

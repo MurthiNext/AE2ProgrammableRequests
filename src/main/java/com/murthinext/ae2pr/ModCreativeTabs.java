@@ -24,6 +24,7 @@ public final class ModCreativeTabs {
                     .icon(() -> new ItemStack(ModItems.FILTER_CELL.get()))
                     .displayItems((params, output) -> {
                         output.accept(ModItems.FILTER_CELL.get());
+                        output.accept(ModItems.ADVANCED_FILTER_CELL.get());
                         output.accept(ModItems.MULTI_LEVEL_EMITTER.get());
                         output.accept(ModItems.MULTI_THRESHOLD_LEVEL_EMITTER.get());
                         output.accept(ModItems.REDSTONE_REQUESTER.get());

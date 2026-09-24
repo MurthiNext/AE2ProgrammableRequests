@@ -220,10 +220,6 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
         }
 
         var itemKey = AEItemKey.of(returnStack);
-        if (itemKey != null && itemKey.getItem() instanceof com.murthinext.ae2pr.filter.FilterCellItem) {
-            // 请求器不允许标记过滤元件
-            return null;
-        }
         return itemKey != null ? new GenericStack(itemKey, returnStack.getCount()) : null;
     }
     // </editor-fold>

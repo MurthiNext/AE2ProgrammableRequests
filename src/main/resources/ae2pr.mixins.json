@@ -6,6 +6,7 @@
   "refmap": "ae2pr.refmap.json",
   "mixins": [
     "AEBaseMenuInvoker",
+    "CellWorkbenchMenuMixin",
     "CraftAmountMenuMixin",
     "CraftConfirmMenuMixin",
     "CraftingCpuLogicMixin",
@@ -18,6 +19,7 @@
   "client": [
     "CPUSelectionListAccessor",
     "CPUSelectionListMixin",
+    "CellWorkbenchScreenMixin",
     "CraftAmountScreenMixin",
     "CraftConfirmScreenMixin",
     "MEStorageScreenMixin",

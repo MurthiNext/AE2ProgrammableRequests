@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 import appeng.menu.slot.FakeSlot;
 
-import com.murthinext.ae2pr.filter.FilterCellItem;
+import com.murthinext.ae2pr.filter.FilterCell;
 
 /**
  * 发信器的配置槽：与过滤元件共用同一槽位。
@@ -30,6 +30,17 @@ public class EmitterConfigSlot extends FakeSlot {
         return filterInventory.getStackInSlot(0);
     }
 
+    /** 槽内过滤元件（不存在时返回 null）。 */
+    public ItemStack getFilterCellStack() {
+        var cell = getFilterCell();
+        return cell.isEmpty() ? null : cell;
+    }
+
+    /** 清空槽内的过滤元件（用于 shift 取出）。 */
+    public void clearFilterCell() {
+        filterInventory.setItemDirect(0, ItemStack.EMPTY);
+    }
+
     private boolean isClientSide() {
         var menu = getMenu();
         return menu != null && menu.isClientSide();
@@ -43,7 +54,7 @@ public class EmitterConfigSlot extends FakeSlot {
 
     @Override
     public void set(ItemStack stack) {
-        if (stack.getItem() instanceof FilterCellItem) {
+        if (stack.getItem() instanceof FilterCell) {
             // 仅客户端用于同步显示；服务端的真实插入由 increase 处理
             if (isClientSide()) {
                 filterInventory.setItemDirect(0, stack.copy());
@@ -90,7 +101,7 @@ public class EmitterConfigSlot extends FakeSlot {
             }
             return;
         }
-        if (hand.getItem() instanceof FilterCellItem) {
+        if (hand.getItem() instanceof FilterCell) {
             insertFilterCell(hand);
             return;
         }
@@ -110,7 +121,7 @@ public class EmitterConfigSlot extends FakeSlot {
 
     @Override
     public boolean canSetFilterTo(ItemStack stack) {
-        return !(stack.getItem() instanceof FilterCellItem) && super.canSetFilterTo(stack);
+        return !(stack.getItem() instanceof FilterCell) && super.canSetFilterTo(stack);
     }
 
     /**
@@ -123,7 +134,7 @@ public class EmitterConfigSlot extends FakeSlot {
             return false;
         }
         var stack = source.getItem();
-        if (stack.isEmpty() || !(stack.getItem() instanceof FilterCellItem)) {
+        if (stack.isEmpty() || !(stack.getItem() instanceof FilterCell)) {
             return false;
         }
         // 同一槽位二选一：插入过滤元件时清除原有标记

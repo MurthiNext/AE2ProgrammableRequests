@@ -26,8 +26,8 @@
         "translate": "gui.ae2pr.multi_threshold_level_emitter.upper"
       },
       "position": {
-        "left": 4,
-        "top": 42
+        "left": 8,
+        "top": 26
       }
     },
     "lower_label": {
@@ -35,8 +35,8 @@
         "translate": "gui.ae2pr.multi_threshold_level_emitter.lower"
       },
       "position": {
-        "left": 4,
-        "top": 60
+        "left": 8,
+        "top": 58
       }
     }
   }

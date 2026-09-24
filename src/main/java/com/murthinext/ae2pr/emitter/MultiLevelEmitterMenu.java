@@ -16,7 +16,7 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.implementations.UpgradeableMenu;
 
-import com.murthinext.ae2pr.filter.FilterCellItem;
+import com.murthinext.ae2pr.filter.FilterCell;
 
 /**
  * ME 通式标准发信器的菜单：配置槽与过滤元件共用同一槽位。
@@ -82,11 +82,25 @@ public class MultiLevelEmitterMenu extends UpgradeableMenu<MultiLevelEmitterPart
 
     @Override
     public ItemStack quickMoveStack(Player player, int idx) {
-        // Shift 直移兼容：从玩家背包把过滤元件放入配置槽（其余情况交给 AE2 默认处理）
         if (!isClientSide() && idx >= 0 && idx < slots.size()) {
             var source = slots.get(idx);
+
+            // 从配置槽 shift 取出过滤元件到玩家背包
+            if (source instanceof EmitterConfigSlot emitterSlot) {
+                var cell = emitterSlot.getFilterCellStack();
+                if (cell != null) {
+                    var toMove = cell.copy();
+                    if (moveItemStackTo(toMove, ae2pr$playerSlotStart(), ae2pr$playerSlotEnd(), false)) {
+                        emitterSlot.clearFilterCell();
+                        broadcastChanges();
+                    }
+                    return ItemStack.EMPTY;
+                }
+            }
+
+            // 从玩家背包 shift 放入过滤元件
             if (source.container instanceof Inventory
-                    && source.getItem().getItem() instanceof FilterCellItem) {
+                    && source.getItem().getItem() instanceof FilterCell) {
                 for (var configSlot : getSlots(SlotSemantics.CONFIG)) {
                     if (configSlot instanceof EmitterConfigSlot emitterSlot
                             && emitterSlot.insertFromShiftClick(source)) {
@@ -97,6 +111,26 @@ public class MultiLevelEmitterMenu extends UpgradeableMenu<MultiLevelEmitterPart
             }
         }
         return super.quickMoveStack(player, idx);
+    }
+
+    /** 玩家背包（含快捷栏）在 slots 中的起始下标。 */
+    private int ae2pr$playerSlotStart() {
+        for (int i = 0; i < slots.size(); i++) {
+            if (slots.get(i).container instanceof Inventory) {
+                return i;
+            }
+        }
+        return slots.size();
+    }
+
+    /** 玩家背包（含快捷栏）在 slots 中的结束下标（不含）。 */
+    private int ae2pr$playerSlotEnd() {
+        for (int i = slots.size() - 1; i >= 0; i--) {
+            if (slots.get(i).container instanceof Inventory) {
+                return i + 1;
+            }
+        }
+        return slots.size();
     }
 
     @Override

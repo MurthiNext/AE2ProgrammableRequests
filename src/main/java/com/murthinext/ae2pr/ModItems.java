@@ -2,6 +2,7 @@ package com.murthinext.ae2pr;
 
 import com.murthinext.ae2pr.emitter.MultiLevelEmitterPartItem;
 import com.murthinext.ae2pr.emitter.MultiThresholdLevelEmitterPartItem;
+import com.murthinext.ae2pr.filter.AdvancedFilterCellItem;
 import com.murthinext.ae2pr.filter.FilterCellItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -22,6 +23,10 @@ public final class ModItems {
     /** 过滤元件 */
     public static final RegistryObject<FilterCellItem> FILTER_CELL = ITEMS.register("filter_cell",
             () -> new FilterCellItem(new Item.Properties().stacksTo(1)));
+
+    /** 高级过滤元件 */
+    public static final RegistryObject<AdvancedFilterCellItem> ADVANCED_FILTER_CELL = ITEMS.register(
+            "advanced_filter_cell", () -> new AdvancedFilterCellItem(new Item.Properties().stacksTo(1)));
 
     /** ME 通式标准发信器 */
     public static final RegistryObject<MultiLevelEmitterPartItem> MULTI_LEVEL_EMITTER = ITEMS.register(

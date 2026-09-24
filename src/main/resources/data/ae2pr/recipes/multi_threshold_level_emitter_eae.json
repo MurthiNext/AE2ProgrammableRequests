@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "forge:conditions": [ 
+    {
+      "type": "forge:mod_loaded",
+      "modid": "expatternprovider" 
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "expatternprovider:threshold_level_emitter"
+    },
+    {
+      "item": "ae2:engineering_processor"
+    }
+  ],
+  "result": {
+    "item": "ae2pr:multi_threshold_level_emitter"
+  }
+}

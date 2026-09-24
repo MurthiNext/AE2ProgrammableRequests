@@ -4,6 +4,8 @@ import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -18,7 +20,9 @@ import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.definitions.AEItems;
 
 import com.murthinext.ae2pr.client.ModGuide;
+import com.murthinext.ae2pr.emitter.EmitterConfigSlot;
 import com.murthinext.ae2pr.emitter.MultiThresholdLevelEmitterMenu;
+import com.murthinext.ae2pr.filter.FilterCell;
 
 /**
  * ME 通式阈值发信器界面：左侧工具栏 + 上限/下限两个阈值输入框（占位布局，复用原版发信器背景）。
@@ -52,7 +56,7 @@ public class MultiThresholdLevelEmitterScreen extends UpgradeableScreen<MultiThr
     }
 
     private AETextField createValueField(long value, Consumer<String> responder) {
-        var field = new AETextField(this.style, this.font, 0, 0, 92, 12);
+        var field = new AETextField(this.style, this.font, 0, 0, 120, 12);
         field.setBordered(false);
         field.setMaxLength(18);
         field.setValue(Long.toString(value));
@@ -112,12 +116,11 @@ public class MultiThresholdLevelEmitterScreen extends UpgradeableScreen<MultiThr
         if (!this.children().contains(lowerField)) {
             this.addRenderableWidget(lowerField);
         }
-        // AETextField 构造时会内部加 2px 内边距，setY 直接覆盖 getY，故此处 +2 使文本与左侧标签对齐
-        // X 右移，避免输入框与左侧"上限/下限"标签重叠
-        upperField.setX(leftPos + 26);
-        upperField.setY(topPos + 42);
-        lowerField.setX(leftPos + 26);
-        lowerField.setY(topPos + 60);
+        // AETextField 构造时会内部加 2px 内边距，setX/setY 直接覆盖内部坐标，故此处 +2 使文本对齐标签
+        upperField.setX(leftPos + 10);
+        upperField.setY(topPos + 40);
+        lowerField.setX(leftPos + 10);
+        lowerField.setY(topPos + 72);
 
         this.fuzzyMode.set(menu.getFuzzyMode());
         this.fuzzyMode.setVisibility(menu.supportsFuzzySearch());
@@ -137,6 +140,23 @@ public class MultiThresholdLevelEmitterScreen extends UpgradeableScreen<MultiThr
     @Override
     protected void openHelp() {
         ModGuide.openAt(ModGuide.INDEX_PAGE);
+    }
+
+    /**
+     * 配置槽内的过滤元件支持 shift 快速取出到玩家背包。
+     * <p>
+     * AE2 会把 FakeSlot 的 shift 点击当作普通点击处理，这里提前拦截并改发 QUICK_MOVE。
+     */
+    @Override
+    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+        if (slot instanceof EmitterConfigSlot && mouseButton == 0
+                && slot.getItem().getItem() instanceof FilterCell
+                && (clickType == ClickType.QUICK_MOVE || hasShiftDown())) {
+            this.minecraft.gameMode.handleInventoryMouseClick(this.menu.containerId, slotIdx, 0,
+                    ClickType.QUICK_MOVE, this.minecraft.player);
+            return;
+        }
+        super.slotClicked(slot, slotIdx, mouseButton, clickType);
     }
 
     /** 返回非空即可让 AE2 的帮助按钮显示（实际点击由 {@link #openHelp()} 处理）。 */

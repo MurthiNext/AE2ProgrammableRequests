@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
  * 同时对外提供静态过滤 API，供后续功能消费：
  * {@link #createFilter(ItemStack)} 构建 AE2 标准过滤表，{@link #matches(ItemStack, AEKey)} 执行白名单判定。
  */
-public class FilterCellItem extends AEBaseItem implements ICellWorkbenchItem {
+public class FilterCellItem extends AEBaseItem implements ICellWorkbenchItem, FilterCell {
 
     /** 配置槽位数，与 AE2 显示元件一致。 */
     public static final int CONFIG_SLOTS = 63;

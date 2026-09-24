@@ -3,6 +3,7 @@ package com.murthinext.ae2pr.emitter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +46,8 @@ import appeng.util.prioritylist.IPartitionList;
 
 import com.murthinext.ae2pr.ModMenus;
 import com.murthinext.ae2pr.ae2pr;
+import com.murthinext.ae2pr.filter.AdvancedFilterCellItem;
+import com.murthinext.ae2pr.filter.FilterCell;
 import com.murthinext.ae2pr.filter.FilterCellItem;
 
 /**
@@ -185,8 +188,20 @@ public class MultiLevelEmitterPart extends AbstractLevelEmitterPart
         return list.isEmpty() ? null : list;
     }
 
+    /**
+     * 高级过滤元件构建出的标签匹配谓词；未插入或未配置任何表达式时返回 null。
+     */
+    @Nullable
+    private Predicate<AEKey> getAdvancedFilter() {
+        var stack = getFilterCellStack();
+        if (stack == null || !(stack.getItem() instanceof AdvancedFilterCellItem)) {
+            return null;
+        }
+        return AdvancedFilterCellItem.createPredicate(stack);
+    }
+
     private boolean usesFilterCell() {
-        return getFilterList() != null;
+        return getFilterList() != null || getAdvancedFilter() != null;
     }
 
     private boolean isFilterFuzzy() {
@@ -217,12 +232,17 @@ public class MultiLevelEmitterPart extends AbstractLevelEmitterPart
     }
 
     private void updateReportingValue(IGrid grid) {
-        var list = getFilterList();
-        if (list != null) {
-            this.filteredOn = computeFilteredOn(grid, list);
+        var advanced = getAdvancedFilter();
+        if (advanced != null) {
+            this.filteredOn = computeAdvancedOn(grid, advanced);
         } else {
-            this.filteredOn = false;
-            updateSingleKeyValue(grid);
+            var list = getFilterList();
+            if (list != null) {
+                this.filteredOn = computeFilteredOn(grid, list);
+            } else {
+                this.filteredOn = false;
+                updateSingleKeyValue(grid);
+            }
         }
         this.updateState();
     }
@@ -272,6 +292,31 @@ public class MultiLevelEmitterPart extends AbstractLevelEmitterPart
         return result;
     }
 
+    /** 高级过滤元件：遍历网络中通过标签表达式的物品种类，逐项判定并按 AND/OR 组合。 */
+    private boolean computeAdvancedOn(IGrid grid, Predicate<AEKey> filter) {
+        var stacks = grid.getStorageService().getCachedInventory();
+        boolean lowSignal = getConfigManager().getSetting(Settings.REDSTONE_EMITTER) == RedstoneMode.LOW_SIGNAL;
+        boolean matchAll = getConfigManager().getSetting(COMBINE_MODE) == CombineMode.AND;
+        long threshold = getReportingValue();
+
+        boolean result = matchAll;
+        for (var entry : stacks) {
+            if (!filter.test(entry.getKey())) {
+                continue;
+            }
+            long amount = entry.getLongValue();
+            boolean satisfied = lowSignal ? amount < threshold : amount >= threshold;
+            if (matchAll) {
+                if (!satisfied) {
+                    return false;
+                }
+            } else if (satisfied) {
+                return true;
+            }
+        }
+        return result;
+    }
+
     @Override
     protected boolean isLevelEmitterOn() {
         if (isClientSide()) {
@@ -301,6 +346,16 @@ public class MultiLevelEmitterPart extends AbstractLevelEmitterPart
             return false;
         }
 
+        var advanced = getAdvancedFilter();
+        if (advanced != null) {
+            for (var entry : grid.getStorageService().getCachedInventory()) {
+                if (advanced.test(entry.getKey()) && grid.getCraftingService().isRequesting(entry.getKey())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         var list = getFilterList();
         if (list != null) {
             for (AEKey key : list.getItems()) {
@@ -322,6 +377,21 @@ public class MultiLevelEmitterPart extends AbstractLevelEmitterPart
     public Set<AEKey> getEmitableItems() {
         if (isUpgradedWith(AEItems.CRAFTING_CARD)
                 && getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE) == YesNo.YES) {
+            var advanced = getAdvancedFilter();
+            if (advanced != null) {
+                var grid = getMainNode().getGrid();
+                if (grid == null) {
+                    return Set.of();
+                }
+                var keys = new HashSet<AEKey>();
+                for (var entry : grid.getStorageService().getCachedInventory()) {
+                    if (advanced.test(entry.getKey())) {
+                        keys.add(entry.getKey());
+                    }
+                }
+                return keys;
+            }
+
             var list = getFilterList();
             if (list != null) {
                 var keys = new HashSet<AEKey>();
@@ -346,6 +416,7 @@ public class MultiLevelEmitterPart extends AbstractLevelEmitterPart
     @Override
     protected void configureWatchers() {
         var list = getFilterList();
+        var advanced = getAdvancedFilter();
 
         if (this.storageWatcher != null) {
             this.storageWatcher.reset();
@@ -358,7 +429,9 @@ public class MultiLevelEmitterPart extends AbstractLevelEmitterPart
 
         if (isUpgradedWith(AEItems.CRAFTING_CARD)) {
             if (this.craftingWatcher != null) {
-                if (list != null) {
+                if (advanced != null) {
+                    this.craftingWatcher.setWatchAll(true);
+                } else if (list != null) {
                     for (AEKey key : list.getItems()) {
                         this.craftingWatcher.add(key);
                     }
@@ -370,7 +443,9 @@ public class MultiLevelEmitterPart extends AbstractLevelEmitterPart
             }
         } else {
             if (this.storageWatcher != null) {
-                if (list != null) {
+                if (advanced != null) {
+                    this.storageWatcher.setWatchAll(true);
+                } else if (list != null) {
                     if (isFilterFuzzy()) {
                         this.storageWatcher.setWatchAll(true);
                     } else {
@@ -478,7 +553,7 @@ public class MultiLevelEmitterPart extends AbstractLevelEmitterPart
     private static class FilterCellItemFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            return stack.getItem() instanceof FilterCellItem;
+            return stack.getItem() instanceof FilterCell;
         }
     }
 }
