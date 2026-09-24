@@ -8,8 +8,8 @@ package com.murthinext.ae2pr.client.requester.widgets;
 import appeng.client.gui.style.ScreenStyle;
 import com.murthinext.ae2pr.client.requester.abstraction.RequestDisplay;
 import com.murthinext.ae2pr.client.requester.abstraction.RequesterReference;
-import com.murthinext.ae2pr.requester.platform.RequesterPlatform;
-import com.murthinext.ae2pr.requester.Requests.Request;
+import com.murthinext.ae2pr.block.redstone_requester.platform.RequesterPlatform;
+import com.murthinext.ae2pr.block.redstone_requester.Requests.Request;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.murthinext.ae2pr.requester.RequesterUtils.f;
+import static com.murthinext.ae2pr.block.redstone_requester.RequesterUtils.f;
 
 @OnlyIn(Dist.CLIENT)
 public class RequestWidget {

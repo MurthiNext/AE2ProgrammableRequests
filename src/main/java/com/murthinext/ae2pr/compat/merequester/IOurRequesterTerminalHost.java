@@ -1,6 +1,6 @@
 package com.murthinext.ae2pr.compat.merequester;
 
-import com.murthinext.ae2pr.requester.RedstoneRequesterBlockEntity;
+import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlockEntity;
 
 /**
  * 由 {@link RequesterTerminalMenuMixin} 实现的鸭子接口，

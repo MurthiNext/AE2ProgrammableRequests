@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.murthinext.ae2pr.filter.AdvancedFilterCellItem;
+import com.murthinext.ae2pr.item.filter_cell.AdvancedFilterCellItem;
 
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.menu.implementations.CellWorkbenchMenu;

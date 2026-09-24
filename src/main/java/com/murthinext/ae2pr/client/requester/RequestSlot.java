@@ -6,11 +6,11 @@
 package com.murthinext.ae2pr.client.requester;
 
 import appeng.menu.slot.FakeSlot;
-import com.murthinext.ae2pr.requester.RequesterUtils;
+import com.murthinext.ae2pr.block.redstone_requester.RequesterUtils;
 import com.murthinext.ae2pr.client.requester.abstraction.RequestDisplay;
 import com.murthinext.ae2pr.client.requester.abstraction.RequesterReference;
-import com.murthinext.ae2pr.mixin.SlotMixin;
-import com.murthinext.ae2pr.requester.platform.RequesterPlatform;
+import com.murthinext.ae2pr.mixin.accessor.SlotMixin;
+import com.murthinext.ae2pr.block.redstone_requester.platform.RequesterPlatform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;

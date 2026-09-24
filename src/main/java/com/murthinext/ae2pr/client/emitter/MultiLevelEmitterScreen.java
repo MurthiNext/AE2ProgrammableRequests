@@ -19,9 +19,9 @@ import appeng.client.guidebook.PageAnchor;
 import appeng.core.definitions.AEItems;
 
 import com.murthinext.ae2pr.client.ModGuide;
-import com.murthinext.ae2pr.emitter.EmitterConfigSlot;
-import com.murthinext.ae2pr.emitter.MultiLevelEmitterMenu;
-import com.murthinext.ae2pr.filter.FilterCell;
+import com.murthinext.ae2pr.block.level_emitter.EmitterConfigSlot;
+import com.murthinext.ae2pr.block.level_emitter.MultiLevelEmitterMenu;
+import com.murthinext.ae2pr.item.filter_cell.FilterCell;
 
 /**
  * ME 通式标准发信器界面；相比原版发信器增加了过滤槽与 AND/OR 切换按钮。

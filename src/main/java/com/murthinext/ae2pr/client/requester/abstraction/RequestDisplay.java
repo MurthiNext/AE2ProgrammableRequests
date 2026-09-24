@@ -6,7 +6,7 @@
 package com.murthinext.ae2pr.client.requester.abstraction;
 
 import com.murthinext.ae2pr.client.requester.RequestSlot;
-import com.murthinext.ae2pr.requester.Requests.Request;
+import com.murthinext.ae2pr.block.redstone_requester.Requests.Request;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;

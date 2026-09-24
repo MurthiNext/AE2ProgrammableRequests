@@ -5,8 +5,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.murthinext.ae2pr.repeat.IRepeatRoundsHolder;
-import com.murthinext.ae2pr.repeat.ServerRepeatRegistry;
+import com.murthinext.ae2pr.logic.repeat.IRepeatRoundsHolder;
+import com.murthinext.ae2pr.logic.repeat.ServerRepeatRegistry;
 
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;

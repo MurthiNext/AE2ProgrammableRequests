@@ -14,7 +14,7 @@ import com.almostreliable.merequester.requester.Requests;
 import com.almostreliable.merequester.requester.abstraction.AbstractRequesterMenu;
 import com.almostreliable.merequester.requester.abstraction.RequestHost;
 import com.almostreliable.merequester.terminal.RequesterTerminalMenu;
-import com.murthinext.ae2pr.requester.RedstoneRequesterBlockEntity;
+import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlockEntity;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.IActionHost;

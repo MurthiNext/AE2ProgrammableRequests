@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.murthinext.ae2pr.Config;
 import com.murthinext.ae2pr.ae2pr;
-import com.murthinext.ae2pr.repeat.FailureReason;
-import com.murthinext.ae2pr.repeat.IRepeatOrderHost;
-import com.murthinext.ae2pr.repeat.RepeatOrderBinding;
-import com.murthinext.ae2pr.repeat.RepeatOrderContext;
-import com.murthinext.ae2pr.repeat.RepeatOrderNotifier;
-import com.murthinext.ae2pr.repeat.RepeatOrderState;
+import com.murthinext.ae2pr.logic.repeat.FailureReason;
+import com.murthinext.ae2pr.logic.repeat.IRepeatOrderHost;
+import com.murthinext.ae2pr.logic.repeat.RepeatOrderBinding;
+import com.murthinext.ae2pr.logic.repeat.RepeatOrderContext;
+import com.murthinext.ae2pr.logic.repeat.RepeatOrderNotifier;
+import com.murthinext.ae2pr.logic.repeat.RepeatOrderState;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGrid;

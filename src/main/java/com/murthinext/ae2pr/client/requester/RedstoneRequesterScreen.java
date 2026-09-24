@@ -8,12 +8,12 @@ package com.murthinext.ae2pr.client.requester;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.guidebook.PageAnchor;
 import com.murthinext.ae2pr.client.ModGuide;
-import com.murthinext.ae2pr.requester.RequesterConstants;
-import com.murthinext.ae2pr.requester.RequesterUtils;
+import com.murthinext.ae2pr.block.redstone_requester.RequesterConstants;
+import com.murthinext.ae2pr.block.redstone_requester.RequesterUtils;
 import com.murthinext.ae2pr.client.requester.abstraction.AbstractRedstoneRequesterScreen;
 import com.murthinext.ae2pr.client.requester.abstraction.RequesterReference;
-import com.murthinext.ae2pr.requester.platform.RequesterPlatform;
-import com.murthinext.ae2pr.requester.RedstoneRequesterMenu;
+import com.murthinext.ae2pr.block.redstone_requester.platform.RequesterPlatform;
+import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterMenu;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.murthinext.ae2pr.requester.RequesterUtils.f;
+import static com.murthinext.ae2pr.block.redstone_requester.RequesterUtils.f;
 
 public class RedstoneRequesterScreen extends AbstractRedstoneRequesterScreen<RedstoneRequesterMenu> {
 

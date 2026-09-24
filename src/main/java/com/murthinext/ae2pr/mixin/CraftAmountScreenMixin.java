@@ -1,5 +1,7 @@
 package com.murthinext.ae2pr.mixin;
 
+import com.murthinext.ae2pr.mixin.accessor.AEBaseMenuInvoker;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -8,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.murthinext.ae2pr.Config;
 import com.murthinext.ae2pr.client.gui.RepeatOrderButton;
-import com.murthinext.ae2pr.repeat.IRepeatRoundsHolder;
-import com.murthinext.ae2pr.repeat.RepeatOrderConstants;
+import com.murthinext.ae2pr.logic.repeat.IRepeatRoundsHolder;
+import com.murthinext.ae2pr.logic.repeat.RepeatOrderConstants;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.me.crafting.CraftAmountScreen;

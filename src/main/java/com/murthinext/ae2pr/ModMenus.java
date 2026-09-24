@@ -5,9 +5,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import com.murthinext.ae2pr.emitter.MultiLevelEmitterMenu;
-import com.murthinext.ae2pr.emitter.MultiThresholdLevelEmitterMenu;
-import com.murthinext.ae2pr.requester.RedstoneRequesterMenu;
+import com.murthinext.ae2pr.block.level_emitter.MultiLevelEmitterMenu;
+import com.murthinext.ae2pr.block.level_emitter.MultiThresholdLevelEmitterMenu;
+import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterMenu;
 
 /**
  * 菜单类型注册入口。

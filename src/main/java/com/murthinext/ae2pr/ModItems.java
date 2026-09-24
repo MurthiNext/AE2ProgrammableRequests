@@ -1,9 +1,9 @@
 package com.murthinext.ae2pr;
 
-import com.murthinext.ae2pr.emitter.MultiLevelEmitterPartItem;
-import com.murthinext.ae2pr.emitter.MultiThresholdLevelEmitterPartItem;
-import com.murthinext.ae2pr.filter.AdvancedFilterCellItem;
-import com.murthinext.ae2pr.filter.FilterCellItem;
+import com.murthinext.ae2pr.item.level_emitter.MultiLevelEmitterPartItem;
+import com.murthinext.ae2pr.item.level_emitter.MultiThresholdLevelEmitterPartItem;
+import com.murthinext.ae2pr.item.filter_cell.AdvancedFilterCellItem;
+import com.murthinext.ae2pr.item.filter_cell.FilterCellItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;

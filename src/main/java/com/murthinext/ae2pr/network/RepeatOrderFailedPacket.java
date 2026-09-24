@@ -2,7 +2,7 @@ package com.murthinext.ae2pr.network;
 
 import java.util.function.Supplier;
 
-import com.murthinext.ae2pr.repeat.FailureReason;
+import com.murthinext.ae2pr.logic.repeat.FailureReason;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;

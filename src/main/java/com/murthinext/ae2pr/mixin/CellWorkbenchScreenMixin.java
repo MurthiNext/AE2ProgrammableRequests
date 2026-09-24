@@ -1,12 +1,14 @@
 package com.murthinext.ae2pr.mixin;
 
+import com.murthinext.ae2pr.mixin.accessor.AEBaseMenuInvoker;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.murthinext.ae2pr.filter.AdvancedFilterCellItem;
+import com.murthinext.ae2pr.item.filter_cell.AdvancedFilterCellItem;
 
 import appeng.client.gui.implementations.CellWorkbenchScreen;
 import appeng.client.gui.implementations.UpgradeableScreen;

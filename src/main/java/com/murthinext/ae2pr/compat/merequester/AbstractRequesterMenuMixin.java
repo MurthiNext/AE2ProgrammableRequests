@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.almostreliable.merequester.requester.abstraction.AbstractRequesterMenu;
-import com.murthinext.ae2pr.requester.RedstoneRequesterBlockEntity;
+import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlockEntity;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.stacks.GenericStack;

@@ -5,7 +5,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import com.murthinext.ae2pr.requester.RedstoneRequesterBlock;
+import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlock;
 
 /**
  * 方块注册入口。

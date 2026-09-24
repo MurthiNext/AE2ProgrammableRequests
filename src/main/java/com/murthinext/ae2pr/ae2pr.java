@@ -3,7 +3,7 @@ package com.murthinext.ae2pr;
 import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEItems;
 import com.mojang.logging.LogUtils;
-import com.murthinext.ae2pr.repeat.GenericRepeatOrders;
+import com.murthinext.ae2pr.logic.repeat.GenericRepeatOrders;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -33,7 +33,7 @@ public class ae2pr {
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         ModNetwork.register();
-        com.murthinext.ae2pr.requester.network.RequesterNetwork.init();
+        com.murthinext.ae2pr.block.redstone_requester.network.RequesterNetwork.init();
         // 通用（VCPU）重复订单：由服务端 tick 驱动，状态包钩子负责轮次推进
         MinecraftForge.EVENT_BUS.addListener(GenericRepeatOrders::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(GenericRepeatOrders::onServerStopped);
@@ -61,7 +61,7 @@ public class ae2pr {
             // ME 红石请求器：绑定方块实体类型并登记代表物品
             var requesterType = ModBlockEntities.REDSTONE_REQUESTER.get();
             ModBlocks.REDSTONE_REQUESTER.get().setBlockEntity(
-                    com.murthinext.ae2pr.requester.RedstoneRequesterBlockEntity.class, requesterType, null, null);
+                    com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlockEntity.class, requesterType, null, null);
             appeng.blockentity.AEBaseBlockEntity.registerBlockEntityItem(requesterType,
                     ModItems.REDSTONE_REQUESTER.get());
         });

@@ -1,5 +1,7 @@
 package com.murthinext.ae2pr.mixin;
 
+import com.murthinext.ae2pr.mixin.accessor.CraftingStatusMenuAccessor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.murthinext.ae2pr.ModNetwork;
 import com.murthinext.ae2pr.network.CpuRoundInfo;
 import com.murthinext.ae2pr.network.RepeatOrderStatusPacket;
-import com.murthinext.ae2pr.repeat.GenericRepeatOrders;
-import com.murthinext.ae2pr.repeat.IRepeatOrderHost;
+import com.murthinext.ae2pr.logic.repeat.GenericRepeatOrders;
+import com.murthinext.ae2pr.logic.repeat.IRepeatOrderHost;
 
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.menu.me.crafting.CraftingStatusMenu;

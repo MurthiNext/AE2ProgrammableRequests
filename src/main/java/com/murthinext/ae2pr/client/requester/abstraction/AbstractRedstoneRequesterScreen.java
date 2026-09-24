@@ -19,13 +19,13 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import com.murthinext.ae2pr.ae2pr;
-import com.murthinext.ae2pr.requester.RequesterConstants;
-import com.murthinext.ae2pr.requester.RequesterUtils;
+import com.murthinext.ae2pr.block.redstone_requester.RequesterConstants;
+import com.murthinext.ae2pr.block.redstone_requester.RequesterUtils;
 import com.murthinext.ae2pr.client.requester.RequestSlot;
 import com.murthinext.ae2pr.client.requester.widgets.RequestWidget;
-import com.murthinext.ae2pr.mixin.WidgetContainerMixin;
-import com.murthinext.ae2pr.requester.Requests.Request;
-import com.murthinext.ae2pr.requester.abstraction.AbstractRedstoneRequesterMenu;
+import com.murthinext.ae2pr.mixin.accessor.WidgetContainerMixin;
+import com.murthinext.ae2pr.block.redstone_requester.Requests.Request;
+import com.murthinext.ae2pr.block.redstone_requester.abstraction.AbstractRedstoneRequesterMenu;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.murthinext.ae2pr.requester.RequesterUtils.f;
+import static com.murthinext.ae2pr.block.redstone_requester.RequesterUtils.f;
 
 /**
  * yoinked from {@link PatternAccessTermScreen}

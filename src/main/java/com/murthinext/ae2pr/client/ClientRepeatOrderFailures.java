@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.murthinext.ae2pr.Config;
 import com.murthinext.ae2pr.client.gui.RepeatOrderFailedToast;
-import com.murthinext.ae2pr.repeat.FailureReason;
+import com.murthinext.ae2pr.logic.repeat.FailureReason;
 
 import appeng.api.stacks.AEKey;
 import appeng.client.gui.me.common.MEStorageScreen;

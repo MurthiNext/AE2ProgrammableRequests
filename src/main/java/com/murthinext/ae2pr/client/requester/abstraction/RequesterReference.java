@@ -5,8 +5,8 @@
  */
 package com.murthinext.ae2pr.client.requester.abstraction;
 
-import com.murthinext.ae2pr.requester.Requests;
-import com.murthinext.ae2pr.requester.abstraction.RequestHost;
+import com.murthinext.ae2pr.block.redstone_requester.Requests;
+import com.murthinext.ae2pr.block.redstone_requester.abstraction.RequestHost;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

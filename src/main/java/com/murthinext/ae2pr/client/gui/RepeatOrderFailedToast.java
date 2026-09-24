@@ -3,7 +3,7 @@ package com.murthinext.ae2pr.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.murthinext.ae2pr.repeat.FailureReason;
+import com.murthinext.ae2pr.logic.repeat.FailureReason;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;

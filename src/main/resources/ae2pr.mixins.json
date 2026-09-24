@@ -5,28 +5,28 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "ae2pr.refmap.json",
   "mixins": [
-    "AEBaseMenuInvoker",
+    "accessor.AEBaseMenuInvoker",
     "CellWorkbenchMenuMixin",
     "CraftAmountMenuMixin",
     "CraftConfirmMenuMixin",
     "CraftingCpuLogicMixin",
     "CraftingJobStatusPacketMixin",
-    "CraftingStatusMenuAccessor",
+    "accessor.CraftingStatusMenuAccessor",
     "CraftingStatusMenuBroadcastMixin",
     "MenuOpenerMixin",
     "NetworkHandlerMixin"
   ],
   "client": [
-    "CPUSelectionListAccessor",
+    "accessor.CPUSelectionListAccessor",
     "CPUSelectionListMixin",
     "CellWorkbenchScreenMixin",
     "CraftAmountScreenMixin",
     "CraftConfirmScreenMixin",
     "MEStorageScreenMixin",
     "PendingCraftingJobsMixin",
-    "EditBoxMixin",
-    "SlotMixin",
-    "WidgetContainerMixin"
+    "accessor.EditBoxMixin",
+    "accessor.SlotMixin",
+    "accessor.WidgetContainerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

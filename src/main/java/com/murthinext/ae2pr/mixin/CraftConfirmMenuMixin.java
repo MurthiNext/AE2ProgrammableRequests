@@ -14,11 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.murthinext.ae2pr.ModNetwork;
 import com.murthinext.ae2pr.network.RepeatOrderConfirmRoundsPacket;
-import com.murthinext.ae2pr.repeat.GenericRepeatOrder;
-import com.murthinext.ae2pr.repeat.GenericRepeatOrders;
-import com.murthinext.ae2pr.repeat.RepeatOrderBinding;
-import com.murthinext.ae2pr.repeat.RepeatOrderNotifier;
-import com.murthinext.ae2pr.repeat.ServerRepeatRegistry;
+import com.murthinext.ae2pr.logic.repeat.GenericRepeatOrder;
+import com.murthinext.ae2pr.logic.repeat.GenericRepeatOrders;
+import com.murthinext.ae2pr.logic.repeat.RepeatOrderBinding;
+import com.murthinext.ae2pr.logic.repeat.RepeatOrderNotifier;
+import com.murthinext.ae2pr.logic.repeat.ServerRepeatRegistry;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGrid;

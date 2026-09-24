@@ -15,8 +15,8 @@ import com.murthinext.ae2pr.ae2pr;
 import com.murthinext.ae2pr.client.emitter.MultiLevelEmitterScreen;
 import com.murthinext.ae2pr.client.emitter.MultiThresholdLevelEmitterScreen;
 import com.murthinext.ae2pr.client.requester.RedstoneRequesterScreen;
-import com.murthinext.ae2pr.emitter.MultiLevelEmitterPart;
-import com.murthinext.ae2pr.emitter.MultiThresholdLevelEmitterPart;
+import com.murthinext.ae2pr.block.level_emitter.MultiLevelEmitterPart;
+import com.murthinext.ae2pr.block.level_emitter.MultiThresholdLevelEmitterPart;
 
 /**
  * 客户端初始化：注册部件模型与界面。

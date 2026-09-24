@@ -1,5 +1,7 @@
 package com.murthinext.ae2pr.mixin;
 
+import com.murthinext.ae2pr.mixin.accessor.CPUSelectionListAccessor;
+
 import java.util.ArrayList;
 
 import org.spongepowered.asm.mixin.Mixin;

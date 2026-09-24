@@ -6,8 +6,8 @@
 package com.murthinext.ae2pr.client.requester.widgets;
 
 import appeng.client.gui.widgets.ITooltip;
-import com.murthinext.ae2pr.requester.RequesterUtils;
-import com.murthinext.ae2pr.requester.status.RequestStatus;
+import com.murthinext.ae2pr.block.redstone_requester.RequesterUtils;
+import com.murthinext.ae2pr.block.redstone_requester.status.RequestStatus;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-import static com.murthinext.ae2pr.requester.RequesterUtils.f;
+import static com.murthinext.ae2pr.block.redstone_requester.RequesterUtils.f;
 
 public class StatusDisplay extends AbstractWidget implements ITooltip {
 
