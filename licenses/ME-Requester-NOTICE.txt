@@ -1,0 +1,26 @@
+ME Requester 代码沿用说明
+=========================
+
+本模组中的“ME 红石请求器”（redstone_requester）相关代码在结构上沿用了 ME Requester
+项目（https://github.com/AlmostReliable/merequester）的源代码，该项目以
+GNU Lesser General Public License v3.0（LGPL-3.0）授权发布。
+
+- 原始项目：AlmostReliable/merequester
+- 原始分支：1.20.1-forge
+- 原始提交：411e55d25c434352eae45468097db940517d00a8
+- 许可证全文：见本目录下的 LGPL-3.0.txt
+
+沿用范围（均位于本模组源码中，包名已调整为 com.murthinext.ae2pr）：
+- requester/ 与 client/requester/ 下的请求器数据模型、菜单、界面与控件
+- requester/network/ 下的网络包结构
+- mixin/ 下的 EditBoxMixin、SlotMixin、WidgetContainerMixin
+- compat/merequester/ 下的兼容 mixin（在编译期仅以 compileOnly 方式引用 ME Requester 类，
+  运行期仅当安装 ME Requester 时通过 mixin 插件启用）
+- assets/ae2pr/textures/gui/ 下的 redstone_requester.png、state_box.png、submit_button.png
+
+上述文件/资源在原有基础上做了如下修改：
+- 包名、类名与工具类替换为本模组的命名；
+- 移除原项目的“持续补足库存”状态机，改为“红石上升沿一次下单”语义；
+- 新增可配置的可标记物品数量、红石触发与其它适配。
+
+根据 LGPL-3.0 的要求，本说明与许可证全文随源码一同提供。

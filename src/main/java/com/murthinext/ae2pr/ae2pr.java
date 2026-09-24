@@ -15,7 +15,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 
 /**
- * AE2 Programmable Requests：为 AE2 手动合成请求增加"重复下单"能力。
+ * AE2 Programmable Requests
  */
 @Mod(ae2pr.MODID)
 public class ae2pr {
@@ -26,11 +26,14 @@ public class ae2pr {
     public ae2pr() {
         var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
+        ModBlocks.BLOCKS.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         ModNetwork.register();
+        com.murthinext.ae2pr.requester.network.RequesterNetwork.init();
         // 通用（VCPU）重复订单：由服务端 tick 驱动，状态包钩子负责轮次推进
         MinecraftForge.EVENT_BUS.addListener(GenericRepeatOrders::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(GenericRepeatOrders::onServerStopped);
@@ -54,6 +57,13 @@ public class ae2pr {
             var thresholdEmitterItem = ModItems.MULTI_THRESHOLD_LEVEL_EMITTER.get();
             Upgrades.add(AEItems.FUZZY_CARD, thresholdEmitterItem, 1);
             Upgrades.add(AEItems.CRAFTING_CARD, thresholdEmitterItem, 1);
+
+            // ME 红石请求器：绑定方块实体类型并登记代表物品
+            var requesterType = ModBlockEntities.REDSTONE_REQUESTER.get();
+            ModBlocks.REDSTONE_REQUESTER.get().setBlockEntity(
+                    com.murthinext.ae2pr.requester.RedstoneRequesterBlockEntity.class, requesterType, null, null);
+            appeng.blockentity.AEBaseBlockEntity.registerBlockEntityItem(requesterType,
+                    ModItems.REDSTONE_REQUESTER.get());
         });
     }
 }

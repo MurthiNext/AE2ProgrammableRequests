@@ -3,19 +3,25 @@ package com.murthinext.ae2pr.client.emitter;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.gui.Icon;
 import appeng.client.gui.widgets.IconButton;
 
+import com.murthinext.ae2pr.ae2pr;
 import com.murthinext.ae2pr.emitter.CombineMode;
 
 /**
- * 左侧工具栏的 AND/OR 组合模式切换按钮（占位图标：工具栏底图上绘制文字）。
+ * 左侧工具栏的 AND/OR 组合模式切换按钮。
  */
 public class CombineModeButton extends IconButton {
+
+    private static final ResourceLocation AND_ICON = new ResourceLocation(ae2pr.MODID,
+            "textures/guis/combine_and.png");
+    private static final ResourceLocation OR_ICON = new ResourceLocation(ae2pr.MODID,
+            "textures/guis/combine_or.png");
 
     private final Consumer<CombineMode> onToggle;
     private CombineMode mode = CombineMode.OR;
@@ -52,16 +58,14 @@ public class CombineModeButton extends IconButton {
                 .opacity(this.active ? 1f : 0.5f)
                 .blit(guiGraphics);
 
-        var font = Minecraft.getInstance().font;
-        var label = this.mode == CombineMode.AND ? "AND" : "OR";
-
-        var pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.translate(getX(), getY(), 0);
-        pose.scale(0.5f, 0.5f, 1f);
-        int textWidth = font.width(label);
-        guiGraphics.drawString(font, label, (32 - textWidth) / 2, 12, 0xFFFFFF, true);
-        pose.popPose();
+        var icon = this.mode == CombineMode.AND ? AND_ICON : OR_ICON;
+        if (!this.active) {
+            guiGraphics.setColor(1f, 1f, 1f, 0.5f);
+        }
+        guiGraphics.blit(icon, getX(), getY(), 0, 0, 16, 16, 16, 16);
+        if (!this.active) {
+            guiGraphics.setColor(1f, 1f, 1f, 1f);
+        }
     }
 
     @Override

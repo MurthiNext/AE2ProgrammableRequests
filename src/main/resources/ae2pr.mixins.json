@@ -21,8 +21,10 @@
     "CraftAmountScreenMixin",
     "CraftConfirmScreenMixin",
     "MEStorageScreenMixin",
-    "MEStorageScreenGuideMixin",
-    "PendingCraftingJobsMixin"
+    "PendingCraftingJobsMixin",
+    "EditBoxMixin",
+    "SlotMixin",
+    "WidgetContainerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -51,8 +52,7 @@ import com.murthinext.ae2pr.filter.FilterCellItem;
  * <p>
  * 当监控数量达到<b>上限</b>时开启红石信号，低于<b>下限</b>时关闭；介于两者之间保持原状态。
  * <p>
- * 与通式标准发信器相同，配置槽可与过滤元件共用：插入过滤元件后以其配置的键为触发项，
- * 逐项取值并按 AND/OR 组合（AND 取最小值、OR 取最大值）后再套用锁存逻辑。
+ * 与通式标准发信器相同，配置槽可与过滤元件共用：插入过滤元件后以其配置的键为触发项。
  */
 public class MultiThresholdLevelEmitterPart extends AbstractLevelEmitterPart
         implements IConfigInvHost, ICraftingProvider, InternalInventoryHost {
@@ -91,6 +91,8 @@ public class MultiThresholdLevelEmitterPart extends AbstractLevelEmitterPart
     private long currentValue;
     /** 下限阈值；上限使用 {@link #getReportingValue()}。 */
     private long lowerThreshold;
+    /** 锁存器内部状态（不受红石模式反转影响，用于在上下限之间保持）。 */
+    private boolean latchOn;
 
     private final IStorageWatcherNode stackWatcherNode = new IStorageWatcherNode() {
         @Override
@@ -276,14 +278,15 @@ public class MultiThresholdLevelEmitterPart extends AbstractLevelEmitterPart
             return getDirectOutput();
         }
 
-        // 复位-置位锁存：达到上限开启，低于下限关闭，否则保持原状态
+        // 复位-置位锁存：达到上限置位，低于下限复位，介于两者之间保持内部状态
         if (this.currentValue >= getReportingValue()) {
-            return true;
+            this.latchOn = true;
+        } else if (this.currentValue < this.lowerThreshold) {
+            this.latchOn = false;
         }
-        if (this.currentValue < this.lowerThreshold) {
-            return false;
-        }
-        return this.isProvidingWeakPower() > 0;
+        // 红石模式：LOW_SIGNAL 时反转输出（默认 HIGH_SIGNAL 不反转）
+        boolean invert = getConfigManager().getSetting(Settings.REDSTONE_EMITTER) == RedstoneMode.LOW_SIGNAL;
+        return invert ? !this.latchOn : this.latchOn;
     }
 
     @Override
@@ -446,6 +449,7 @@ public class MultiThresholdLevelEmitterPart extends AbstractLevelEmitterPart
         config.readFromChildTag(data, "config");
         filterCell.readFromNBT(data, "filterCell");
         this.lowerThreshold = data.getLong("lowerThreshold");
+        this.latchOn = data.getBoolean("latchOn");
     }
 
     @Override
@@ -454,6 +458,7 @@ public class MultiThresholdLevelEmitterPart extends AbstractLevelEmitterPart
         config.writeToChildTag(data, "config");
         filterCell.writeToNBT(data, "filterCell");
         data.putLong("lowerThreshold", this.lowerThreshold);
+        data.putBoolean("latchOn", this.latchOn);
     }
 
     @Override

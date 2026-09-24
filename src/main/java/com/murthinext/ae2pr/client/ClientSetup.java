@@ -14,6 +14,7 @@ import com.murthinext.ae2pr.ModMenus;
 import com.murthinext.ae2pr.ae2pr;
 import com.murthinext.ae2pr.client.emitter.MultiLevelEmitterScreen;
 import com.murthinext.ae2pr.client.emitter.MultiThresholdLevelEmitterScreen;
+import com.murthinext.ae2pr.client.requester.RedstoneRequesterScreen;
 import com.murthinext.ae2pr.emitter.MultiLevelEmitterPart;
 import com.murthinext.ae2pr.emitter.MultiThresholdLevelEmitterPart;
 
@@ -40,5 +41,8 @@ public final class ClientSetup {
         InitScreens.register(ModMenus.MULTI_THRESHOLD_LEVEL_EMITTER.get(),
                 MultiThresholdLevelEmitterScreen::new,
                 "/screens/multi_threshold_level_emitter.json");
+        InitScreens.register(ModMenus.REDSTONE_REQUESTER.get(),
+                RedstoneRequesterScreen::new,
+                "/screens/redstone_requester.json");
     }
 }

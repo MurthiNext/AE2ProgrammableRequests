@@ -3,7 +3,7 @@ navigation:
   title: 过滤元件
   parent: index.md
   icon: filter_cell
-  position: 2
+  position: 1
 item_ids:
   - ae2pr:filter_cell
 ---

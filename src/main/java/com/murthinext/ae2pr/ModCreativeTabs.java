@@ -21,11 +21,12 @@ public final class ModCreativeTabs {
     public static final RegistryObject<CreativeModeTab> MAIN = CREATIVE_TABS.register("main",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.ae2pr"))
-                    .icon(() -> new ItemStack(ModItems.MULTI_LEVEL_EMITTER.get()))
+                    .icon(() -> new ItemStack(ModItems.FILTER_CELL.get()))
                     .displayItems((params, output) -> {
                         output.accept(ModItems.FILTER_CELL.get());
                         output.accept(ModItems.MULTI_LEVEL_EMITTER.get());
                         output.accept(ModItems.MULTI_THRESHOLD_LEVEL_EMITTER.get());
+                        output.accept(ModItems.REDSTONE_REQUESTER.get());
                     })
                     .build());
 }

@@ -13,9 +13,8 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.client.guidebook.PageAnchor;
 import appeng.core.definitions.AEItems;
-
-import guideme.PageAnchor;
 
 import com.murthinext.ae2pr.client.ModGuide;
 import com.murthinext.ae2pr.emitter.MultiLevelEmitterMenu;
@@ -81,6 +80,12 @@ public class MultiLevelEmitterScreen extends UpgradeableScreen<MultiLevelEmitter
     /** 复用 AE2 界面自带的帮助按钮，改为打开本模组指南。 */
     @Override
     protected void openHelp() {
-        ModGuide.open(PageAnchor.page(ModGuide.EMITTER_PAGE));
+        ModGuide.openAt(ModGuide.EMITTER_PAGE);
+    }
+
+    /** 返回非空即可让 AE2 的帮助按钮显示（实际点击由 {@link #openHelp()} 处理）。 */
+    @Override
+    protected PageAnchor getHelpTopic() {
+        return new PageAnchor(ModGuide.EMITTER_PAGE, null);
     }
 }

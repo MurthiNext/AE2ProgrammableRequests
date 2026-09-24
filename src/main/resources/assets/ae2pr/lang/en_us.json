@@ -24,5 +24,26 @@
   "gui.ae2pr.multi_level_emitter.combine.or": "Match: Any (OR)",
   "itemGroup.ae2pr": "AE2 Programmable Requests",
 
-  "gui.ae2pr.open_guide": "Open mod guide"
+  "block.ae2pr.redstone_requester": "ME Redstone Requester",
+  "gui.ae2pr.redstone_requester": "ME Redstone Requester",
+  "gui.ae2pr.no_requesters": "No requesters found!",
+  "tooltip.ae2pr.redstone_requester_desc": "Submits a crafting request for every marked item when it receives a redstone signal. The number of markable items is configurable. Does not keep items in stock.",
+  "tooltip.ae2pr.shift_for_more": "%s for more",
+  "tooltip.ae2pr.enter_to_submit": "%s to submit",
+  "tooltip.ae2pr.whole_number": "Must be whole number!",
+  "tooltip.ae2pr.locked": "Locked! Request in progress.",
+  "tooltip.ae2pr.toggle": "Toggle Request",
+  "tooltip.ae2pr.amount": "Amount to Craft",
+  "tooltip.ae2pr.batch": "Repeat Count (uses repeat ordering)",
+  "tooltip.ae2pr.submit": "Submit Changes",
+  "tooltip.ae2pr.status": "Request Status",
+  "tooltip.ae2pr.idle": "Idling",
+  "tooltip.ae2pr.idle_desc": "The requester is idling until it receives a redstone signal.",
+  "tooltip.ae2pr.missing": "Missing Ingredients",
+  "tooltip.ae2pr.missing_desc": "The system is missing ingredients to craft the requested item or fluid.",
+  "tooltip.ae2pr.link": "Crafting",
+  "tooltip.ae2pr.link_desc": "The system is currently crafting the requested item or fluid.",
+  "tooltip.ae2pr.export": "Exporting",
+  "tooltip.ae2pr.export_desc": "The requester is trying to export the crafting results to the system.",
+  "tooltip.ae2pr.drag_and_drop_desc": "Drag and drop to set the marked item; middle-click to set the amount."
 }
