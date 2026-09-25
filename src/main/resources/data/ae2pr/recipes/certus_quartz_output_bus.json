@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "CMC",
+    " C "
+  ],
+  "key": {
+    "C": {
+      "item": "ae2pr:crystal_machine_casing"
+    },
+    "M": {
+      "item": "ae2:export_bus"
+    }
+  },
+  "result": {
+    "item": "ae2pr:certus_quartz_output_bus",
+    "count": 1
+  }
+}

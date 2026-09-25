@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CPC",
+    "FUF",
+    "CPC"
+  ],
+  "key": {
+    "C": {
+      "item": "ae2pr:crystal_assembly_line_unit"
+    },
+    "P": {
+      "item": "ae2:calculation_processor"
+    },
+    "F": {
+      "item": "ae2:fluix_crystal"
+    },
+    "U": {
+      "item": "ae2:engineering_processor"
+    }
+  },
+  "result": {
+    "item": "ae2pr:crystal_assembly_line",
+    "count": 1
+  }
+}

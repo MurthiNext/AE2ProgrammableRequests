@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CSC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "ae2:certus_quartz_crystal"
+    },
+    "S": {
+      "item": "ae2:sky_stone_block"
+    }
+  },
+  "result": {
+    "item": "ae2pr:crystal_machine_casing",
+    "count": 4
+  }
+}

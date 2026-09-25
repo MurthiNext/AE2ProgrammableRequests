@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "QGQ",
+    "GFG",
+    "QGQ"
+  ],
+  "key": {
+    "Q": {
+      "item": "ae2:certus_quartz_crystal"
+    },
+    "G": {
+      "item": "ae2:quartz_glass"
+    },
+    "F": {
+      "item": "ae2:fluix_crystal"
+    }
+  },
+  "result": {
+    "item": "ae2pr:crystal_laminated_glass",
+    "count": 4
+  }
+}

@@ -1,5 +1,7 @@
 package com.murthinext.ae2pr.client;
 
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -10,8 +12,10 @@ import appeng.api.parts.PartModels;
 import appeng.init.client.InitScreens;
 import appeng.items.parts.PartModelsHelper;
 
+import com.murthinext.ae2pr.ModBlocks;
 import com.murthinext.ae2pr.ModMenus;
 import com.murthinext.ae2pr.ae2pr;
+import com.murthinext.ae2pr.client.ctm.CtmBakedModel;
 import com.murthinext.ae2pr.client.emitter.MultiLevelEmitterScreen;
 import com.murthinext.ae2pr.client.emitter.MultiThresholdLevelEmitterScreen;
 import com.murthinext.ae2pr.client.requester.RedstoneRequesterScreen;
@@ -44,5 +48,30 @@ public final class ClientSetup {
         InitScreens.register(ModMenus.REDSTONE_REQUESTER.get(),
                 RedstoneRequesterScreen::new,
                 "/screens/redstone_requester.json");
+    }
+
+    /** 为 ae2pr 的方块模型套上连接纹理包装（按世界邻居重写 UV）。 */
+    @SubscribeEvent
+    public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
+        for (var entry : event.getModels().entrySet()) {
+            if (entry.getKey() instanceof net.minecraft.client.resources.model.ModelResourceLocation mrl
+                    && ae2pr.MODID.equals(mrl.getNamespace())
+                    && !(entry.getValue() instanceof CtmBakedModel)) {
+                entry.setValue(new CtmBakedModel(entry.getValue()));
+            }
+        }
+    }
+
+    /** 水晶装配线：透明/发光覆盖层需要 cutout 渲染类型。 */
+    @SubscribeEvent
+    public static void registerRenderLayers(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_LAMINATED_GLASS.get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_ASSEMBLY_LINE.get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_ASSEMBLY_LINE_UNIT.get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get(), RenderType.cutoutMipped());
+        });
     }
 }

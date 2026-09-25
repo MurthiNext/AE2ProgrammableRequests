@@ -1,0 +1,20 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "ae2pr:block/crystal/machine_casing_ctm"
+    },
+    {
+      "type": "single",
+      "resource": "ae2pr:block/crystal/assembly_line_grating_ctm"
+    },
+    {
+      "type": "single",
+      "resource": "ae2pr:block/crystal/laminated_glass_ctm"
+    },
+    {
+      "type": "single",
+      "resource": "ae2pr:block/certus/casing_ctm"
+    }
+  ]
+}

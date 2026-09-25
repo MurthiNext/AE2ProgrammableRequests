@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "ae2pr:crystal_machine_casing",
+    "ae2pr:crystal_assembly_line",
+    "ae2pr:crystal_assembly_line_casing",
+    "ae2pr:crystal_assembly_line_unit",
+    "ae2pr:crystal_assembly_line_grating",
+    "ae2pr:crystal_laminated_glass",
+    "ae2pr:certus_quartz_input_bus",
+    "ae2pr:certus_quartz_input_hatch",
+    "ae2pr:certus_quartz_output_bus"
+  ]
+}

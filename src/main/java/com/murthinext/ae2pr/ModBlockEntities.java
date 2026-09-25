@@ -5,6 +5,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import com.murthinext.ae2pr.block.assembly_line.AssemblyLineControllerBlockEntity;
 import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlockEntity;
 
 /**
@@ -24,4 +25,10 @@ public final class ModBlockEntities {
                     (pos, state) -> new RedstoneRequesterBlockEntity(
                             ModBlockEntities.REDSTONE_REQUESTER.get(), pos, state),
                     ModBlocks.REDSTONE_REQUESTER.get()).build(null));
+
+    /** 水晶装配线控制器 */
+    public static final RegistryObject<BlockEntityType<AssemblyLineControllerBlockEntity>> CRYSTAL_ASSEMBLY_LINE = BLOCK_ENTITIES
+            .register("crystal_assembly_line", () -> BlockEntityType.Builder.of(
+                    AssemblyLineControllerBlockEntity::new,
+                    ModBlocks.CRYSTAL_ASSEMBLY_LINE.get()).build(null));
 }

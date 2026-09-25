@@ -21,9 +21,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * 客户端失败标记：记录失败物品并渲染红闪/常亮背景，以及弹出失败 Toast。
- *
- * 闪烁语义：失败后首次显示该物品格子时开始闪烁 3 次（250ms 亮/250ms 灭），随后保持红色；
- * 重新打开终端（非从子界面返回）时清除已开始闪烁的标记，即使闪烁中途关闭终端也会被清除。
  */
 @OnlyIn(Dist.CLIENT)
 public final class ClientRepeatOrderFailures {

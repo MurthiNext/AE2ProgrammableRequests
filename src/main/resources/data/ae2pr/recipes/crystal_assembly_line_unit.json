@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "CUC",
+    " C "
+  ],
+  "key": {
+    "C": {
+      "item": "ae2pr:crystal_assembly_line_casing"
+    },
+    "U": {
+      "item": "ae2:fluix_crystal"
+    }
+  },
+  "result": {
+    "item": "ae2pr:crystal_assembly_line_unit",
+    "count": 1
+  }
+}

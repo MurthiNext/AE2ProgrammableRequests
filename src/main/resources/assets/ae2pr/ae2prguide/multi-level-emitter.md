@@ -10,17 +10,9 @@ item_ids:
 
 # ME 通式标准发信器
 
-<ItemImage id="multi_level_emitter" scale="2" />
+<ItemImage id="multi_level_emitter" scale="3" />
 
 <ItemLink id="multi_level_emitter" />在 AE2 标准发信器的基础上，使配置槽兼容<ItemLink id="filter_cell" />，用于同时监控多个触发项。
-
-## 使用方式
-
-1. 与普通发信器一样安装到线缆上，右键打开界面。
-2. 界面左侧工具栏：红石模式、合成卡模式、模糊模式，以及 **AND/OR** 组合模式切换。
-3. 配置槽：
-   - 未放入过滤元件时：按原版方式"标记"单个配置项，配合阈值与红石模式输出；
-   - 放入过滤元件时：以过滤元件中配置的所有项为触发项。
 
 ## 判定规则
 
