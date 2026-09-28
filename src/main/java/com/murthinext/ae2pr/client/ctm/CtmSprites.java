@@ -31,9 +31,9 @@ public final class CtmSprites {
 
     static {
         // 与 CtmConfig 的登记保持一致：控制器 / 装配线外壳 / 控制外壳不启用连接纹理
-        register("block/crystal/machine_casing");
+        register("block/crystal/crystal_reinforced_composite_machine_casing");
         register("block/crystal/assembly_line_grating");
-        register("block/crystal/laminated_glass");
+        register("block/crystal/crystal_glass");
         register("block/certus/casing");
     }
 

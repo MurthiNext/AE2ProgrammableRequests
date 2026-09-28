@@ -1,9 +1,10 @@
 {
   "parent": "block/block",
   "textures": {
-    "bottom": "ae2pr:block/crystal/machine_casing",
-    "top": "ae2pr:block/crystal/machine_casing",
-    "side": "ae2pr:block/crystal/machine_casing",
+    "bottom": "ae2pr:block/crystal/crystal_reinforced_composite_machine_casing",
+    "top": "ae2pr:block/crystal/crystal_reinforced_composite_machine_casing",
+    "side": "ae2pr:block/crystal/crystal_reinforced_composite_machine_casing",
+    "particle": "#side",
     "overlay_pipe": "ae2pr:block/overlay/pipe",
     "overlay": "ae2pr:block/overlay/item_hatch_input",
     "overlay_emissive": "ae2pr:block/overlay/pipe_in_emissive"

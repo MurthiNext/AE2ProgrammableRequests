@@ -42,9 +42,10 @@ public final class ModItems {
 
     // ---------------------------------------------------------------- 水晶装配线
 
-    /** 水晶机壳 */
-    public static final RegistryObject<BlockItem> CRYSTAL_MACHINE_CASING = ITEMS.register("crystal_machine_casing",
-            () -> new BlockItem(ModBlocks.CRYSTAL_MACHINE_CASING.get(), new Item.Properties()));
+    /** 水晶强化复合机械方块 */
+    public static final RegistryObject<BlockItem> CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING = ITEMS.register(
+            "crystal_reinforced_composite_machine_casing",
+            () -> new BlockItem(ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get(), new Item.Properties()));
 
     /** 水晶装配线（控制器） */
     public static final RegistryObject<BlockItem> CRYSTAL_ASSEMBLY_LINE = ITEMS.register("crystal_assembly_line",
@@ -65,9 +66,9 @@ public final class ModItems {
             "crystal_assembly_line_grating",
             () -> new BlockItem(ModBlocks.CRYSTAL_ASSEMBLY_LINE_GRATING.get(), new Item.Properties()));
 
-    /** 水晶夹层玻璃 */
-    public static final RegistryObject<BlockItem> CRYSTAL_LAMINATED_GLASS = ITEMS.register("crystal_laminated_glass",
-            () -> new BlockItem(ModBlocks.CRYSTAL_LAMINATED_GLASS.get(), new Item.Properties()));
+    /** 水晶玻璃 */
+    public static final RegistryObject<BlockItem> CRYSTAL_GLASS = ITEMS.register("crystal_glass",
+            () -> new BlockItem(ModBlocks.CRYSTAL_GLASS.get(), new Item.Properties()));
 
     /** 赛特斯石英输入总线 */
     public static final RegistryObject<BlockItem> CERTUS_QUARTZ_INPUT_BUS = ITEMS.register("certus_quartz_input_bus",

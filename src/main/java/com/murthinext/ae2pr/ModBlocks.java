@@ -29,9 +29,9 @@ public final class ModBlocks {
 
     // ---------------------------------------------------------------- 水晶装配线
 
-    /** 水晶机壳 */
-    public static final RegistryObject<Block> CRYSTAL_MACHINE_CASING = BLOCKS.register("crystal_machine_casing",
-            () -> new Block(casingProperties()));
+    /** 水晶强化复合机械方块 */
+    public static final RegistryObject<Block> CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING = BLOCKS.register(
+            "crystal_reinforced_composite_machine_casing", () -> new Block(casingProperties()));
 
     /** 水晶装配线 */
     public static final RegistryObject<CrystalAssemblyLineBlock> CRYSTAL_ASSEMBLY_LINE = BLOCKS.register(
@@ -49,9 +49,9 @@ public final class ModBlocks {
     public static final RegistryObject<Block> CRYSTAL_ASSEMBLY_LINE_GRATING = BLOCKS.register(
             "crystal_assembly_line_grating", () -> new Block(casingProperties()));
 
-    /** 水晶夹层玻璃 */
-    public static final RegistryObject<GlassBlock> CRYSTAL_LAMINATED_GLASS = BLOCKS.register(
-            "crystal_laminated_glass",
+    /** 水晶玻璃 */
+    public static final RegistryObject<GlassBlock> CRYSTAL_GLASS = BLOCKS.register(
+            "crystal_glass",
             () -> new GlassBlock(Block.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_BLUE)
                     .strength(0.8F)

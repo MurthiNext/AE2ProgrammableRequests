@@ -201,14 +201,14 @@ public final class AssemblyLineStructure {
         return switch (ch) {
             case 'S' -> state.is(ModBlocks.CRYSTAL_ASSEMBLY_LINE.get());
             // 机壳位允许用输入仓替代（对应 GT 的“带流体仓外壳”）
-            case 'F' -> state.is(ModBlocks.CRYSTAL_MACHINE_CASING.get())
+            case 'F' -> state.is(ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get())
                     || state.is(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get());
-            case 'Y' -> state.is(ModBlocks.CRYSTAL_MACHINE_CASING.get());
+            case 'Y' -> state.is(ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get());
             case 'I' -> state.is(ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get());
             case 'O' -> state.is(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get());
             case 'A' -> state.is(ModBlocks.CRYSTAL_ASSEMBLY_LINE_CASING.get());
             case 'G', 'D' -> state.is(ModBlocks.CRYSTAL_ASSEMBLY_LINE_GRATING.get());
-            case 'R' -> state.is(ModBlocks.CRYSTAL_LAMINATED_GLASS.get());
+            case 'R' -> state.is(ModBlocks.CRYSTAL_GLASS.get());
             case 'T' -> state.is(ModBlocks.CRYSTAL_ASSEMBLY_LINE_UNIT.get());
             default -> false;
         };

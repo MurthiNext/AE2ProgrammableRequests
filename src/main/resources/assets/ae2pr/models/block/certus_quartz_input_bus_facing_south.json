@@ -4,6 +4,7 @@
     "bottom": "ae2pr:block/certus/casing",
     "top": "ae2pr:block/certus/casing",
     "side": "ae2pr:block/certus/casing",
+    "particle": "#side",
     "overlay_pipe": "ae2pr:block/overlay/pipe",
     "overlay": "ae2pr:block/overlay/item_hatch_input",
     "overlay_emissive": "ae2pr:block/overlay/pipe_in_emissive"

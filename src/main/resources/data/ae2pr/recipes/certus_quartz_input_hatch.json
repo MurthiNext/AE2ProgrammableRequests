@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "ae2pr:crystal_machine_casing"
+      "item": "ae2pr:crystal_reinforced_composite_machine_casing"
     },
     {
       "item": "ae2:import_bus"

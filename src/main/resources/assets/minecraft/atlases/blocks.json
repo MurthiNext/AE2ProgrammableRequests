@@ -2,7 +2,7 @@
   "sources": [
     {
       "type": "single",
-      "resource": "ae2pr:block/crystal/machine_casing_ctm"
+      "resource": "ae2pr:block/crystal/crystal_reinforced_composite_machine_casing_ctm"
     },
     {
       "type": "single",
@@ -10,7 +10,7 @@
     },
     {
       "type": "single",
-      "resource": "ae2pr:block/crystal/laminated_glass_ctm"
+      "resource": "ae2pr:block/crystal/crystal_glass_ctm"
     },
     {
       "type": "single",

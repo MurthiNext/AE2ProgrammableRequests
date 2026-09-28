@@ -1,7 +1,7 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "ae2pr:block/crystal/laminated_glass"
+    "all": "ae2pr:block/crystal/crystal_glass"
   },
   "ambientocclusion": false
 }

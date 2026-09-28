@@ -15,7 +15,7 @@ import com.murthinext.ae2pr.ModBlocks;
  * <p>
  * 规则：默认<strong>只有同种方块才互相连接</strong>（跨方块种类不连接），
  * 且方块必须在此登记才启用连接纹理；未登记的方块（控制器、装配线外壳、控制外壳）完全不参与连接。
- * 例外：<strong>水晶机壳 / 赛特斯石英输入总线 / 输入仓 / 输出总线</strong>归为同一"机身族"，
+ * 例外：<strong>水晶强化复合机械方块 / 赛特斯石英输入总线 / 输入仓 / 输出总线</strong>归为同一"机身族"，
  * 彼此相邻（无论是否成型）都会连接，因为它们最终使用同一张机壳贴图。
  */
 public final class CtmConfig {
@@ -63,15 +63,15 @@ public final class CtmConfig {
     /**
      * 连接族标识：同一标识之间才连接。
      * <ul>
-     * <li>{@code 1} 机身族：水晶机壳 + 三种仓室（未成型用赛特斯机壳贴图，也与机壳相连）</li>
+     * <li>{@code 1} 机身族：水晶强化复合机械方块 + 三种仓室（未成型用赛特斯机壳贴图，也与机壳相连）</li>
      * <li>{@code 2} 装配线格栅（同种相连）</li>
-     * <li>{@code 3} 夹层玻璃（同种相连）</li>
+     * <li>{@code 3} 水晶玻璃（同种相连）</li>
      * <li>{@code 0} 不参与连接纹理（控制器、装配线外壳、控制外壳）</li>
      * </ul>
      */
     private static int familyKey(BlockState state) {
         Block block = state.getBlock();
-        if (block == ModBlocks.CRYSTAL_MACHINE_CASING.get()
+        if (block == ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get()
                 || block == ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get()
                 || block == ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get()
                 || block == ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get()) {
@@ -80,7 +80,7 @@ public final class CtmConfig {
         if (block == ModBlocks.CRYSTAL_ASSEMBLY_LINE_GRATING.get()) {
             return 2;
         }
-        if (block == ModBlocks.CRYSTAL_LAMINATED_GLASS.get()) {
+        if (block == ModBlocks.CRYSTAL_GLASS.get()) {
             return 3;
         }
         return 0;
