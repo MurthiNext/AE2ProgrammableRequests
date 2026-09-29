@@ -1,6 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
+    "particle": "#all",
     "all": "ae2pr:block/crystal/controller_casing",
     "overlay_front": "ae2pr:block/assembly_line/front_active",
     "overlay_front_emissive": "ae2pr:block/assembly_line/front_active_emissive"

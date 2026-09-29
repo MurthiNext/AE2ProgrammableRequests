@@ -1,20 +1,16 @@
 package com.murthinext.ae2pr;
 
-import com.murthinext.ae2pr.block.assembly_line.AssemblyLineControllerBlockEntity;
-import com.murthinext.ae2pr.block.assembly_line.AssemblyLineStructure;
-import com.murthinext.ae2pr.network.AssemblyLineStatusPacket;
-import com.murthinext.ae2pr.network.AssemblyLineStatusRequestPacket;
+import com.murthinext.ae2pr.network.BusSlotClickPacket;
+import com.murthinext.ae2pr.network.MachinePartFluidPacket;
+import com.murthinext.ae2pr.network.MachinePartStackPacket;
 import com.murthinext.ae2pr.network.RepeatOrderConfirmRoundsPacket;
 import com.murthinext.ae2pr.network.RepeatOrderFailedPacket;
 import com.murthinext.ae2pr.network.RepeatOrderFinishedPacket;
 import com.murthinext.ae2pr.network.RepeatOrderRoundPacket;
 import com.murthinext.ae2pr.network.RepeatOrderStatusPacket;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
@@ -68,29 +64,22 @@ public final class ModNetwork {
                 RepeatOrderConfirmRoundsPacket::handle);
 
         CHANNEL.registerMessage(nextMessageId++,
-                AssemblyLineStatusPacket.class,
-                AssemblyLineStatusPacket::encode,
-                AssemblyLineStatusPacket::decode,
-                AssemblyLineStatusPacket::handle);
+                MachinePartFluidPacket.class,
+                MachinePartFluidPacket::encode,
+                MachinePartFluidPacket::decode,
+                MachinePartFluidPacket::handle);
 
         CHANNEL.registerMessage(nextMessageId++,
-                AssemblyLineStatusRequestPacket.class,
-                AssemblyLineStatusRequestPacket::encode,
-                AssemblyLineStatusRequestPacket::decode,
-                AssemblyLineStatusRequestPacket::handle);
-    }
+                MachinePartStackPacket.class,
+                MachinePartStackPacket::encode,
+                MachinePartStackPacket::decode,
+                MachinePartStackPacket::handle);
 
-    /** 下发一次水晶装配线的成型状态（用于打开/刷新状态界面）。 */
-    public static void sendAssemblyLineStatus(ServerPlayer player, BlockPos pos,
-            AssemblyLineControllerBlockEntity controller) {
-        Block found = controller.getLastFound();
-        ResourceLocation foundKey = found != null ? ForgeRegistries.BLOCKS.getKey(found) : null;
-        String foundId = foundKey != null ? foundKey.toString() : "";
-        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
-                new AssemblyLineStatusPacket(pos, controller.isFormed(), controller.getLastSlices(),
-                        AssemblyLineStructure.MIN_SLICES, AssemblyLineStructure.MAX_SLICES,
-                        controller.getLastMismatches(), controller.getLastMismatchPos(),
-                        controller.getLastExpected(), foundId));
+        CHANNEL.registerMessage(nextMessageId++,
+                BusSlotClickPacket.class,
+                BusSlotClickPacket::encode,
+                BusSlotClickPacket::decode,
+                BusSlotClickPacket::handle);
     }
 
     public static void sendToPlayer(ServerPlayer player, RepeatOrderStatusPacket packet) {
@@ -111,5 +100,17 @@ public final class ModNetwork {
 
     public static void sendToPlayer(ServerPlayer player, RepeatOrderConfirmRoundsPacket packet) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, MachinePartFluidPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, MachinePartStackPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToServer(BusSlotClickPacket packet) {
+        CHANNEL.sendToServer(packet);
     }
 }

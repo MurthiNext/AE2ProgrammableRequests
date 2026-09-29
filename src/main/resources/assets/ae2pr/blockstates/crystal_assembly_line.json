@@ -1,27 +1,27 @@
 {
   "variants": {
-    "facing=north,formed=false": {
+    "facing=north,running=false": {
       "model": "ae2pr:block/crystal_assembly_line_facing_north"
     },
-    "facing=north,formed=true": {
+    "facing=north,running=true": {
       "model": "ae2pr:block/crystal_assembly_line_facing_north_active"
     },
-    "facing=east,formed=false": {
+    "facing=east,running=false": {
       "model": "ae2pr:block/crystal_assembly_line_facing_east"
     },
-    "facing=east,formed=true": {
+    "facing=east,running=true": {
       "model": "ae2pr:block/crystal_assembly_line_facing_east_active"
     },
-    "facing=south,formed=false": {
+    "facing=south,running=false": {
       "model": "ae2pr:block/crystal_assembly_line_facing_south"
     },
-    "facing=south,formed=true": {
+    "facing=south,running=true": {
       "model": "ae2pr:block/crystal_assembly_line_facing_south_active"
     },
-    "facing=west,formed=false": {
+    "facing=west,running=false": {
       "model": "ae2pr:block/crystal_assembly_line_facing_west"
     },
-    "facing=west,formed=true": {
+    "facing=west,running=true": {
       "model": "ae2pr:block/crystal_assembly_line_facing_west_active"
     }
   }

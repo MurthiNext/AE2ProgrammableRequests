@@ -5,6 +5,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import com.murthinext.ae2pr.block.assembly_line.AssemblyLineMenu;
+import com.murthinext.ae2pr.block.assembly_line.FluidHatchMenu;
+import com.murthinext.ae2pr.block.assembly_line.ItemBusMenu;
 import com.murthinext.ae2pr.block.level_emitter.MultiLevelEmitterMenu;
 import com.murthinext.ae2pr.block.level_emitter.MultiThresholdLevelEmitterMenu;
 import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterMenu;
@@ -28,4 +31,13 @@ public final class ModMenus {
 
     public static final RegistryObject<MenuType<RedstoneRequesterMenu>> REDSTONE_REQUESTER = MENUS
             .register("redstone_requester", () -> RedstoneRequesterMenu.TYPE);
+
+    public static final RegistryObject<MenuType<AssemblyLineMenu>> CRYSTAL_ASSEMBLY_LINE = MENUS
+            .register("crystal_assembly_line", () -> AssemblyLineMenu.TYPE);
+
+    public static final RegistryObject<MenuType<ItemBusMenu>> CERTUS_QUARTZ_ITEM_BUS = MENUS
+            .register("certus_quartz_item_bus", () -> ItemBusMenu.TYPE);
+
+    public static final RegistryObject<MenuType<FluidHatchMenu>> CERTUS_QUARTZ_INPUT_HATCH = MENUS
+            .register("certus_quartz_input_hatch", () -> FluidHatchMenu.TYPE);
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -32,8 +31,9 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraftforge.network.NetworkHooks;
 
-import com.murthinext.ae2pr.ModNetwork;
 import com.murthinext.ae2pr.ModTags;
 
 /**
@@ -43,6 +43,8 @@ public class CrystalAssemblyLineBlock extends Block implements EntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
+    /** 是否正在运行配方（驱动工作态贴图）；成型但不运行时保持静态贴图。 */
+    public static final BooleanProperty RUNNING = BooleanProperty.create("running");
 
     public CrystalAssemblyLineBlock() {
         super(Properties.of()
@@ -52,19 +54,21 @@ public class CrystalAssemblyLineBlock extends Block implements EntityBlock {
                 .requiresCorrectToolForDrops());
         registerDefaultState(stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(FORMED, false));
+                .setValue(FORMED, false)
+                .setValue(RUNNING, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FORMED);
+        builder.add(FACING, FORMED, RUNNING);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return defaultBlockState()
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
-                .setValue(FORMED, false);
+                .setValue(FORMED, false)
+                .setValue(RUNNING, false);
     }
 
     @Nullable
@@ -94,10 +98,14 @@ public class CrystalAssemblyLineBlock extends Block implements EntityBlock {
         if (stack.is(ModTags.WRENCHES)) {
             return rotate(level, pos, state, player);
         }
-        // 非扳手：打开状态界面（服务端下发状态，客户端打开界面）
+        // 非扳手：打开主机界面（含玩家背包，ESC/E 关闭）
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer
                 && level.getBlockEntity(pos) instanceof AssemblyLineControllerBlockEntity controller) {
-            ModNetwork.sendAssemblyLineStatus(serverPlayer, pos, controller);
+            NetworkHooks.openScreen(serverPlayer,
+                    new SimpleMenuProvider(
+                            (id, inventory, p) -> new AssemblyLineMenu(id, inventory, controller),
+                            Component.translatable("block.ae2pr.crystal_assembly_line")),
+                    buffer -> buffer.writeBlockPos(pos));
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -139,7 +147,9 @@ public class CrystalAssemblyLineBlock extends Block implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
             TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.ae2pr.crystal_assembly_line.desc")
-                .withStyle(ChatFormatting.GRAY));
+        // 单个组件内的换行不会被工具提示拆行（Forge 仅在自动换行时按行切分），这里按行拆成多个组件
+        for (String line : Component.translatable("tooltip.ae2pr.crystal_assembly_line.desc").getString().split("\n")) {
+            tooltip.add(Component.literal(line));
+        }
     }
 }

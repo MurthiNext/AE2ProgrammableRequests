@@ -1,0 +1,170 @@
+package com.murthinext.ae2pr.client.assembly_line;
+
+import java.text.NumberFormat;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+
+import com.murthinext.ae2pr.ModNetwork;
+import com.murthinext.ae2pr.ae2pr;
+import com.murthinext.ae2pr.block.assembly_line.ItemBusBlockEntity;
+import com.murthinext.ae2pr.block.assembly_line.ItemBusMenu;
+import com.murthinext.ae2pr.network.BusSlotClickPacket;
+
+/**
+ * 赛特斯石英输入/输出总线界面：机器区展示单类存储（类型 + 数量）与容量，下半区为玩家背包。
+ * <p>
+ * 存储量可超过原版槽位同步上限，因此存储区不是槽位：物品与数量由同步数据绘制，
+ * 点击通过 {@link BusSlotClickPacket} 交由服务端执行。
+ */
+public class ItemBusScreen extends AbstractContainerScreen<ItemBusMenu> {
+
+    private static final ResourceLocation TEXTURE_INPUT = new ResourceLocation(ae2pr.MODID,
+            "textures/gui/certus_quartz_input_bus.png");
+    private static final ResourceLocation TEXTURE_OUTPUT = new ResourceLocation(ae2pr.MODID,
+            "textures/gui/certus_quartz_output_bus.png");
+
+    /** 存储区物品位（与 GUI 贴图一致） */
+    private static final int STORAGE_X = 80;
+    private static final int STORAGE_Y = 47;
+
+    private static final int TEXT_X = 7;
+    private static final int TITLE_Y = 9;
+    private static final int STORED_Y = 72;
+    private static final int TYPE_Y = 86;
+    private static final int CAPACITY_Y = 100;
+    /** 类型行可用的最大宽度（面板内右侧留 2px） */
+    private static final int TYPE_MAX_WIDTH = 176 - 2 - TEXT_X;
+
+    private static final int COLOR_TITLE = 0x55FFFF;
+    private static final int COLOR_VALUE = 0xACE9FF;
+    private static final int COLOR_TEXT = 0xAAB8C6;
+    private static final int COLOR_GRAY = 0x7A8794;
+
+    private static final NumberFormat NUMBER = NumberFormat.getIntegerInstance();
+
+    public ItemBusScreen(ItemBusMenu menu, Inventory playerInventory, Component title) {
+        super(menu, playerInventory, title);
+        this.imageWidth = 176;
+        this.imageHeight = 200;
+    }
+
+    /** 客户端同步入口：把服务端存储内容写入本地方块实体（仅由同步包调用）。 */
+    public static void applyStackSync(BlockPos pos, ItemStack stack) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level != null && minecraft.level.getBlockEntity(pos) instanceof ItemBusBlockEntity bus) {
+            bus.getStorage().setStackInSlot(0, stack);
+        }
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        this.renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        graphics.blit(menu.isOutputBus() ? TEXTURE_OUTPUT : TEXTURE_INPUT, leftPos, topPos, 0, 0,
+                imageWidth, imageHeight);
+        renderStoredItem(graphics);
+        if (isHoveringStorage(mouseX, mouseY)) {
+            // 与原生槽位一致：白色高亮叠加在物品之上
+            AbstractContainerScreen.renderSlotHighlight(graphics, leftPos + STORAGE_X, topPos + STORAGE_Y, 0,
+                    0x80FFFFFF);
+        }
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        ItemStack stored = menu.getStoredStack();
+        graphics.drawString(font, title, TEXT_X, TITLE_Y, COLOR_TITLE, false);
+        graphics.drawString(font, storedText(stored), TEXT_X, STORED_Y,
+                stored.isEmpty() ? COLOR_GRAY : COLOR_VALUE, false);
+        drawType(graphics, stored.isEmpty() ? null : stored.getHoverName());
+        graphics.drawString(font, Component.translatable("gui.ae2pr.machine_part.capacity.items",
+                NUMBER.format(ItemBusBlockEntity.CAPACITY), NUMBER.format(ItemBusBlockEntity.TYPE_CAPACITY)),
+                TEXT_X, CAPACITY_Y, COLOR_GRAY, false);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if ((button == 0 || button == 1) && isHoveringStorage((int) mouseX, (int) mouseY)) {
+            ModNetwork.sendToServer(new BusSlotClickPacket(menu.getBlockPos(), button, hasShiftDown()));
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    /** 存储区悬停：按槽位惯例显示物品 tooltip。 */
+    @Override
+    protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (isHoveringStorage(mouseX, mouseY)) {
+            ItemStack stored = menu.getStoredStack();
+            if (!stored.isEmpty()) {
+                graphics.renderTooltip(font, Screen.getTooltipFromItem(Minecraft.getInstance(), stored),
+                        stored.getTooltipImage(), stored, mouseX, mouseY);
+            }
+            return;
+        }
+        super.renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    /** 绘制存储物品与数量（数量超宽时缩小，贴物品格右下角）。 */
+    private void renderStoredItem(GuiGraphics graphics) {
+        ItemStack stored = menu.getStoredStack();
+        if (stored.isEmpty()) {
+            return;
+        }
+        int x = leftPos + STORAGE_X;
+        int y = topPos + STORAGE_Y;
+        graphics.renderItem(stored, x, y);
+        String text = String.valueOf(stored.getCount());
+        float scale = Math.min(1.0F, 16.0F / font.width(text));
+        graphics.pose().pushPose();
+        graphics.pose().translate(x + 17.0F, y + 16.0F, 300.0F);
+        graphics.pose().scale(scale, scale, 1.0F);
+        graphics.drawString(font, text, -font.width(text), -8, 0xFFFFFF, true);
+        graphics.pose().popPose();
+    }
+
+    /** 类型行：标签 + 截断后的名称。 */
+    private void drawType(GuiGraphics graphics, Component name) {
+        Component label = Component.translatable("gui.ae2pr.machine_part.type_label");
+        graphics.drawString(font, label, TEXT_X, TYPE_Y, COLOR_TEXT, false);
+        if (name == null) {
+            return;
+        }
+        int labelWidth = font.width(label);
+        graphics.drawString(font, clip(name.getString(), TYPE_MAX_WIDTH - labelWidth),
+                TEXT_X + labelWidth, TYPE_Y, COLOR_VALUE, false);
+    }
+
+    private String clip(String text, int maxWidth) {
+        if (font.width(text) <= maxWidth) {
+            return text;
+        }
+        return font.plainSubstrByWidth(text, maxWidth - font.width("…")) + "…";
+    }
+
+    private boolean isHoveringStorage(int mouseX, int mouseY) {
+        int x = leftPos + STORAGE_X;
+        int y = topPos + STORAGE_Y;
+        return mouseX >= x - 1 && mouseX < x + 17 && mouseY >= y - 1 && mouseY < y + 17;
+    }
+
+    private static Component storedText(ItemStack stored) {
+        if (stored.isEmpty()) {
+            return Component.translatable("gui.ae2pr.machine_part.stored.empty");
+        }
+        return Component.translatable("gui.ae2pr.machine_part.stored.items", NUMBER.format(stored.getCount()));
+    }
+}

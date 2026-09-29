@@ -1,11 +1,14 @@
 package com.murthinext.ae2pr;
 
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.murthinext.ae2pr.block.assembly_line.AssemblyLineControllerBlockEntity;
+import com.murthinext.ae2pr.block.assembly_line.FluidHatchBlockEntity;
+import com.murthinext.ae2pr.block.assembly_line.ItemBusBlockEntity;
 import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlockEntity;
 
 /**
@@ -31,4 +34,14 @@ public final class ModBlockEntities {
             .register("crystal_assembly_line", () -> BlockEntityType.Builder.of(
                     AssemblyLineControllerBlockEntity::new,
                     ModBlocks.CRYSTAL_ASSEMBLY_LINE.get()).build(null));
+
+    /** 赛特斯石英机器部件（输入总线 / 输入仓 / 输出总线） */
+    public static final RegistryObject<BlockEntityType<BlockEntity>> CERTUS_MACHINE_PART = BLOCK_ENTITIES
+            .register("certus_machine_part", () -> BlockEntityType.Builder.of(
+                    (pos, state) -> state.is(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get())
+                            ? new FluidHatchBlockEntity(pos, state)
+                            : new ItemBusBlockEntity(pos, state),
+                    ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get(),
+                    ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get(),
+                    ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get()).build(null));
 }

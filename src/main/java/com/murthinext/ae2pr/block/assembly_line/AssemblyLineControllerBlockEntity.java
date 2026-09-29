@@ -22,6 +22,9 @@ public class AssemblyLineControllerBlockEntity extends BlockEntity {
 
     private int tickCounter;
 
+    /** 是否被请求进入运行态（仅成型后生效；供后续配方逻辑调用）。 */
+    private boolean running;
+
     /** 最近一次检测结果（供状态界面展示） */
     private int lastSlices;
     private int lastMismatches;
@@ -66,11 +69,22 @@ public class AssemblyLineControllerBlockEntity extends BlockEntity {
         lastExpected = result.expected();
         lastFound = result.found();
 
+        boolean formed = result.formed();
+        // 运行态仅在成型后生效：控制外壳与主机的工作态贴图由 running 驱动
+        boolean running = formed && this.running;
+
         AssemblyLineStructure.updateFormed(level, worldPosition, facing, result.mirrorSide(), result.mirrorFront(),
-                result.slices(), result.formed());
-        if (state.getValue(CrystalAssemblyLineBlock.FORMED) != result.formed()) {
-            level.setBlock(worldPosition, state.setValue(CrystalAssemblyLineBlock.FORMED, result.formed()),
-                    Block.UPDATE_ALL);
+                result.slices(), formed, running);
+
+        BlockState updated = state;
+        if (state.getValue(CrystalAssemblyLineBlock.FORMED) != formed) {
+            updated = updated.setValue(CrystalAssemblyLineBlock.FORMED, formed);
+        }
+        if (state.getValue(CrystalAssemblyLineBlock.RUNNING) != running) {
+            updated = updated.setValue(CrystalAssemblyLineBlock.RUNNING, running);
+        }
+        if (updated != state) {
+            level.setBlock(worldPosition, updated, Block.UPDATE_ALL);
         }
     }
 
@@ -81,7 +95,23 @@ public class AssemblyLineControllerBlockEntity extends BlockEntity {
             return;
         }
         AssemblyLineStructure.updateFormed(level, worldPosition,
-                getBlockState().getValue(CrystalAssemblyLineBlock.FACING), false, false, 0, false);
+                getBlockState().getValue(CrystalAssemblyLineBlock.FACING), false, false, 0, false, false);
+    }
+
+    /**
+     * 请求切换运行状态（供后续配方逻辑调用）；未成型时不会切入工作态贴图。
+     */
+    public void setRunning(boolean running) {
+        if (this.running == running) {
+            return;
+        }
+        this.running = running;
+        validateStructure();
+    }
+
+    /** 是否正在运行（未成型时为 false）。 */
+    public boolean isRunning() {
+        return this.running && isFormed();
     }
 
     /** 是否已成型。 */

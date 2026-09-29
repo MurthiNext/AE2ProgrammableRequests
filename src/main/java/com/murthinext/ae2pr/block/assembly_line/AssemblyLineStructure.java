@@ -109,26 +109,30 @@ public final class AssemblyLineStructure {
     /**
      * 同步结构内“状态型”方块的外观：
      * <ul>
-     * <li>成型：按匹配到的镜像方向，点亮控制外壳、部件（总线/仓）切换为与机身一致的成型贴图</li>
+     * <li>成型：按匹配到的镜像方向，部件（总线/仓）切换为成型贴图；控制外壳仅在运行配方时才点亮工作态</li>
      * <li>失活：逐一复位全部镜像布局的可能位置（含结构损坏或控制器被拆后的残留状态）</li>
      * </ul>
      */
     public static void updateFormed(Level level, BlockPos controllerPos, Direction facing, boolean mirrorSide,
-            boolean mirrorFront, int slices, boolean formed) {
+            boolean mirrorFront, int slices, boolean formed, boolean running) {
         if (formed) {
-            applyFormed(level, controllerPos, sliceDir(facing, mirrorSide), depthDir(facing, mirrorFront), slices,
-                    true);
+            applyState(level, controllerPos, sliceDir(facing, mirrorSide), depthDir(facing, mirrorFront), slices,
+                    true, running);
             return;
         }
         // 未成型：不确定此前是哪种镜像布局，逐一复位全部组合
         for (boolean[] mirror : MIRRORS) {
-            applyFormed(level, controllerPos, sliceDir(facing, mirror[0]), depthDir(facing, mirror[1]), MAX_SLICES,
-                    false);
+            applyState(level, controllerPos, sliceDir(facing, mirror[0]), depthDir(facing, mirror[1]), MAX_SLICES,
+                    false, false);
         }
     }
 
-    private static void applyFormed(Level level, BlockPos controllerPos, Direction sliceDir, Direction depthDir,
-            int count, boolean formed) {
+    /**
+     * @param partsFormed 部件（总线/仓）是否切换成型贴图
+     * @param unitActive  控制外壳是否点亮工作态贴图（仅运行配方时为 true）
+     */
+    private static void applyState(Level level, BlockPos controllerPos, Direction sliceDir, Direction depthDir,
+            int count, boolean partsFormed, boolean unitActive) {
         for (int s = 0; s < count; s++) {
             for (int r = 0; r < ROWS; r++) {
                 for (int c = 0; c < COLS; c++) {
@@ -136,12 +140,12 @@ public final class AssemblyLineStructure {
                     BlockState state = level.getBlockState(pos);
                     BlockState updated = null;
                     if (state.is(ModBlocks.CRYSTAL_ASSEMBLY_LINE_UNIT.get())) {
-                        if (state.getValue(AssemblyLineUnitBlock.ACTIVE) != formed) {
-                            updated = state.setValue(AssemblyLineUnitBlock.ACTIVE, formed);
+                        if (state.getValue(AssemblyLineUnitBlock.ACTIVE) != unitActive) {
+                            updated = state.setValue(AssemblyLineUnitBlock.ACTIVE, unitActive);
                         }
                     } else if (isPart(state)) {
-                        if (state.getValue(CertusMachinePartBlock.FORMED) != formed) {
-                            updated = state.setValue(CertusMachinePartBlock.FORMED, formed);
+                        if (state.getValue(CertusMachinePartBlock.FORMED) != partsFormed) {
+                            updated = state.setValue(CertusMachinePartBlock.FORMED, partsFormed);
                         }
                     }
                     if (updated != null) {

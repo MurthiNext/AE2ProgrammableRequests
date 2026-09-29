@@ -1,5 +1,6 @@
 package com.murthinext.ae2pr.client;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,6 +17,9 @@ import com.murthinext.ae2pr.ModBlocks;
 import com.murthinext.ae2pr.ModMenus;
 import com.murthinext.ae2pr.ae2pr;
 import com.murthinext.ae2pr.client.ctm.CtmBakedModel;
+import com.murthinext.ae2pr.client.assembly_line.AssemblyLineScreen;
+import com.murthinext.ae2pr.client.assembly_line.FluidHatchScreen;
+import com.murthinext.ae2pr.client.assembly_line.ItemBusScreen;
 import com.murthinext.ae2pr.client.emitter.MultiLevelEmitterScreen;
 import com.murthinext.ae2pr.client.emitter.MultiThresholdLevelEmitterScreen;
 import com.murthinext.ae2pr.client.requester.RedstoneRequesterScreen;
@@ -48,6 +52,9 @@ public final class ClientSetup {
         InitScreens.register(ModMenus.REDSTONE_REQUESTER.get(),
                 RedstoneRequesterScreen::new,
                 "/screens/redstone_requester.json");
+        MenuScreens.register(ModMenus.CRYSTAL_ASSEMBLY_LINE.get(), AssemblyLineScreen::new);
+        MenuScreens.register(ModMenus.CERTUS_QUARTZ_ITEM_BUS.get(), ItemBusScreen::new);
+        MenuScreens.register(ModMenus.CERTUS_QUARTZ_INPUT_HATCH.get(), FluidHatchScreen::new);
     }
 
     /** 为 ae2pr 的方块模型套上连接纹理包装（按世界邻居重写 UV）。 */
