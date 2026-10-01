@@ -45,6 +45,8 @@ public class CrystalAssemblyLineBlock extends Block implements EntityBlock {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     /** 是否正在运行配方（驱动工作态贴图）；成型但不运行时保持静态贴图。 */
     public static final BooleanProperty RUNNING = BooleanProperty.create("running");
+    /** 电力或输出不足导致的暂停态（黄色暂停贴图，等待重试）。 */
+    public static final BooleanProperty PAUSED = BooleanProperty.create("paused");
 
     public CrystalAssemblyLineBlock() {
         super(Properties.of()
@@ -55,12 +57,13 @@ public class CrystalAssemblyLineBlock extends Block implements EntityBlock {
         registerDefaultState(stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(FORMED, false)
-                .setValue(RUNNING, false));
+                .setValue(RUNNING, false)
+                .setValue(PAUSED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FORMED, RUNNING);
+        builder.add(FACING, FORMED, RUNNING, PAUSED);
     }
 
     @Override
@@ -68,7 +71,8 @@ public class CrystalAssemblyLineBlock extends Block implements EntityBlock {
         return defaultBlockState()
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
                 .setValue(FORMED, false)
-                .setValue(RUNNING, false);
+                .setValue(RUNNING, false)
+                .setValue(PAUSED, false);
     }
 
     @Nullable

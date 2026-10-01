@@ -24,16 +24,15 @@ import net.minecraft.world.item.ItemStack;
 public class AbstractRequesterMenuMixin {
 
     @Inject(method = "updateRequesterNumbers", at = @At("HEAD"), cancellable = true, remap = false)
-    private void ae2pr$updateNumbers(long requesterId, int requestIndex, long amount, long batch, CallbackInfo ci) {
+    private void ae2pr$updateNumbers(long requesterId, int requestIndex, long amount, long ignoredBatch, CallbackInfo ci) {
         var be = ae2pr$our(this, requesterId);
         if (be == null) {
             return;
         }
         var list = be.getRequests();
         if (requestIndex >= 0 && requestIndex < list.size()) {
-            var request = list.get(requestIndex);
-            request.updateAmount(amount);
-            request.updateBatch(batch);
+            // 本模组的请求器不再支持重复下单，ME Requester 终端的 batch 字段在此忽略
+            list.get(requestIndex).updateAmount(amount);
         }
         ci.cancel();
     }

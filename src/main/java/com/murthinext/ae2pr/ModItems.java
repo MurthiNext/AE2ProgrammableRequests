@@ -82,4 +82,9 @@ public final class ModItems {
     /** 赛特斯石英输出总线 */
     public static final RegistryObject<BlockItem> CERTUS_QUARTZ_OUTPUT_BUS = ITEMS.register("certus_quartz_output_bus",
             () -> new BlockItem(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get(), new Item.Properties()));
+
+    /** 福鲁伊克斯水晶能源仓 */
+    public static final RegistryObject<BlockItem> FLUIX_CRYSTAL_ENERGY_HATCH = ITEMS.register(
+            "fluix_crystal_energy_hatch",
+            () -> new BlockItem(ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get(), new Item.Properties()));
 }

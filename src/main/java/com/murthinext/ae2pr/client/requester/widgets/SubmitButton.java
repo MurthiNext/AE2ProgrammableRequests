@@ -24,7 +24,7 @@ public class SubmitButton extends AECheckbox implements ITooltip {
         RequesterUtils.getRL("textures/gui/submit_button.png"), SIZE * 2, SIZE
     );
     private static final Blitter UNFOCUSED = BLITTER.copy().src(0, 0, SIZE, SIZE);
-    private static final Blitter FOCUSED = BLITTER.copy().src(SIZE, SIZE, SIZE, SIZE);
+    private static final Blitter FOCUSED = BLITTER.copy().src(SIZE, 0, SIZE, SIZE);
 
     SubmitButton(int x, int y, ScreenStyle style, Runnable changeListener) {
         super(x, y, SIZE, SIZE, style, Component.empty());

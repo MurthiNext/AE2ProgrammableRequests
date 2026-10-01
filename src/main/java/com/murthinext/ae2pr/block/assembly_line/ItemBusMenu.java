@@ -32,7 +32,7 @@ public class ItemBusMenu extends AbstractContainerMenu {
 
     private static final int INV_COLS = 9;
     private static final int SLOT_SIZE = 18;
-    private static final int INV_X = 7;
+    private static final int INV_X = 8;
     private static final int INV_Y = 122;
     private static final int HOTBAR_Y = 180;
 

@@ -8,6 +8,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import com.murthinext.ae2pr.block.assembly_line.AssemblyLineControllerBlockEntity;
 import com.murthinext.ae2pr.block.assembly_line.FluidHatchBlockEntity;
+import com.murthinext.ae2pr.block.assembly_line.FluixCrystalEnergyHatchBlockEntity;
 import com.murthinext.ae2pr.block.assembly_line.ItemBusBlockEntity;
 import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlockEntity;
 
@@ -44,4 +45,10 @@ public final class ModBlockEntities {
                     ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get(),
                     ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get(),
                     ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get()).build(null));
+
+    /** 福鲁伊克斯水晶能源仓 */
+    public static final RegistryObject<BlockEntityType<FluixCrystalEnergyHatchBlockEntity>> FLUIX_CRYSTAL_ENERGY_HATCH = BLOCK_ENTITIES
+            .register("fluix_crystal_energy_hatch", () -> BlockEntityType.Builder.of(
+                    FluixCrystalEnergyHatchBlockEntity::new,
+                    ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get()).build(null));
 }

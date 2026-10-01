@@ -5,11 +5,6 @@ ME Requester 代码沿用说明
 项目（https://github.com/AlmostReliable/merequester）的源代码，该项目以
 GNU Lesser General Public License v3.0（LGPL-3.0）授权发布。
 
-- 原始项目：AlmostReliable/merequester
-- 原始分支：1.20.1-forge
-- 原始提交：411e55d25c434352eae45468097db940517d00a8
-- 许可证全文：见本目录下的 LGPL-3.0.txt
-
 沿用范围（均位于本模组源码中，包名已调整为 com.murthinext.ae2pr）：
 - requester/ 与 client/requester/ 下的请求器数据模型、菜单、界面与控件
 - requester/network/ 下的网络包结构

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ae2pr:crystal_reinforced_composite_machine_casing"
+    },
+    {
+      "item": "ae2:fluix_crystal"
+    },
+    {
+      "item": "ae2:energy_acceptor"
+    }
+  ],
+  "result": {
+    "item": "ae2pr:fluix_crystal_energy_hatch",
+    "count": 1
+  }
+}

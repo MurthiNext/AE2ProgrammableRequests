@@ -1,0 +1,221 @@
+package com.murthinext.ae2pr.recipe;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import com.murthinext.ae2pr.ModRecipes;
+import com.murthinext.ae2pr.ae2pr;
+
+/**
+ * 水晶装配线配方。
+ * <p>
+ * 物品输入默认有序：第 i 个输入对应第 i 个输入总线（从主机侧到另一侧）；
+ * 流体输入默认无序：任意输入仓提供即可。两种顺序需求均可在配置文件中调整。
+ * 单次执行消耗 {@code duration} tick，产物只输出到输出总线。
+ */
+public class CrystalAssemblyLineRecipe implements Recipe<Container> {
+
+    /** 物品输入：匹配器 + 单次执行的消耗数量 */
+    public record ItemInput(Ingredient ingredient, int count) {
+
+        public boolean test(ItemStack stack) {
+            return !stack.isEmpty() && ingredient.test(stack);
+        }
+    }
+
+    private final ResourceLocation id;
+    private final List<ItemInput> itemInputs;
+    private final List<FluidStack> fluidInputs;
+    private final List<ItemStack> itemOutputs;
+    private final int duration;
+
+    public CrystalAssemblyLineRecipe(ResourceLocation id, List<ItemInput> itemInputs, List<FluidStack> fluidInputs,
+            List<ItemStack> itemOutputs, int duration) {
+        this.id = id;
+        this.itemInputs = List.copyOf(itemInputs);
+        this.fluidInputs = List.copyOf(fluidInputs);
+        this.itemOutputs = List.copyOf(itemOutputs);
+        this.duration = duration;
+    }
+
+    /** 物品输入（有序） */
+    public List<ItemInput> getItemInputs() {
+        return itemInputs;
+    }
+
+    /** 流体输入（无序或有序，取决于配置） */
+    public List<FluidStack> getFluidInputs() {
+        return fluidInputs;
+    }
+
+    /** 物品产物 */
+    public List<ItemStack> getItemOutputs() {
+        return itemOutputs;
+    }
+
+    /** 加工耗时（tick） */
+    public int getDuration() {
+        return duration;
+    }
+
+    // ---------------------------------------------------------------- Recipe 接口（本模组自行匹配，不走原版容器流程）
+
+    @Override
+    public boolean matches(Container container, Level level) {
+        return false;
+    }
+
+    @Override
+    public ItemStack assemble(Container container, RegistryAccess registries) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return false;
+    }
+
+    @Override
+    public ItemStack getResultItem(RegistryAccess registries) {
+        return itemOutputs.isEmpty() ? ItemStack.EMPTY : itemOutputs.get(0);
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return ModRecipes.CRYSTAL_ASSEMBLY_LINE.get();
+    }
+
+    @Override
+    public RecipeType<?> getType() {
+        return ModRecipes.CRYSTAL_ASSEMBLY_LINE_TYPE.get();
+    }
+
+    /** JSON 与网络序列化。 */
+    public static class Serializer implements RecipeSerializer<CrystalAssemblyLineRecipe> {
+
+        @Override
+        public CrystalAssemblyLineRecipe fromJson(ResourceLocation id, JsonObject json) {
+            List<ItemInput> itemInputs = new ArrayList<>();
+            for (JsonElement element : GsonHelper.getAsJsonArray(json, "item_inputs", new JsonArray())) {
+                JsonObject obj = element.getAsJsonObject();
+                Ingredient ingredient = Ingredient.fromJson(obj);
+                int count = GsonHelper.getAsInt(obj, "count", 1);
+                if (count < 1) {
+                    throw new JsonSyntaxException("item_inputs 的 count 必须 >= 1");
+                }
+                itemInputs.add(new ItemInput(ingredient, count));
+            }
+
+            List<FluidStack> fluidInputs = new ArrayList<>();
+            for (JsonElement element : GsonHelper.getAsJsonArray(json, "fluid_inputs", new JsonArray())) {
+                JsonObject obj = element.getAsJsonObject();
+                ResourceLocation fluidId = new ResourceLocation(GsonHelper.getAsString(obj, "fluid"));
+                Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidId);
+                if (fluid == null || fluid == Fluids.EMPTY) {
+                    throw new JsonSyntaxException("未知流体：" + fluidId);
+                }
+                int amount = GsonHelper.getAsInt(obj, "amount", 1000);
+                if (amount < 1) {
+                    throw new JsonSyntaxException("fluid_inputs 的 amount 必须 >= 1");
+                }
+                fluidInputs.add(new FluidStack(fluid, amount));
+            }
+
+            List<ItemStack> itemOutputs = new ArrayList<>();
+            for (JsonElement element : GsonHelper.getAsJsonArray(json, "item_outputs", new JsonArray())) {
+                JsonObject obj = element.getAsJsonObject();
+                ResourceLocation itemId = new ResourceLocation(GsonHelper.getAsString(obj, "item"));
+                Item item = ForgeRegistries.ITEMS.getValue(itemId);
+                if (item == null || item == Items.AIR) {
+                    throw new JsonSyntaxException("未知物品：" + itemId);
+                }
+                int count = GsonHelper.getAsInt(obj, "count", 1);
+                if (count < 1) {
+                    throw new JsonSyntaxException("item_outputs 的 count 必须 >= 1");
+                }
+                itemOutputs.add(new ItemStack(item, count));
+            }
+
+            if (itemInputs.isEmpty() && fluidInputs.isEmpty()) {
+                throw new JsonSyntaxException("配方至少需要一个输入");
+            }
+            if (itemOutputs.isEmpty()) {
+                throw new JsonSyntaxException("配方至少需要一个物品输出");
+            }
+            int duration = GsonHelper.getAsInt(json, "duration", 100);
+            if (duration < 1) {
+                throw new JsonSyntaxException("duration 必须 >= 1");
+            }
+            return new CrystalAssemblyLineRecipe(id, itemInputs, fluidInputs, itemOutputs, duration);
+        }
+
+        @Override
+        public CrystalAssemblyLineRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+            int itemCount = buffer.readVarInt();
+            List<ItemInput> itemInputs = new ArrayList<>(itemCount);
+            for (int i = 0; i < itemCount; i++) {
+                itemInputs.add(new ItemInput(Ingredient.fromNetwork(buffer), buffer.readVarInt()));
+            }
+            int fluidCount = buffer.readVarInt();
+            List<FluidStack> fluidInputs = new ArrayList<>(fluidCount);
+            for (int i = 0; i < fluidCount; i++) {
+                fluidInputs.add(buffer.readFluidStack());
+            }
+            int outputCount = buffer.readVarInt();
+            List<ItemStack> itemOutputs = new ArrayList<>(outputCount);
+            for (int i = 0; i < outputCount; i++) {
+                ItemStack stack = buffer.readItem();
+                stack.setCount(buffer.readVarInt());
+                itemOutputs.add(stack);
+            }
+            return new CrystalAssemblyLineRecipe(id, itemInputs, fluidInputs, itemOutputs, buffer.readVarInt());
+        }
+
+        @Override
+        public void toNetwork(FriendlyByteBuf buffer, CrystalAssemblyLineRecipe recipe) {
+            buffer.writeVarInt(recipe.itemInputs.size());
+            for (ItemInput input : recipe.itemInputs) {
+                input.ingredient().toNetwork(buffer);
+                buffer.writeVarInt(input.count());
+            }
+            buffer.writeVarInt(recipe.fluidInputs.size());
+            for (FluidStack fluid : recipe.fluidInputs) {
+                buffer.writeFluidStack(fluid);
+            }
+            buffer.writeVarInt(recipe.itemOutputs.size());
+            for (ItemStack output : recipe.itemOutputs) {
+                buffer.writeItem(output.copyWithCount(1));
+                buffer.writeVarInt(output.getCount());
+            }
+            buffer.writeVarInt(recipe.duration);
+        }
+    }
+}

@@ -1,29 +1,62 @@
 package com.murthinext.ae2pr.block.assembly_line;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
+import com.murthinext.ae2pr.Config;
 import com.murthinext.ae2pr.ModBlockEntities;
 import com.murthinext.ae2pr.ModBlocks;
+import com.murthinext.ae2pr.ModRecipes;
+import com.murthinext.ae2pr.ae2pr;
+import com.murthinext.ae2pr.recipe.CrystalAssemblyLineRecipe;
 
 /**
- * 水晶装配线控制器方块实体：定期检测结构并驱动控制外壳/部件的成型外观。
+ * 水晶装配线控制器方块实体：结构检测 + 配方执行。
+ * <p>
+ * 执行流程：匹配配方（物品默认有序：第 i 个输入对应第 i 个输入总线；流体默认无序）→
+ * 检查输出空间 → 按并行数一次性从 ME 网络扣电（不足则不扣任何内容并进入暂停态）→
+ * 扣除原料 → 加工 {@code duration} tick 后产出到输出总线。
+ * <p>
+ * 并行数 = 基础并行 + (片数 - 最小片数) × 每片增量；能量 = 单位耗电 × 并行数。
  */
 public class AssemblyLineControllerBlockEntity extends BlockEntity {
 
-    /** 检测周期（tick） */
+    /** 结构检测周期（tick） */
     private static final int CHECK_INTERVAL = 20;
+    /** 暂停后的重试间隔（tick） */
+    private static final int RETRY_INTERVAL = 20;
+
+    /** 暂停原因（供界面报错） */
+    public enum Error {
+        NONE, POWER, OUTPUT
+    }
 
     private int tickCounter;
 
-    /** 是否被请求进入运行态（仅成型后生效；供后续配方逻辑调用）。 */
-    private boolean running;
+    /** 加工剩余 tick（<= 0 表示空闲或暂停） */
+    private int jobTicksLeft;
+    /** 是否处于暂停态（电力/输出不足，黄色贴图） */
+    private boolean paused;
+    private Error error = Error.NONE;
+    private int retryCounter;
+    /** 当前作业（加工中保留，用于结算产物） */
+    @Nullable
+    private Match currentMatch;
 
     /** 最近一次检测结果（供状态界面展示） */
     private int lastSlices;
@@ -34,21 +67,306 @@ public class AssemblyLineControllerBlockEntity extends BlockEntity {
     @Nullable
     private Block lastFound;
 
+    /** 结构内的输入总线（按片顺序，从主机侧到另一侧） */
+    private final List<ItemBusBlockEntity> inputBuses = new ArrayList<>();
+    /** 结构内的输出总线（最后一片） */
+    @Nullable
+    private ItemBusBlockEntity outputBus;
+    /** 结构内的输入仓（按片、列顺序） */
+    private final List<FluidHatchBlockEntity> inputHatches = new ArrayList<>();
+    /** 结构内的能源仓 */
+    private final List<FluixCrystalEnergyHatchBlockEntity> energyHatches = new ArrayList<>();
+
     public AssemblyLineControllerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CRYSTAL_ASSEMBLY_LINE.get(), pos, state);
     }
 
-    /** 服务端 tick：按固定周期重新检测结构。 */
+    /** 服务端 tick：每 tick 推进加工作业，每 {@link #CHECK_INTERVAL} tick 重新检测结构。 */
     public void serverTick() {
         if (level == null || level.isClientSide) {
             return;
         }
-        if (++tickCounter < CHECK_INTERVAL) {
+        if (++tickCounter >= CHECK_INTERVAL) {
+            tickCounter = 0;
+            validateStructure();
+        }
+        tickJob();
+    }
+
+    // ---------------------------------------------------------------- 加工作业
+
+    private void tickJob() {
+        if (!isFormed()) {
+            if (jobTicksLeft > 0 || paused || error != Error.NONE) {
+                jobTicksLeft = 0;
+                currentMatch = null;
+                clearPause();
+            }
             return;
         }
-        tickCounter = 0;
-        validateStructure();
+        if (jobTicksLeft > 0) {
+            if (--jobTicksLeft == 0) {
+                finishJob();
+            }
+            return;
+        }
+        if (retryCounter > 0) {
+            retryCounter--;
+            return;
+        }
+        retryCounter = RETRY_INTERVAL;
+        tryStartJob();
     }
+
+    /** 尝试开始一次加工：匹配配方 → 输出检查 → 扣电 → 扣料 → 进入运行态。 */
+    private void tryStartJob() {
+        Level level = this.level;
+        if (level == null) {
+            return;
+        }
+        int parallel = parallelCount();
+        Match match = findMatch(parallel);
+        if (match == null) {
+            clearPause();
+            return;
+        }
+        if (!canOutput(match.recipe(), parallel)) {
+            pause(Error.OUTPUT);
+            return;
+        }
+        double cost = Config.assemblyEnergyPerParallel() * parallel;
+        if (extractNetworkEnergy(cost, true) < cost) {
+            pause(Error.POWER);
+            return;
+        }
+        // 扣电与扣料
+        extractNetworkEnergy(cost, false);
+        consumeInputs(match, parallel);
+
+        jobTicksLeft = Math.max(1, match.recipe().getDuration());
+        currentMatch = match;
+        paused = false;
+        error = Error.NONE;
+        applyControllerState();
+    }
+
+    /** 加工完成：产物写入输出总线。 */
+    private void finishJob() {
+        Match match = currentMatch;
+        currentMatch = null;
+        if (match != null && level != null) {
+            insertOutputs(match.recipe(), match.parallel());
+        }
+        jobTicksLeft = 0;
+        applyControllerState();
+    }
+
+    private void pause(Error reason) {
+        jobTicksLeft = 0;
+        paused = true;
+        error = reason;
+        applyControllerState();
+    }
+
+    private void clearPause() {
+        if (paused || error != Error.NONE) {
+            paused = false;
+            error = Error.NONE;
+            applyControllerState();
+        }
+    }
+
+    // ---------------------------------------------------------------- 配方匹配
+
+    /** 一次匹配的结果：配方、并行数、以及物品/流体输入到部件下标的分配。 */
+    private record Match(CrystalAssemblyLineRecipe recipe, int parallel, List<Integer> busIndices,
+            List<Integer> hatchIndices) {
+    }
+
+    /** 并行数 = 基础并行 + (片数 - 最小片数) × 每片增量。 */
+    public int parallelCount() {
+        return Config.assemblyBaseParallel()
+                + Math.max(0, lastSlices - AssemblyLineStructure.MIN_SLICES) * Config.assemblyParallelPerSlice();
+    }
+
+    @Nullable
+    private Match findMatch(int parallel) {
+        Level level = this.level;
+        if (level == null) {
+            return null;
+        }
+        for (CrystalAssemblyLineRecipe recipe : level.getRecipeManager()
+                .getAllRecipesFor(ModRecipes.CRYSTAL_ASSEMBLY_LINE_TYPE.get())) {
+            List<Integer> busIndices = matchItems(recipe, parallel);
+            if (busIndices == null) {
+                continue;
+            }
+            List<Integer> hatchIndices = matchFluids(recipe, parallel);
+            if (hatchIndices == null) {
+                continue;
+            }
+            return new Match(recipe, parallel, busIndices, hatchIndices);
+        }
+        return null;
+    }
+
+    /** 物品输入匹配：有序时按总线顺序，无序时逐个选取；同时校验数量（count × 并行）。 */
+    @Nullable
+    private List<Integer> matchItems(CrystalAssemblyLineRecipe recipe, int parallel) {
+        List<CrystalAssemblyLineRecipe.ItemInput> inputs = recipe.getItemInputs();
+        List<Integer> indices = new ArrayList<>(inputs.size());
+        if (inputs.isEmpty()) {
+            return indices;
+        }
+        if (Config.assemblyItemsOrdered()) {
+            if (inputBuses.size() < inputs.size()) {
+                return null;
+            }
+            for (int i = 0; i < inputs.size(); i++) {
+                if (!hasEnoughItems(inputBuses.get(i), inputs.get(i), parallel)) {
+                    return null;
+                }
+                indices.add(i);
+            }
+            return indices;
+        }
+        boolean[] used = new boolean[inputBuses.size()];
+        for (CrystalAssemblyLineRecipe.ItemInput input : inputs) {
+            int found = -1;
+            for (int i = 0; i < inputBuses.size(); i++) {
+                if (!used[i] && hasEnoughItems(inputBuses.get(i), input, parallel)) {
+                    found = i;
+                    break;
+                }
+            }
+            if (found < 0) {
+                return null;
+            }
+            used[found] = true;
+            indices.add(found);
+        }
+        return indices;
+    }
+
+    private static boolean hasEnoughItems(ItemBusBlockEntity bus, CrystalAssemblyLineRecipe.ItemInput input,
+            int parallel) {
+        ItemStack content = bus.getStorage().getStackInSlot(0);
+        return input.test(content) && content.getCount() >= (long) input.count() * parallel;
+    }
+
+    /** 流体输入匹配：有序时按仓顺序，无序时逐个选取；同时校验数量（amount × 并行）。 */
+    @Nullable
+    private List<Integer> matchFluids(CrystalAssemblyLineRecipe recipe, int parallel) {
+        List<FluidStack> inputs = recipe.getFluidInputs();
+        List<Integer> indices = new ArrayList<>(inputs.size());
+        if (inputs.isEmpty()) {
+            return indices;
+        }
+        if (Config.assemblyFluidsOrdered()) {
+            if (inputHatches.size() < inputs.size()) {
+                return null;
+            }
+            for (int i = 0; i < inputs.size(); i++) {
+                if (!hasEnoughFluid(inputHatches.get(i), inputs.get(i), parallel)) {
+                    return null;
+                }
+                indices.add(i);
+            }
+            return indices;
+        }
+        boolean[] used = new boolean[inputHatches.size()];
+        for (FluidStack input : inputs) {
+            int found = -1;
+            for (int i = 0; i < inputHatches.size(); i++) {
+                if (!used[i] && hasEnoughFluid(inputHatches.get(i), input, parallel)) {
+                    found = i;
+                    break;
+                }
+            }
+            if (found < 0) {
+                return null;
+            }
+            used[found] = true;
+            indices.add(found);
+        }
+        return indices;
+    }
+
+    private static boolean hasEnoughFluid(FluidHatchBlockEntity hatch,
+            FluidStack input, int parallel) {
+        FluidStack stored = hatch.getTank().getFluid();
+        return stored.isFluidEqual(input) && stored.getAmount() >= (long) input.getAmount() * parallel;
+    }
+
+    // ---------------------------------------------------------------- 扣料与产出
+
+    private void consumeInputs(Match match, int parallel) {
+        List<CrystalAssemblyLineRecipe.ItemInput> itemInputs = match.recipe().getItemInputs();
+        for (int i = 0; i < itemInputs.size(); i++) {
+            inputBuses.get(match.busIndices().get(i)).getStorage()
+                    .extractItem(0, itemInputs.get(i).count() * parallel, false);
+        }
+        List<FluidStack> fluidInputs = match.recipe().getFluidInputs();
+        for (int i = 0; i < fluidInputs.size(); i++) {
+            inputHatches.get(match.hatchIndices().get(i)).getTank()
+                    .drain(fluidInputs.get(i).getAmount() * parallel,
+                            IFluidHandler.FluidAction.EXECUTE);
+        }
+    }
+
+    /** 输出总线能否容纳全部产物（单类型，容量 32K）。 */
+    private boolean canOutput(CrystalAssemblyLineRecipe recipe, int parallel) {
+        if (outputBus == null) {
+            return false;
+        }
+        ItemStack simulated = outputBus.getStorage().getStackInSlot(0).copy();
+        for (ItemStack output : recipe.getItemOutputs()) {
+            int total = output.getCount() * parallel;
+            if (simulated.isEmpty()) {
+                if (total > ItemBusBlockEntity.CAPACITY) {
+                    return false;
+                }
+                simulated = output.copyWithCount(total);
+            } else {
+                if (!ItemStack.isSameItemSameTags(simulated, output)
+                        || simulated.getCount() + total > ItemBusBlockEntity.CAPACITY) {
+                    return false;
+                }
+                simulated.grow(total);
+            }
+        }
+        return true;
+    }
+
+    private void insertOutputs(CrystalAssemblyLineRecipe recipe, int parallel) {
+        Level level = this.level;
+        if (level == null || outputBus == null) {
+            return;
+        }
+        for (ItemStack output : recipe.getItemOutputs()) {
+            ItemStack remainder = ItemHandlerHelper.insertItemStacked(outputBus.getStorage(),
+                    output.copyWithCount(output.getCount() * parallel), false);
+            if (!remainder.isEmpty()) {
+                // 启动前已检查；兜底掉落到输出总线处，避免产物丢失
+                ae2pr.LOGGER.warn("水晶装配线产物无法放入输出总线，已掉落 {}", remainder);
+                Block.popResource(level, outputBus.getBlockPos(), remainder);
+            }
+        }
+    }
+
+    /** 从结构内能源仓一次性抽取能量（AE）；simulate 时只求和可用量。 */
+    private double extractNetworkEnergy(double amount, boolean simulate) {
+        double remaining = amount;
+        for (FluixCrystalEnergyHatchBlockEntity hatch : energyHatches) {
+            if (remaining <= 0) {
+                break;
+            }
+            remaining -= hatch.extractAEPower(remaining, simulate);
+        }
+        return amount - remaining;
+    }
+
+    // ---------------------------------------------------------------- 结构检测
 
     /** 立即检测一次结构，并按结果切换控制器与结构内方块的状态。 */
     public void validateStructure() {
@@ -70,18 +388,58 @@ public class AssemblyLineControllerBlockEntity extends BlockEntity {
         lastFound = result.found();
 
         boolean formed = result.formed();
-        // 运行态仅在成型后生效：控制外壳与主机的工作态贴图由 running 驱动
-        boolean running = formed && this.running;
+        // 运行态仅在成型后生效：控制外壳与主机的工作态贴图由作业驱动
+        boolean active = formed && jobTicksLeft > 0;
 
         AssemblyLineStructure.updateFormed(level, worldPosition, facing, result.mirrorSide(), result.mirrorFront(),
-                result.slices(), formed, running);
+                result.slices(), formed, active);
+        refreshParts(level, worldPosition, facing, result);
+        applyControllerState();
+    }
 
-        BlockState updated = state;
-        if (state.getValue(CrystalAssemblyLineBlock.FORMED) != formed) {
-            updated = updated.setValue(CrystalAssemblyLineBlock.FORMED, formed);
+    /** 收集结构内的总线、输入仓与能源仓（仅在结构成型时收集）。 */
+    private void refreshParts(Level level, BlockPos controllerPos, Direction facing,
+            AssemblyLineStructure.Result result) {
+        inputBuses.clear();
+        inputHatches.clear();
+        energyHatches.clear();
+        outputBus = null;
+        if (!result.formed()) {
+            return;
         }
-        if (state.getValue(CrystalAssemblyLineBlock.RUNNING) != running) {
-            updated = updated.setValue(CrystalAssemblyLineBlock.RUNNING, running);
+        for (BlockPos pos : AssemblyLineStructure.cells(controllerPos, facing, result.mirrorSide(),
+                result.mirrorFront(), result.slices())) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof ItemBusBlockEntity bus) {
+                if (bus.isOutputBus()) {
+                    outputBus = bus;
+                } else {
+                    inputBuses.add(bus);
+                }
+            } else if (blockEntity instanceof FluidHatchBlockEntity hatch) {
+                inputHatches.add(hatch);
+            } else if (blockEntity instanceof FluixCrystalEnergyHatchBlockEntity energy) {
+                energyHatches.add(energy);
+            }
+        }
+    }
+
+    /** 按作业状态刷新控制器的运行/暂停贴图。 */
+    private void applyControllerState() {
+        Level level = this.level;
+        if (level == null || level.isClientSide) {
+            return;
+        }
+        BlockState state = getBlockState();
+        boolean formed = state.getValue(CrystalAssemblyLineBlock.FORMED);
+        boolean showRunning = formed && jobTicksLeft > 0;
+        boolean showPaused = formed && paused && jobTicksLeft <= 0;
+        BlockState updated = state;
+        if (state.getValue(CrystalAssemblyLineBlock.RUNNING) != showRunning) {
+            updated = updated.setValue(CrystalAssemblyLineBlock.RUNNING, showRunning);
+        }
+        if (state.getValue(CrystalAssemblyLineBlock.PAUSED) != showPaused) {
+            updated = updated.setValue(CrystalAssemblyLineBlock.PAUSED, showPaused);
         }
         if (updated != state) {
             level.setBlock(worldPosition, updated, Block.UPDATE_ALL);
@@ -98,25 +456,68 @@ public class AssemblyLineControllerBlockEntity extends BlockEntity {
                 getBlockState().getValue(CrystalAssemblyLineBlock.FACING), false, false, 0, false, false);
     }
 
-    /**
-     * 请求切换运行状态（供后续配方逻辑调用）；未成型时不会切入工作态贴图。
-     */
-    public void setRunning(boolean running) {
-        if (this.running == running) {
-            return;
+    // ---------------------------------------------------------------- 持久化（加工中的作业）
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (currentMatch != null && jobTicksLeft > 0) {
+            tag.putString("jobRecipe", currentMatch.recipe().getId().toString());
+            tag.putInt("jobParallel", currentMatch.parallel());
+            tag.putInt("jobTicks", jobTicksLeft);
         }
-        this.running = running;
-        validateStructure();
     }
 
-    /** 是否正在运行（未成型时为 false）。 */
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        Level level = this.level;
+        if (level == null || level.isClientSide || !tag.contains("jobRecipe")) {
+            return;
+        }
+        var recipe = level.getRecipeManager().byKey(new ResourceLocation(tag.getString("jobRecipe")));
+        if (recipe.orElse(null) instanceof CrystalAssemblyLineRecipe lineRecipe) {
+            // 恢复加工进度；输入下标只在启动时使用，恢复后无需重算
+            jobTicksLeft = tag.getInt("jobTicks");
+            currentMatch = new Match(lineRecipe, tag.getInt("jobParallel"), List.of(), List.of());
+        }
+    }
+
+    // ---------------------------------------------------------------- 状态查询
+
+    /** 是否正在加工。 */
     public boolean isRunning() {
-        return this.running && isFormed();
+        return jobTicksLeft > 0 && isFormed();
+    }
+
+    /** 是否因电力/输出不足暂停。 */
+    public boolean isPaused() {
+        return paused && isFormed();
+    }
+
+    /** 暂停原因（NONE 表示未暂停）。 */
+    public Error getError() {
+        return error;
     }
 
     /** 是否已成型。 */
     public boolean isFormed() {
         return getBlockState().getValue(CrystalAssemblyLineBlock.FORMED);
+    }
+
+    /** 结构内是否有能源仓接入 ME 网络。 */
+    public boolean isEnergyConnected() {
+        for (FluixCrystalEnergyHatchBlockEntity hatch : energyHatches) {
+            if (hatch.isGridConnected()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** 结构内能源仓所接 ME 网络的可用能量合计（AE；按网络去重）。 */
+    public double getNetworkStoredPower() {
+        return FluixCrystalEnergyHatchBlockEntity.totalAvailableAEPower(energyHatches);
     }
 
     /** 最近一次检测到的片数（未成型为 0）。 */

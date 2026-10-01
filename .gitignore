@@ -22,3 +22,5 @@ run
 
 docs
 misc
+# 本地编译依赖（JEI 等，不入库）
+libs/

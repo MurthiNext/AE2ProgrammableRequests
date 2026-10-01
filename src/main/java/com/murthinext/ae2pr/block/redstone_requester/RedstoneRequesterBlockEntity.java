@@ -41,7 +41,6 @@ import appeng.util.SettingsFrom;
 
 import com.murthinext.ae2pr.block.redstone_requester.abstraction.RequestHost;
 import com.murthinext.ae2pr.block.redstone_requester.platform.RequesterPlatform;
-import com.murthinext.ae2pr.logic.repeat.RepeatOrderBinding;
 
 /**
  * ME 红石请求器方块实体。
@@ -155,10 +154,7 @@ public class RedstoneRequesterBlockEntity extends AENetworkBlockEntity
             try {
                 Future<ICraftingPlan> future = service.beginCraftingCalculation(
                         level, simulationRequester, what, amount, CalculationStrategy.CRAFT_LESS);
-                // batch（重复次数）> 1 时，交由本模组的重复下单机制执行
-                long batch = Math.max(1L, request.getBatch());
-                int rounds = (int) Math.min(Integer.MAX_VALUE, batch);
-                pending.add(new PendingCraft(future, rounds));
+                pending.add(new PendingCraft(future));
             } catch (Throwable t) {
                 com.murthinext.ae2pr.ae2pr.LOGGER.warn("Failed to start crafting calculation for {}x{}", amount, what, t);
             }
@@ -211,16 +207,7 @@ public class RedstoneRequesterBlockEntity extends AENetworkBlockEntity
             try {
                 var plan = craft.future().get();
                 if (plan != null && !plan.simulation()) {
-                    // 先绑定重复轮数，使其在 CraftingCpuLogic.trySubmitJob 返回时被本模组重复下单机制消费
-                    if (craft.rounds() > 1) {
-                        RepeatOrderBinding.set(craft.rounds());
-                    }
-                    try {
-                        service.submitJob(plan, null, null, true, actionSource);
-                    } finally {
-                        // 未被消费（例如 VCPU 路径）时清理，避免残留到后续其他下单
-                        RepeatOrderBinding.clear();
-                    }
+                    service.submitJob(plan, null, null, true, actionSource);
                 }
             } catch (Throwable t) {
                 com.murthinext.ae2pr.ae2pr.LOGGER.warn("Failed to submit redstone requester crafting job", t);
@@ -272,6 +259,6 @@ public class RedstoneRequesterBlockEntity extends AENetworkBlockEntity
         return !pending.isEmpty();
     }
 
-    private record PendingCraft(Future<ICraftingPlan> future, int rounds) {
+    private record PendingCraft(Future<ICraftingPlan> future) {
     }
 }

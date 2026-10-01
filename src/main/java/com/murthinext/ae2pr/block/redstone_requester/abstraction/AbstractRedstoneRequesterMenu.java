@@ -103,12 +103,11 @@ public abstract class AbstractRedstoneRequesterMenu extends AEBaseMenu {
         request.updateState(state);
     }
 
-    public void updateRequesterNumbers(long requesterId, int requestIndex, long amount, long batch) {
+    public void updateRequesterNumbers(long requesterId, int requestIndex, long amount) {
         var requestTracker = getRequestTracker(requesterId);
         if (requestTracker == null) return;
         var request = requestTracker.getServer().get(requestIndex);
         request.updateAmount(amount);
-        request.updateBatch(batch);
     }
 
     protected abstract void sendFullUpdate(@Nullable IGrid grid);

@@ -17,6 +17,13 @@ public final class Config {
     private static final ForgeConfigSpec.DoubleValue REQUESTER_IDLE_ENERGY;
     private static final ForgeConfigSpec.BooleanValue REQUESTER_REQUIRE_CHANNEL;
 
+    private static final ForgeConfigSpec.BooleanValue ASSEMBLY_ITEMS_ORDERED;
+    private static final ForgeConfigSpec.BooleanValue ASSEMBLY_FLUIDS_ORDERED;
+    private static final ForgeConfigSpec.IntValue ASSEMBLY_BASE_PARALLEL;
+    private static final ForgeConfigSpec.IntValue ASSEMBLY_PARALLEL_PER_SLICE;
+    private static final ForgeConfigSpec.IntValue ASSEMBLY_MAX_SLICES;
+    private static final ForgeConfigSpec.DoubleValue ASSEMBLY_ENERGY_PER_PARALLEL;
+
     static final ForgeConfigSpec SPEC;
 
     static {
@@ -45,6 +52,27 @@ public final class Config {
         REQUESTER_REQUIRE_CHANNEL = BUILDER
                 .comment("ME 红石请求器是否需要占用一个网络频道")
                 .define("requireChannel", true);
+        BUILDER.pop();
+
+        BUILDER.push("crystalAssemblyLine");
+        ASSEMBLY_ITEMS_ORDERED = BUILDER
+                .comment("物品输入是否有序")
+                .define("itemInputsOrdered", true);
+        ASSEMBLY_FLUIDS_ORDERED = BUILDER
+                .comment("流体输入是否有序")
+                .define("fluidInputsOrdered", false);
+        ASSEMBLY_BASE_PARALLEL = BUILDER
+                .comment("最短结构（5 片）的并行数")
+                .defineInRange("baseParallel", 64, 1, 1_000_000);
+        ASSEMBLY_PARALLEL_PER_SLICE = BUILDER
+                .comment("结构每超出最短长度 1 片增加的并行数")
+                .defineInRange("parallelPerSlice", 64, 0, 1_000_000);
+        ASSEMBLY_MAX_SLICES = BUILDER
+                .comment("结构允许的最大片数（最长长度，默认 31 格）")
+                .defineInRange("maxSlices", 31, 5, 1024);
+        ASSEMBLY_ENERGY_PER_PARALLEL = BUILDER
+                .comment("每并行一次执行从 ME 网络扣除的能量（AE；50k AE = 100k FE）")
+                .defineInRange("energyPerParallel", 50000.0, 0.0, Double.MAX_VALUE);
         BUILDER.pop();
 
         SPEC = BUILDER.build();
@@ -79,5 +107,29 @@ public final class Config {
 
     public static boolean requesterRequireChannel() {
         return REQUESTER_REQUIRE_CHANNEL.get();
+    }
+
+    public static boolean assemblyItemsOrdered() {
+        return ASSEMBLY_ITEMS_ORDERED.get();
+    }
+
+    public static boolean assemblyFluidsOrdered() {
+        return ASSEMBLY_FLUIDS_ORDERED.get();
+    }
+
+    public static int assemblyBaseParallel() {
+        return ASSEMBLY_BASE_PARALLEL.get();
+    }
+
+    public static int assemblyParallelPerSlice() {
+        return ASSEMBLY_PARALLEL_PER_SLICE.get();
+    }
+
+    public static int assemblyLineMaxSlices() {
+        return ASSEMBLY_MAX_SLICES.get();
+    }
+
+    public static double assemblyEnergyPerParallel() {
+        return ASSEMBLY_ENERGY_PER_PARALLEL.get();
     }
 }

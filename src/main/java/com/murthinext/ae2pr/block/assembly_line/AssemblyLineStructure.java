@@ -1,5 +1,8 @@
 package com.murthinext.ae2pr.block.assembly_line;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -8,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.murthinext.ae2pr.Config;
 import com.murthinext.ae2pr.ModBlocks;
 
 /**
@@ -36,12 +40,15 @@ public final class AssemblyLineStructure {
     private static final String[] SLICE_MIDDLE = { "FIF", "RTR", "DAG", "#Y#" };
     private static final String[] SLICE_LAST = { "FOF", "RTR", "DAG", "#Y#" };
 
-    /** 中间片最少/最多可重复次数 */
+    /** 中间片最少可重复次数 */
     public static final int MIN_MIDDLE = 3;
-    public static final int MAX_MIDDLE = 15;
-    /** 整体片数范围 */
+    /** 整体最小片数（首尾固定 + 最少中间片） */
     public static final int MIN_SLICES = MIN_MIDDLE + 2;
-    public static final int MAX_SLICES = MAX_MIDDLE + 2;
+
+    /** 当前配置允许的最大片数（下限为最小片数）。 */
+    public static int maxSlices() {
+        return Math.max(MIN_SLICES, Config.assemblyLineMaxSlices());
+    }
 
     private static final int ROWS = 4;
     private static final int COLS = 3;
@@ -93,7 +100,7 @@ public final class AssemblyLineStructure {
         for (boolean[] mirror : MIRRORS) {
             Direction sliceDir = sliceDir(facing, mirror[0]);
             Direction depthDir = depthDir(facing, mirror[1]);
-            for (int slices = MAX_SLICES; slices >= MIN_SLICES; slices--) {
+            for (int slices = maxSlices(); slices >= MIN_SLICES; slices--) {
                 Result result = check(level, controllerPos, sliceDir, depthDir, slices, mirror[0], mirror[1]);
                 if (result.formed()) {
                     return result;
@@ -122,7 +129,7 @@ public final class AssemblyLineStructure {
         }
         // 未成型：不确定此前是哪种镜像布局，逐一复位全部组合
         for (boolean[] mirror : MIRRORS) {
-            applyState(level, controllerPos, sliceDir(facing, mirror[0]), depthDir(facing, mirror[1]), MAX_SLICES,
+            applyState(level, controllerPos, sliceDir(facing, mirror[0]), depthDir(facing, mirror[1]), maxSlices(),
                     false, false);
         }
     }
@@ -143,6 +150,10 @@ public final class AssemblyLineStructure {
                         if (state.getValue(AssemblyLineUnitBlock.ACTIVE) != unitActive) {
                             updated = state.setValue(AssemblyLineUnitBlock.ACTIVE, unitActive);
                         }
+                    } else if (state.is(ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get())) {
+                        if (state.getValue(FluixCrystalEnergyHatchBlock.FORMED) != partsFormed) {
+                            updated = state.setValue(FluixCrystalEnergyHatchBlock.FORMED, partsFormed);
+                        }
                     } else if (isPart(state)) {
                         if (state.getValue(CertusMachinePartBlock.FORMED) != partsFormed) {
                             updated = state.setValue(CertusMachinePartBlock.FORMED, partsFormed);
@@ -161,6 +172,22 @@ public final class AssemblyLineStructure {
         return controllerPos.relative(sliceDir, s)
                 .relative(Direction.UP, r - CONTROLLER_ROW)
                 .relative(depthDir, c - CONTROLLER_COL);
+    }
+
+    /** 结构内全部单元格坐标（按 片 → 行 → 列 顺序，供查找能源仓等部件使用）。 */
+    public static List<BlockPos> cells(BlockPos controllerPos, Direction facing, boolean mirrorSide,
+            boolean mirrorFront, int slices) {
+        Direction sliceDir = sliceDir(facing, mirrorSide);
+        Direction depthDir = depthDir(facing, mirrorFront);
+        List<BlockPos> result = new ArrayList<>(slices * ROWS * COLS);
+        for (int s = 0; s < slices; s++) {
+            for (int r = 0; r < ROWS; r++) {
+                for (int c = 0; c < COLS; c++) {
+                    result.add(cell(controllerPos, sliceDir, depthDir, s, r, c));
+                }
+            }
+        }
+        return result;
     }
 
     private static boolean isPart(BlockState state) {
@@ -204,9 +231,10 @@ public final class AssemblyLineStructure {
     private static boolean matches(char ch, BlockState state) {
         return switch (ch) {
             case 'S' -> state.is(ModBlocks.CRYSTAL_ASSEMBLY_LINE.get());
-            // 机壳位允许用输入仓替代（对应 GT 的“带流体仓外壳”）
+            // 机壳位允许用输入仓 / 能源仓替代（对应 GT 的“带流体仓 / 能源仓外壳”）
             case 'F' -> state.is(ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get())
-                    || state.is(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get());
+                    || state.is(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get())
+                    || state.is(ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get());
             case 'Y' -> state.is(ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get());
             case 'I' -> state.is(ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get());
             case 'O' -> state.is(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get());

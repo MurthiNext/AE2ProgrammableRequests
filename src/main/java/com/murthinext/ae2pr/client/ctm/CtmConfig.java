@@ -63,7 +63,7 @@ public final class CtmConfig {
     /**
      * 连接族标识：同一标识之间才连接。
      * <ul>
-     * <li>{@code 1} 机身族：水晶强化复合机械方块 + 三种仓室（未成型用赛特斯机壳贴图，也与机壳相连）</li>
+     * <li>{@code 1} 机身族：水晶强化复合机械方块 + 三种仓室 + 能源仓（未成型用赛特斯机壳贴图，也与机壳相连）</li>
      * <li>{@code 2} 装配线格栅（同种相连）</li>
      * <li>{@code 3} 水晶玻璃（同种相连）</li>
      * <li>{@code 0} 不参与连接纹理（控制器、装配线外壳、控制外壳）</li>
@@ -74,7 +74,8 @@ public final class CtmConfig {
         if (block == ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get()
                 || block == ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get()
                 || block == ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get()
-                || block == ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get()) {
+                || block == ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get()
+                || block == ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get()) {
             return 1;
         }
         if (block == ModBlocks.CRYSTAL_ASSEMBLY_LINE_GRATING.get()) {

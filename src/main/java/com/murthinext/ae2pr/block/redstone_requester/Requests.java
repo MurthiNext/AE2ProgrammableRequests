@@ -21,7 +21,6 @@ import com.murthinext.ae2pr.block.redstone_requester.status.RequestStatus;
 import com.google.common.primitives.Ints;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -230,7 +229,6 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
         private static final String STATE_ID = "state";
         private static final String KEY_ID = "key";
         private static final String AMOUNT_ID = "amount";
-        private static final String BATCH_ID = "batch";
         private static final String STATUS_ID = "status";
 
         private final int index;
@@ -238,7 +236,6 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
         private boolean state = true;
         @Nullable private AEKey key;
         private long amount;
-        private long batch = 1;
 
         // this status is only relevant for the client
         // the actual request status is stored in the BlockEntity
@@ -254,7 +251,6 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
             tag.putBoolean(STATE_ID, state);
             if (key != null) tag.put(KEY_ID, key.toTagGeneric());
             tag.putLong(AMOUNT_ID, amount);
-            tag.putLong(BATCH_ID, batch);
             tag.putInt(STATUS_ID, clientStatus.ordinal());
             return tag;
         }
@@ -264,7 +260,6 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
             state = tag.getBoolean(STATE_ID);
             key = tag.contains(KEY_ID) ? AEKey.fromTagGeneric(tag.getCompound(KEY_ID)) : null;
             amount = tag.getLong(AMOUNT_ID);
-            batch = tag.getLong(BATCH_ID);
             clientStatus = RequestStatus.values()[tag.getInt(STATUS_ID)];
         }
 
@@ -286,17 +281,11 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
             }
         }
 
-        public void updateBatch(long batch) {
-            var oldBatch = this.batch;
-            this.batch = (long) Mth.clamp(batch, 1, batch);
-            if (oldBatch != this.batch && host != null) host.saveChanges();
-        }
-
         @Override
         public String toString() {
             return f(
-                "Request[state={}, key={}, amount={}, batch={}, client_status={}]",
-                state, key == null ? "none" : key.getDisplayName(), amount, batch, clientStatus
+                "Request[state={}, key={}, amount={}, client_status={}]",
+                state, key == null ? "none" : key.getDisplayName(), amount, clientStatus
             );
         }
 
@@ -304,7 +293,6 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
             return state != clientRequest.state ||
                 !Objects.equals(key, clientRequest.key) ||
                 amount != clientRequest.amount ||
-                batch != clientRequest.batch ||
                 clientStatus != clientRequest.clientStatus;
         }
 
@@ -325,7 +313,6 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
             }
             key = stack.what();
             amount = stack.amount();
-            batch = stack.what().getAmountPerUnit();
             keyChanged();
         }
 
@@ -342,7 +329,6 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
             if (key == null && amount == 0) return;
             key = null;
             amount = 0;
-            batch = 1;
             keyChanged();
         }
 
@@ -361,10 +347,6 @@ public class Requests implements MEStorage, GenericInternalInventory, InternalIn
 
         public long getAmount() {
             return amount;
-        }
-
-        public long getBatch() {
-            return batch;
         }
 
         @OnlyIn(Dist.CLIENT)

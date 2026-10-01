@@ -30,6 +30,8 @@ public class ae2pr {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
+        ModRecipes.RECIPE_TYPES.register(modEventBus);
+        ModRecipes.SERIALIZERS.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         ModNetwork.register();
@@ -64,6 +66,14 @@ public class ae2pr {
                     com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlockEntity.class, requesterType, null, null);
             appeng.blockentity.AEBaseBlockEntity.registerBlockEntityItem(requesterType,
                     ModItems.REDSTONE_REQUESTER.get());
+
+            // 福鲁伊克斯水晶能源仓：绑定方块实体类型并登记代表物品
+            var energyHatchType = ModBlockEntities.FLUIX_CRYSTAL_ENERGY_HATCH.get();
+            ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get().setBlockEntity(
+                    com.murthinext.ae2pr.block.assembly_line.FluixCrystalEnergyHatchBlockEntity.class,
+                    energyHatchType, null, null);
+            appeng.blockentity.AEBaseBlockEntity.registerBlockEntityItem(energyHatchType,
+                    ModItems.FLUIX_CRYSTAL_ENERGY_HATCH.get());
         });
     }
 }

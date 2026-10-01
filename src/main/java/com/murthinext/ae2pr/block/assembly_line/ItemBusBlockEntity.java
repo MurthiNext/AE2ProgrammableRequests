@@ -59,7 +59,12 @@ public class ItemBusBlockEntity extends BlockEntity {
 
     /** 是否允许玩家存入（输出总线仅接受配方输出）。 */
     public boolean acceptsPlayerInsert() {
-        return !getBlockState().is(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get());
+        return !isOutputBus();
+    }
+
+    /** 是否是输出总线。 */
+    public boolean isOutputBus() {
+        return getBlockState().is(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get());
     }
 
     @Override

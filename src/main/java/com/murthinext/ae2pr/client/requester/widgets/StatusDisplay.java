@@ -24,15 +24,14 @@ import static com.murthinext.ae2pr.block.redstone_requester.RequesterUtils.f;
 
 public class StatusDisplay extends AbstractWidget implements ITooltip {
 
-    private static final int WIDTH = 118;
     private static final int HEIGHT = 2;
 
     private final BooleanSupplier isInactive;
 
     private RequestStatus status = RequestStatus.IDLE;
 
-    StatusDisplay(int x, int y, BooleanSupplier isInactive) {
-        super(x, y, WIDTH, HEIGHT, Component.empty());
+    StatusDisplay(int x, int y, int width, BooleanSupplier isInactive) {
+        super(x, y, width, HEIGHT, Component.empty());
         this.isInactive = isInactive;
     }
 

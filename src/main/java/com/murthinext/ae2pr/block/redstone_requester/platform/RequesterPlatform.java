@@ -41,12 +41,12 @@ public final class RequesterPlatform {
         return Config.requesterRequireChannel();
     }
 
-    public static void sendRequestUpdate(long requesterId, int requestIndex, boolean state) {
+    public static void sendRequestState(long requesterId, int requestIndex, boolean state) {
         RequesterNetwork.CHANNEL.sendToServer(new RequestUpdatePacket(requesterId, requestIndex, state));
     }
 
-    public static void sendRequestUpdate(long requesterId, int requestIndex, long amount, long batch) {
-        RequesterNetwork.CHANNEL.sendToServer(new RequestUpdatePacket(requesterId, requestIndex, amount, batch));
+    public static void sendRequestAmount(long requesterId, int requestIndex, long amount) {
+        RequesterNetwork.CHANNEL.sendToServer(new RequestUpdatePacket(requesterId, requestIndex, amount));
     }
 
     public static void sendDragAndDrop(long requesterId, int requestIndex, ItemStack item) {

@@ -21,12 +21,12 @@ public class AssemblyLineMenu extends AbstractContainerMenu {
     private static final int INV_ROWS = 3;
     private static final int SLOT = 18;
 
-    private static final int INV_X = 7;
+    private static final int INV_X = 8;
     private static final int INV_Y = 122;
     private static final int HOTBAR_Y = 180;
 
     private final AssemblyLineControllerBlockEntity controller;
-    private final SimpleContainerData data = new SimpleContainerData(1);
+    private final SimpleContainerData data = new SimpleContainerData(5);
     private final boolean clientSide;
 
     public AssemblyLineMenu(int id, Inventory playerInventory, AssemblyLineControllerBlockEntity controller) {
@@ -51,12 +51,18 @@ public class AssemblyLineMenu extends AbstractContainerMenu {
                 .getBlockEntity(buffer.readBlockPos()));
     }
 
-    /** 每 tick 把成型/运行状态写入同步数据：bit0=已成型，bit1=正在运行。 */
+    /** 每 tick 把成型/运行/暂停状态、ME 电力情况与暂停原因写入同步数据：bit0=已成型，bit1=正在运行，bit2=暂停。 */
     @Override
     public void broadcastChanges() {
         if (!clientSide && controller != null) {
-            int flags = (controller.isFormed() ? 1 : 0) | (controller.isRunning() ? 2 : 0);
+            int flags = (controller.isFormed() ? 1 : 0) | (controller.isRunning() ? 2 : 0)
+                    | (controller.isPaused() ? 4 : 0);
+            long power = (long) Math.min(Math.max(controller.getNetworkStoredPower(), 0), Long.MAX_VALUE);
             data.set(0, flags);
+            data.set(1, controller.isEnergyConnected() ? 1 : 0);
+            data.set(2, (int) (power & 0xFFFFFFFFL));
+            data.set(3, (int) (power >>> 32));
+            data.set(4, controller.getError().ordinal());
         }
         super.broadcastChanges();
     }
@@ -67,6 +73,26 @@ public class AssemblyLineMenu extends AbstractContainerMenu {
 
     public boolean isRunning() {
         return (data.get(0) & 2) != 0;
+    }
+
+    /** 是否处于暂停态（电力或输出不足）。 */
+    public boolean isPaused() {
+        return (data.get(0) & 4) != 0;
+    }
+
+    /** 暂停原因序号（0 = 无，1 = 电力不足，2 = 输出不足）。 */
+    public int getErrorCode() {
+        return data.get(4);
+    }
+
+    /** 结构内是否有能源仓接入 ME 网络。 */
+    public boolean isEnergyConnected() {
+        return (data.get(1) & 1) != 0;
+    }
+
+    /** 结构内能源仓所接 ME 网络的可用能量合计（AE）。 */
+    public long getNetworkStoredPower() {
+        return (data.get(2) & 0xFFFFFFFFL) | ((long) data.get(3) << 32);
     }
 
     @Override

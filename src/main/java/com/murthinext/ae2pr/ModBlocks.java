@@ -11,6 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 import com.murthinext.ae2pr.block.assembly_line.AssemblyLineUnitBlock;
 import com.murthinext.ae2pr.block.assembly_line.CertusMachinePartBlock;
 import com.murthinext.ae2pr.block.assembly_line.CrystalAssemblyLineBlock;
+import com.murthinext.ae2pr.block.assembly_line.FluixCrystalEnergyHatchBlock;
 import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlock;
 
 /**
@@ -69,6 +70,10 @@ public final class ModBlocks {
     /** 赛特斯石英输出总线 */
     public static final RegistryObject<CertusMachinePartBlock> CERTUS_QUARTZ_OUTPUT_BUS = BLOCKS.register(
             "certus_quartz_output_bus", CertusMachinePartBlock::new);
+
+    /** 福鲁伊克斯水晶能源仓 */
+    public static final RegistryObject<FluixCrystalEnergyHatchBlock> FLUIX_CRYSTAL_ENERGY_HATCH = BLOCKS.register(
+            "fluix_crystal_energy_hatch", FluixCrystalEnergyHatchBlock::new);
 
     private static Block.Properties casingProperties() {
         return Block.Properties.of()
