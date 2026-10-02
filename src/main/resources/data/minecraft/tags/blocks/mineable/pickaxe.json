@@ -7,8 +7,8 @@
     "ae2pr:crystal_assembly_line_unit",
     "ae2pr:crystal_assembly_line_grating",
     "ae2pr:crystal_glass",
-    "ae2pr:certus_quartz_input_bus",
-    "ae2pr:certus_quartz_input_hatch",
-    "ae2pr:certus_quartz_output_bus"
+    "ae2pr:certus_quartz_crystal_input_bus",
+    "ae2pr:certus_quartz_crystal_input_hatch",
+    "ae2pr:certus_quartz_crystal_output_bus"
   ]
 }

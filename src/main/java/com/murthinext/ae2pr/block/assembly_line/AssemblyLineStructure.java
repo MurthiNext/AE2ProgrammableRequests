@@ -155,8 +155,8 @@ public final class AssemblyLineStructure {
                             updated = state.setValue(FluixCrystalEnergyHatchBlock.FORMED, partsFormed);
                         }
                     } else if (isPart(state)) {
-                        if (state.getValue(CertusMachinePartBlock.FORMED) != partsFormed) {
-                            updated = state.setValue(CertusMachinePartBlock.FORMED, partsFormed);
+                        if (state.getValue(CertusQuartzCrystalMachinePartBlock.FORMED) != partsFormed) {
+                            updated = state.setValue(CertusQuartzCrystalMachinePartBlock.FORMED, partsFormed);
                         }
                     }
                     if (updated != null) {
@@ -191,9 +191,9 @@ public final class AssemblyLineStructure {
     }
 
     private static boolean isPart(BlockState state) {
-        return state.is(ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get())
-                || state.is(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get())
-                || state.is(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get());
+        return state.is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_BUS.get())
+                || state.is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get())
+                || state.is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS.get());
     }
 
     private static Result check(Level level, BlockPos controllerPos, Direction sliceDir, Direction depthDir,
@@ -233,11 +233,11 @@ public final class AssemblyLineStructure {
             case 'S' -> state.is(ModBlocks.CRYSTAL_ASSEMBLY_LINE.get());
             // 机壳位允许用输入仓 / 能源仓替代（对应 GT 的“带流体仓 / 能源仓外壳”）
             case 'F' -> state.is(ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get())
-                    || state.is(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get())
+                    || state.is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get())
                     || state.is(ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get());
             case 'Y' -> state.is(ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get());
-            case 'I' -> state.is(ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get());
-            case 'O' -> state.is(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get());
+            case 'I' -> state.is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_BUS.get());
+            case 'O' -> state.is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS.get());
             case 'A' -> state.is(ModBlocks.CRYSTAL_ASSEMBLY_LINE_CASING.get());
             case 'G', 'D' -> state.is(ModBlocks.CRYSTAL_ASSEMBLY_LINE_GRATING.get());
             case 'R' -> state.is(ModBlocks.CRYSTAL_GLASS.get());

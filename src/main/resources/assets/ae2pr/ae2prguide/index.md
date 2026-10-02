@@ -12,7 +12,7 @@ navigation:
 
 ## 内容
 
-- [过滤元件](filter-cell.md)
-- [通式标准发信器](multi-level-emitter.md)
-- [通式阈值发信器](multi-threshold-level-emitter.md)
-- [水晶装配线](crystal-assembly-line.md)
+- [过滤元件](filter_cell.md)
+- [通式标准发信器](multi_level_emitter.md)
+- [通式阈值发信器](multi_threshold_level_emitter.md)
+- [水晶装配线](crystal_assembly_line.md)

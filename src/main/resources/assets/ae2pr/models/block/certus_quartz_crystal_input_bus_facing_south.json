@@ -5,8 +5,9 @@
     "top": "ae2pr:block/certus_quartz_crystal/casing",
     "side": "ae2pr:block/certus_quartz_crystal/casing",
     "particle": "#side",
-    "overlay": "ae2pr:block/overlay/energy_hatch",
-    "overlay_emissive": "ae2pr:block/overlay/energy_hatch_emissive"
+    "overlay_pipe": "ae2pr:block/overlay/pipe",
+    "overlay": "ae2pr:block/overlay/item_hatch_input",
+    "overlay_emissive": "ae2pr:block/overlay/pipe_in_emissive"
   },
   "elements": [
     {
@@ -60,7 +61,7 @@
       ],
       "faces": {
         "south": {
-          "texture": "#overlay",
+          "texture": "#overlay_pipe",
           "cullface": "south"
         }
       }
@@ -75,6 +76,24 @@
         16,
         16,
         16.02
+      ],
+      "faces": {
+        "south": {
+          "texture": "#overlay",
+          "cullface": "south"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        16.03
+      ],
+      "to": [
+        16,
+        16,
+        16.03
       ],
       "faces": {
         "south": {

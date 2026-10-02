@@ -20,7 +20,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import com.murthinext.ae2pr.ModBlockEntities;
 
 /**
- * 赛特斯石英输入仓方块实体：单类流体存储，上限 16K 桶（16,384,000 mB）。
+ * 赛特斯石英水晶输入仓方块实体：单类流体存储，上限 16K 桶（16,384,000 mB）。
  * <p>
  * 容器槽为「输入 → 输出」两格：输入格放入流体容器，每 {@link #TRANSFER_INTERVAL} tick 处理一次，
  * 空容器从罐中取液、满容器向罐中注液，处理后的容器移到输出格（输出格被占用时等待）。
@@ -80,7 +80,7 @@ public class FluidHatchBlockEntity extends BlockEntity {
     private int transferCounter;
 
     public FluidHatchBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.CERTUS_MACHINE_PART.get(), pos, state);
+        super(ModBlockEntities.CERTUS_QUARTZ_CRYSTAL_MACHINE_PART.get(), pos, state);
     }
 
     public FluidTank getTank() {
@@ -133,7 +133,7 @@ public class FluidHatchBlockEntity extends BlockEntity {
         if (!autoTransfer || level == null || level.isClientSide) {
             return;
         }
-        Direction facing = getBlockState().getValue(CertusMachinePartBlock.FACING);
+        Direction facing = getBlockState().getValue(CertusQuartzCrystalMachinePartBlock.FACING);
         BlockEntity target = level.getBlockEntity(worldPosition.relative(facing));
         if (target == null) {
             return;

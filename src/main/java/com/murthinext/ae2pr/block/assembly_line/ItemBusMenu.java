@@ -21,7 +21,7 @@ import com.murthinext.ae2pr.ModNetwork;
 import com.murthinext.ae2pr.network.MachinePartStackPacket;
 
 /**
- * 赛特斯石英输入/输出总线的容器菜单：机器存储单类、上限 32K 件。
+ * 赛特斯石英水晶输入/输出总线的容器菜单：机器存储单类、上限 32K 件。
  * <p>
  * 存储量超过原版槽位同步上限（数量按 byte 传输），因此不占槽位：
  * 展示由 {@link MachinePartStackPacket} 同步，操作由点击包驱动（见 {@link #handleStorageClick}）。
@@ -79,7 +79,7 @@ public class ItemBusMenu extends AbstractContainerMenu {
 
     /** 是否是输出总线（决定客户端界面贴图）。 */
     public boolean isOutputBus() {
-        return blockEntity != null && blockEntity.getBlockState().is(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get());
+        return blockEntity != null && blockEntity.getBlockState().is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS.get());
     }
 
     /** 机器存储内容（数量即储量；客户端为同步数据）。 */

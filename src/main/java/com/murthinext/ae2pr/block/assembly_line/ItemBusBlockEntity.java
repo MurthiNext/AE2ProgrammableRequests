@@ -19,7 +19,7 @@ import com.murthinext.ae2pr.ModBlockEntities;
 import com.murthinext.ae2pr.ModBlocks;
 
 /**
- * 赛特斯石英输入/输出总线方块实体：单格物品存储，仅存一类，上限 32K（32768）件。
+ * 赛特斯石英水晶输入/输出总线方块实体：单格物品存储，仅存一类，上限 32K（32768）件。
  * <p>
  * 输出总线只接收配方输出，禁止玩家/外部存入。
  * <p>
@@ -102,7 +102,7 @@ public class ItemBusBlockEntity extends BlockEntity {
     private final LazyOptional<IItemHandler> storageCapability;
 
     public ItemBusBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.CERTUS_MACHINE_PART.get(), pos, state);
+        super(ModBlockEntities.CERTUS_QUARTZ_CRYSTAL_MACHINE_PART.get(), pos, state);
         this.exposedStorage = isOutputBus() ? externalStorage : storage;
         this.storageCapability = LazyOptional.of(() -> exposedStorage);
     }
@@ -132,7 +132,7 @@ public class ItemBusBlockEntity extends BlockEntity {
 
     /** 是否是输出总线。 */
     public boolean isOutputBus() {
-        return getBlockState().is(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get());
+        return getBlockState().is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS.get());
     }
 
     public boolean isAutoTransfer() {
@@ -149,7 +149,7 @@ public class ItemBusBlockEntity extends BlockEntity {
         if (!autoTransfer || level == null || level.isClientSide) {
             return;
         }
-        Direction facing = getBlockState().getValue(CertusMachinePartBlock.FACING);
+        Direction facing = getBlockState().getValue(CertusQuartzCrystalMachinePartBlock.FACING);
         BlockEntity target = level.getBlockEntity(worldPosition.relative(facing));
         if (target == null) {
             return;

@@ -70,18 +70,18 @@ public final class ModItems {
     public static final RegistryObject<BlockItem> CRYSTAL_GLASS = ITEMS.register("crystal_glass",
             () -> new BlockItem(ModBlocks.CRYSTAL_GLASS.get(), new Item.Properties()));
 
-    /** 赛特斯石英输入总线 */
-    public static final RegistryObject<BlockItem> CERTUS_QUARTZ_INPUT_BUS = ITEMS.register("certus_quartz_input_bus",
-            () -> new BlockItem(ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get(), new Item.Properties()));
+    /** 赛特斯石英水晶输入总线 */
+    public static final RegistryObject<BlockItem> CERTUS_QUARTZ_CRYSTAL_INPUT_BUS = ITEMS.register("certus_quartz_crystal_input_bus",
+            () -> new BlockItem(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_BUS.get(), new Item.Properties()));
 
-    /** 赛特斯石英输入仓 */
-    public static final RegistryObject<BlockItem> CERTUS_QUARTZ_INPUT_HATCH = ITEMS.register(
-            "certus_quartz_input_hatch",
-            () -> new BlockItem(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get(), new Item.Properties()));
+    /** 赛特斯石英水晶输入仓 */
+    public static final RegistryObject<BlockItem> CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH = ITEMS.register(
+            "certus_quartz_crystal_input_hatch",
+            () -> new BlockItem(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get(), new Item.Properties()));
 
-    /** 赛特斯石英输出总线 */
-    public static final RegistryObject<BlockItem> CERTUS_QUARTZ_OUTPUT_BUS = ITEMS.register("certus_quartz_output_bus",
-            () -> new BlockItem(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get(), new Item.Properties()));
+    /** 赛特斯石英水晶输出总线 */
+    public static final RegistryObject<BlockItem> CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS = ITEMS.register("certus_quartz_crystal_output_bus",
+            () -> new BlockItem(ModBlocks.CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS.get(), new Item.Properties()));
 
     /** 福鲁伊克斯水晶能源仓 */
     public static final RegistryObject<BlockItem> FLUIX_CRYSTAL_ENERGY_HATCH = ITEMS.register(

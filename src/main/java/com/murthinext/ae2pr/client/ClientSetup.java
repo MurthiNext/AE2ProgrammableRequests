@@ -53,8 +53,8 @@ public final class ClientSetup {
                 RedstoneRequesterScreen::new,
                 "/screens/redstone_requester.json");
         MenuScreens.register(ModMenus.CRYSTAL_ASSEMBLY_LINE.get(), AssemblyLineScreen::new);
-        MenuScreens.register(ModMenus.CERTUS_QUARTZ_ITEM_BUS.get(), ItemBusScreen::new);
-        MenuScreens.register(ModMenus.CERTUS_QUARTZ_INPUT_HATCH.get(), FluidHatchScreen::new);
+        MenuScreens.register(ModMenus.CERTUS_QUARTZ_CRYSTAL_ITEM_BUS.get(), ItemBusScreen::new);
+        MenuScreens.register(ModMenus.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get(), FluidHatchScreen::new);
     }
 
     /** 为 ae2pr 的方块模型套上连接纹理包装（按世界邻居重写 UV）。 */
@@ -76,9 +76,9 @@ public final class ClientSetup {
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_GLASS.get(), RenderType.cutoutMipped());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_ASSEMBLY_LINE.get(), RenderType.cutoutMipped());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_ASSEMBLY_LINE_UNIT.get(), RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get(), RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get(), RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_BUS.get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS.get(), RenderType.cutoutMipped());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get(), RenderType.cutoutMipped());
         });
     }

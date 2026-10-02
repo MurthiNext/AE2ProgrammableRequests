@@ -9,7 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.murthinext.ae2pr.block.assembly_line.AssemblyLineUnitBlock;
-import com.murthinext.ae2pr.block.assembly_line.CertusMachinePartBlock;
+import com.murthinext.ae2pr.block.assembly_line.CertusQuartzCrystalMachinePartBlock;
 import com.murthinext.ae2pr.block.assembly_line.CrystalAssemblyLineBlock;
 import com.murthinext.ae2pr.block.assembly_line.FluixCrystalEnergyHatchBlock;
 import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlock;
@@ -59,17 +59,17 @@ public final class ModBlocks {
                     .sound(SoundType.GLASS)
                     .noOcclusion()));
 
-    /** 赛特斯石英输入总线 */
-    public static final RegistryObject<CertusMachinePartBlock> CERTUS_QUARTZ_INPUT_BUS = BLOCKS.register(
-            "certus_quartz_input_bus", CertusMachinePartBlock::new);
+    /** 赛特斯石英水晶输入总线 */
+    public static final RegistryObject<CertusQuartzCrystalMachinePartBlock> CERTUS_QUARTZ_CRYSTAL_INPUT_BUS = BLOCKS.register(
+            "certus_quartz_crystal_input_bus", CertusQuartzCrystalMachinePartBlock::new);
 
-    /** 赛特斯石英输入仓 */
-    public static final RegistryObject<CertusMachinePartBlock> CERTUS_QUARTZ_INPUT_HATCH = BLOCKS.register(
-            "certus_quartz_input_hatch", CertusMachinePartBlock::new);
+    /** 赛特斯石英水晶输入仓 */
+    public static final RegistryObject<CertusQuartzCrystalMachinePartBlock> CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH = BLOCKS.register(
+            "certus_quartz_crystal_input_hatch", CertusQuartzCrystalMachinePartBlock::new);
 
-    /** 赛特斯石英输出总线 */
-    public static final RegistryObject<CertusMachinePartBlock> CERTUS_QUARTZ_OUTPUT_BUS = BLOCKS.register(
-            "certus_quartz_output_bus", CertusMachinePartBlock::new);
+    /** 赛特斯石英水晶输出总线 */
+    public static final RegistryObject<CertusQuartzCrystalMachinePartBlock> CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS = BLOCKS.register(
+            "certus_quartz_crystal_output_bus", CertusQuartzCrystalMachinePartBlock::new);
 
     /** 福鲁伊克斯水晶能源仓 */
     public static final RegistryObject<FluixCrystalEnergyHatchBlock> FLUIX_CRYSTAL_ENERGY_HATCH = BLOCKS.register(
