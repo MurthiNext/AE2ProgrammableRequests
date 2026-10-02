@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
 
 import com.murthinext.ae2pr.ModBlocks;
@@ -37,7 +38,7 @@ import com.murthinext.ae2pr.ModTags;
 /**
  * 赛特斯石英机器部件方块（输入总线 / 输入仓 / 输出总线）。
  * <p>
- * 扳手右键旋转；空手或非扳手右键打开对应界面：总线提供单类物品存储，输入仓提供单类流体存储。
+ * 扳手右键旋转，Shift+右键拆卸。
  */
 public class CertusMachinePartBlock extends Block implements EntityBlock {
 
@@ -100,6 +101,9 @@ public class CertusMachinePartBlock extends Block implements EntityBlock {
             BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         if (stack.is(ModTags.WRENCHES)) {
+            if (player.isSecondaryUseActive()) {
+                return disassemble(level, pos, state, player);
+            }
             return rotate(level, pos, state);
         }
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
@@ -124,17 +128,25 @@ public class CertusMachinePartBlock extends Block implements EntityBlock {
         }
     }
 
-    /** 扳手旋转：仅未成型时允许，避免误操作破坏已建成的机器。 */
+    /** 扳手旋转：成型后也可调整朝向面（仅影响该部件的拉取/推出方向，不影响结构检测）。 */
     private static InteractionResult rotate(Level level, BlockPos pos, BlockState state) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
-        if (state.getValue(FORMED)) {
-            return InteractionResult.PASS;
-        }
         level.setBlock(pos, state.setValue(FACING, nextFacing(state.getValue(FACING))), Block.UPDATE_ALL);
         level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.BLOCKS, 0.8F, 1.0F);
         return InteractionResult.SUCCESS;
+    }
+
+    /** 扳手 Shift+右键快速拆卸：部件本体回收到玩家背包，内部物品经 {@link #onRemove} 照常掉落。 */
+    private static InteractionResult disassemble(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide) {
+            level.removeBlock(pos, false);
+            ItemStack part = new ItemStack(state.getBlock());
+            ItemHandlerHelper.giveItemToPlayer(player, part);
+            level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.8F, 1.0F);
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     private static Direction nextFacing(Direction current) {
