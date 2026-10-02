@@ -1,6 +1,9 @@
 package com.murthinext.ae2pr.client.assembly_line;
 
 import java.text.NumberFormat;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -50,18 +53,36 @@ public class ItemBusScreen extends AbstractContainerScreen<ItemBusMenu> {
 
     private static final NumberFormat NUMBER = NumberFormat.getIntegerInstance();
 
+    /** 左侧工具栏位置（相对 GUI 左上角） */
+    private static final int TOOLBAR_X = -22;
+    private static final int TOOLBAR_Y = 2;
+
+    @Nullable
+    private AutoTransferButton autoTransferButton;
+
     public ItemBusScreen(ItemBusMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = 176;
         this.imageHeight = 200;
     }
 
-    /** 客户端同步入口：把服务端存储内容写入本地方块实体（仅由同步包调用）。 */
-    public static void applyStackSync(BlockPos pos, ItemStack stack) {
+    /** 客户端同步入口：把服务端存储内容与自动搬运开关写入本地方块实体（仅由同步包调用）。 */
+    public static void applyStackSync(BlockPos pos, ItemStack stack, boolean autoTransfer) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.level != null && minecraft.level.getBlockEntity(pos) instanceof ItemBusBlockEntity bus) {
             bus.getStorage().setStackInSlot(0, stack);
+            bus.setAutoTransfer(autoTransfer);
         }
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        autoTransferButton = new AutoTransferButton(leftPos + TOOLBAR_X + 1, topPos + TOOLBAR_Y + 1,
+                menu.isOutputBus() ? AutoTransferButton.Type.PUSH : AutoTransferButton.Type.PULL,
+                this::autoTransferEnabled,
+                () -> Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, 0));
+        addRenderableWidget(autoTransferButton);
     }
 
     @Override
@@ -75,6 +96,7 @@ public class ItemBusScreen extends AbstractContainerScreen<ItemBusMenu> {
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(menu.isOutputBus() ? TEXTURE_OUTPUT : TEXTURE_INPUT, leftPos, topPos, 0, 0,
                 imageWidth, imageHeight);
+        AutoTransferButton.renderToolbar(graphics, leftPos + TOOLBAR_X, topPos + TOOLBAR_Y, 1);
         renderStoredItem(graphics);
         if (isHoveringStorage(mouseX, mouseY)) {
             // 与原生槽位一致：白色高亮叠加在物品之上
@@ -107,6 +129,18 @@ public class ItemBusScreen extends AbstractContainerScreen<ItemBusMenu> {
     /** 存储区悬停：按槽位惯例显示物品 tooltip。 */
     @Override
     protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (autoTransferButton != null && autoTransferButton.isHovered()) {
+            boolean enabled = autoTransferEnabled();
+            boolean output = menu.isOutputBus();
+            graphics.renderComponentTooltip(font, List.of(
+                    Component.translatable(output ? "gui.ae2pr.machine_part.auto.push"
+                            : "gui.ae2pr.machine_part.auto.pull"),
+                    Component.translatable(enabled ? "gui.ae2pr.machine_part.auto.enabled"
+                            : "gui.ae2pr.machine_part.auto.disabled"),
+                    Component.translatable("gui.ae2pr.machine_part.auto.desc")),
+                    mouseX, mouseY);
+            return;
+        }
         if (isHoveringStorage(mouseX, mouseY)) {
             ItemStack stored = menu.getStoredStack();
             if (!stored.isEmpty()) {
@@ -159,6 +193,21 @@ public class ItemBusScreen extends AbstractContainerScreen<ItemBusMenu> {
         int x = leftPos + STORAGE_X;
         int y = topPos + STORAGE_Y;
         return mouseX >= x - 1 && mouseX < x + 17 && mouseY >= y - 1 && mouseY < y + 17;
+    }
+
+    private boolean autoTransferEnabled() {
+        ItemBusBlockEntity bus = clientBus();
+        return bus == null || bus.isAutoTransfer();
+    }
+
+    @Nullable
+    private ItemBusBlockEntity clientBus() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level != null
+                && minecraft.level.getBlockEntity(menu.getBlockPos()) instanceof ItemBusBlockEntity bus) {
+            return bus;
+        }
+        return null;
     }
 
     private static Component storedText(ItemStack stored) {

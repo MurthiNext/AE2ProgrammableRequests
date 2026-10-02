@@ -13,7 +13,7 @@ import com.murthinext.ae2pr.block.assembly_line.ItemBusBlockEntity;
 import com.murthinext.ae2pr.block.redstone_requester.RedstoneRequesterBlockEntity;
 
 /**
- * 方块实体类型注册入口。
+ * 方块实体注册入口。
  */
 public final class ModBlockEntities {
 

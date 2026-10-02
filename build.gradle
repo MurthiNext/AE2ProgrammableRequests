@@ -69,13 +69,14 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    // 本地离线依赖（如 JEI 等编译期依赖；libs/ 已被忽略提交）
+    // 本地离线依赖（如 JEI / Jade 等编译期依赖；libs/ 已被忽略提交）
     if (file('libs/maven').isDirectory()) {
         maven {
             name = 'LocalLibs'
             url = file('libs/maven').toURI()
             content {
                 includeGroup 'mezz.jei'
+                includeGroup 'maven.modrinth'
             }
         }
     }
@@ -115,6 +116,10 @@ dependencies {
     runtimeOnly fg.deobf("org.appliedenergistics:guideme:${guideme_version}")
     // ME Requester: optional soft-dependency, used only to compile the compatibility mixins.
     compileOnly fg.deobf("maven.modrinth:merequester:${merequester_version}")
+
+    // Jade: optional soft-dependency for tooltip compatibility.
+    compileOnly fg.deobf("maven.modrinth:jade:${jade_version}")
+    runtimeOnly fg.deobf("maven.modrinth:jade:${jade_version}")
 
     // JEI: optional soft-dependency for recipe display, compile-only.
     // 离线时从 libs/maven 提供（见 repositories），在线时从 maven 拉取。

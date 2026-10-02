@@ -42,6 +42,8 @@ public class ItemBusMenu extends AbstractContainerMenu {
     private final ItemBusBlockEntity blockEntity;
     private ItemStack lastSentStack = ItemStack.EMPTY;
     private boolean stackSynced;
+    private boolean lastAutoTransfer;
+    private boolean autoTransferSynced;
 
     private ItemBusMenu(int id, Inventory playerInventory, BlockPos pos, @Nullable ItemBusBlockEntity blockEntity) {
         super(TYPE, id);
@@ -85,18 +87,33 @@ public class ItemBusMenu extends AbstractContainerMenu {
         return blockEntity != null ? blockEntity.getStorage().getStackInSlot(0) : ItemStack.EMPTY;
     }
 
-    /** 服务端每 tick：存储内容变化时向打开界面的玩家发送同步包；首次广播强制同步一次。 */
+    /** 服务端每 tick：存储内容或自动搬运开关变化时向打开界面的玩家发送同步包；首次广播强制同步一次。 */
     @Override
     public void broadcastChanges() {
         if (blockEntity != null && owner instanceof ServerPlayer serverPlayer) {
             ItemStack current = blockEntity.getStorage().getStackInSlot(0);
-            if (!stackSynced || !ItemStack.matches(current, lastSentStack)) {
+            boolean autoTransfer = blockEntity.isAutoTransfer();
+            if (!stackSynced || !autoTransferSynced || autoTransfer != lastAutoTransfer
+                    || !ItemStack.matches(current, lastSentStack)) {
                 stackSynced = true;
+                autoTransferSynced = true;
                 lastSentStack = current.copy();
-                ModNetwork.sendToPlayer(serverPlayer, new MachinePartStackPacket(pos, lastSentStack));
+                lastAutoTransfer = autoTransfer;
+                ModNetwork.sendToPlayer(serverPlayer,
+                        new MachinePartStackPacket(pos, lastSentStack, autoTransfer));
             }
         }
         super.broadcastChanges();
+    }
+
+    /** 工具栏按钮点击：id 0 = 切换自动搬运。 */
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id == 0 && serverSide && blockEntity != null) {
+            blockEntity.setAutoTransfer(!blockEntity.isAutoTransfer());
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -113,12 +130,16 @@ public class ItemBusMenu extends AbstractContainerMenu {
             return;
         }
         if (shift) {
-            ItemStack taken = blockEntity.getStorage().extractItem(0, Integer.MAX_VALUE, false);
-            if (taken.isEmpty()) {
-                return;
-            }
-            if (!moveItemStackTo(taken, 0, slots.size(), true) || !taken.isEmpty()) {
-                ItemHandlerHelper.insertItemStacked(blockEntity.getStorage(), taken, false);
+            // 单次抽取最多只能取走物品的堆叠上限（64），循环取到背包放不下或总线清空
+            while (true) {
+                ItemStack taken = blockEntity.getStorage().extractItem(0, Integer.MAX_VALUE, false);
+                if (taken.isEmpty()) {
+                    break;
+                }
+                if (!moveItemStackTo(taken, 0, slots.size(), true) || !taken.isEmpty()) {
+                    ItemHandlerHelper.insertItemStacked(blockEntity.getStorage(), taken, false);
+                    break;
+                }
             }
         } else if (!getCarried().isEmpty()) {
             if (!blockEntity.acceptsPlayerInsert()) {

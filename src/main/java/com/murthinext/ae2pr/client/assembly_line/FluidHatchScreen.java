@@ -51,18 +51,35 @@ public class FluidHatchScreen extends AbstractContainerScreen<FluidHatchMenu> {
 
     private static final NumberFormat NUMBER = NumberFormat.getIntegerInstance();
 
+    /** 左侧工具栏位置（相对 GUI 左上角） */
+    private static final int TOOLBAR_X = -22;
+    private static final int TOOLBAR_Y = 2;
+
+    @Nullable
+    private AutoTransferButton autoTransferButton;
+
     public FluidHatchScreen(FluidHatchMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = 176;
         this.imageHeight = 200;
     }
 
-    /** 客户端同步入口：把服务端罐内流体写入本地方块实体（仅由同步包调用）。 */
-    public static void applyFluidSync(BlockPos pos, FluidStack fluid) {
+    /** 客户端同步入口：把服务端罐内流体与自动搬运开关写入本地方块实体（仅由同步包调用）。 */
+    public static void applyFluidSync(BlockPos pos, FluidStack fluid, boolean autoTransfer) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.level != null && minecraft.level.getBlockEntity(pos) instanceof FluidHatchBlockEntity hatch) {
             hatch.applyClientFluid(fluid);
+            hatch.setAutoTransfer(autoTransfer);
         }
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        autoTransferButton = new AutoTransferButton(leftPos + TOOLBAR_X + 1, topPos + TOOLBAR_Y + 1,
+                AutoTransferButton.Type.PULL, this::autoTransferEnabled,
+                () -> Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, 0));
+        addRenderableWidget(autoTransferButton);
     }
 
     @Override
@@ -75,12 +92,23 @@ public class FluidHatchScreen extends AbstractContainerScreen<FluidHatchMenu> {
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        AutoTransferButton.renderToolbar(graphics, leftPos + TOOLBAR_X, topPos + TOOLBAR_Y, 1);
         renderFluid(graphics);
     }
 
     /** 罐区悬停：显示所存流体与数量。 */
     @Override
     protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (autoTransferButton != null && autoTransferButton.isHovered()) {
+            boolean enabled = autoTransferEnabled();
+            graphics.renderComponentTooltip(font, List.of(
+                    Component.translatable("gui.ae2pr.machine_part.auto.pull"),
+                    Component.translatable(enabled ? "gui.ae2pr.machine_part.auto.enabled"
+                            : "gui.ae2pr.machine_part.auto.disabled"),
+                    Component.translatable("gui.ae2pr.machine_part.auto.desc")),
+                    mouseX, mouseY);
+            return;
+        }
         if (isHoveringTank(mouseX, mouseY)) {
             FluidStack fluid = clientFluid();
             if (!fluid.isEmpty()) {
@@ -155,6 +183,11 @@ public class FluidHatchScreen extends AbstractContainerScreen<FluidHatchMenu> {
         }
         graphics.disableScissor();
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    private boolean autoTransferEnabled() {
+        FluidHatchBlockEntity hatch = clientHatch();
+        return hatch == null || hatch.isAutoTransfer();
     }
 
     private FluidStack clientFluid() {

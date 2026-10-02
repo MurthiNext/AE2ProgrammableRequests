@@ -1,14 +1,21 @@
 package com.murthinext.ae2pr.client.assembly_line;
 
+import java.text.NumberFormat;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.util.ReadableNumberConverter;
 
 import com.murthinext.ae2pr.ae2pr;
+import com.murthinext.ae2pr.block.assembly_line.AssemblyLineControllerBlockEntity;
 import com.murthinext.ae2pr.block.assembly_line.AssemblyLineMenu;
 
 /**
@@ -25,6 +32,17 @@ public class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLineMenu
     private static final int POWER_Y = 44;
     private static final int ERROR_Y = 58;
 
+    /** 作业展示区：产物图标、文本与进度条（与 GUI 贴图留白对齐） */
+    private static final int JOB_ITEM_X = 7;
+    private static final int JOB_ITEM_Y = 70;
+    private static final int JOB_TEXT_X = 27;
+    private static final int JOB_TEXT_Y = 74;
+    private static final int JOB_TIME_Y = 92;
+    private static final int PROGRESS_X = 7;
+    private static final int PROGRESS_Y = 105;
+    private static final int PROGRESS_W = 162;
+    private static final int PROGRESS_H = 6;
+
     private static final int COLOR_TITLE = 0x55FFFF;
     private static final int COLOR_OK = 0x55FF55;
     private static final int COLOR_FAIL = 0xFF5555;
@@ -32,11 +50,23 @@ public class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLineMenu
     private static final int COLOR_PAUSED = 0xFFDE00;
     private static final int COLOR_POWER = 0xACE9FF;
     private static final int COLOR_GRAY = 0x7A8794;
+    private static final int COLOR_PROGRESS = 0xFF3E9BC8;
+    private static final int COLOR_PROGRESS_BG = 0xFF1B222B;
+    private static final int COLOR_PROGRESS_BORDER = 0xFF39424E;
 
     public AssemblyLineScreen(AssemblyLineMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = 176;
         this.imageHeight = 200;
+    }
+
+    /** 客户端同步入口：把服务端当前作业产物写入本地方块实体（仅由同步包调用）。 */
+    public static void applyJobSync(BlockPos pos, ItemStack stack) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level != null
+                && minecraft.level.getBlockEntity(pos) instanceof AssemblyLineControllerBlockEntity controller) {
+            controller.applyClientJobOutput(stack);
+        }
     }
 
     @Override
@@ -49,6 +79,25 @@ public class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLineMenu
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        renderJob(graphics);
+    }
+
+    /** 作业区：产物图标与进度条（无作业时不绘制）。 */
+    private void renderJob(GuiGraphics graphics) {
+        ItemStack output = menu.getJobOutput();
+        int duration = menu.getJobDuration();
+        if (output.isEmpty() || duration <= 0) {
+            return;
+        }
+        graphics.renderItem(output, leftPos + JOB_ITEM_X, topPos + JOB_ITEM_Y);
+        int track = PROGRESS_W - 2;
+        int filled = (int) Math.min(track, (long) track * menu.getJobElapsed() / duration);
+        graphics.fill(leftPos + PROGRESS_X, topPos + PROGRESS_Y, leftPos + PROGRESS_X + PROGRESS_W,
+                topPos + PROGRESS_Y + PROGRESS_H, COLOR_PROGRESS_BORDER);
+        graphics.fill(leftPos + PROGRESS_X + 1, topPos + PROGRESS_Y + 1,
+                leftPos + PROGRESS_X + PROGRESS_W - 1, topPos + PROGRESS_Y + PROGRESS_H - 1, COLOR_PROGRESS_BG);
+        graphics.fill(leftPos + PROGRESS_X + 1, topPos + PROGRESS_Y + 1,
+                leftPos + PROGRESS_X + 1 + filled, topPos + PROGRESS_Y + PROGRESS_H - 1, COLOR_PROGRESS);
     }
 
     @Override
@@ -65,6 +114,50 @@ public class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLineMenu
         if (error != null) {
             graphics.drawString(font, error, TEXT_X, ERROR_Y, COLOR_FAIL, false);
         }
+        // 作业区：产物名称 × 数量 + 进行时间 / 配方总耗时
+        ItemStack output = menu.getJobOutput();
+        int duration = menu.getJobDuration();
+        if (output.isEmpty() || duration <= 0) {
+            graphics.drawString(font, Component.translatable("gui.ae2pr.crystal_assembly_line.job.idle"),
+                    JOB_ITEM_X, JOB_TEXT_Y, COLOR_GRAY, false);
+            return;
+        }
+        String count = "x" + NumberFormat.getIntegerInstance().format(output.getCount());
+        int maxNameWidth = imageWidth - 2 - JOB_TEXT_X - font.width(" ") - font.width(count);
+        graphics.drawString(font, Component.translatable("gui.ae2pr.crystal_assembly_line.job.item",
+                clip(output.getHoverName().getString(), maxNameWidth), count),
+                JOB_TEXT_X, JOB_TEXT_Y, COLOR_POWER, false);
+        graphics.drawString(font, Component.translatable("gui.ae2pr.crystal_assembly_line.job.time",
+                seconds(menu.getJobElapsed()), seconds(duration)), JOB_ITEM_X, JOB_TIME_Y, COLOR_GRAY, false);
+    }
+
+    /** 作业区物品悬停：显示产物 tooltip。 */
+    @Override
+    protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        ItemStack output = menu.getJobOutput();
+        if (!output.isEmpty() && isHoveringJobItem(mouseX, mouseY)) {
+            graphics.renderTooltip(font, Screen.getTooltipFromItem(Minecraft.getInstance(), output),
+                    output.getTooltipImage(), output, mouseX, mouseY);
+            return;
+        }
+        super.renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    private boolean isHoveringJobItem(int mouseX, int mouseY) {
+        int x = leftPos + JOB_ITEM_X;
+        int y = topPos + JOB_ITEM_Y;
+        return mouseX >= x - 1 && mouseX < x + 17 && mouseY >= y - 1 && mouseY < y + 17;
+    }
+
+    private String clip(String text, int maxWidth) {
+        if (font.width(text) <= maxWidth) {
+            return text;
+        }
+        return font.plainSubstrByWidth(text, Math.max(0, maxWidth - font.width("…"))) + "…";
+    }
+
+    private static String seconds(int ticks) {
+        return String.format(java.util.Locale.ROOT, "%.1f", ticks / 20.0D);
     }
 
     /** 暂停原因文本（无暂停时为 null）。 */

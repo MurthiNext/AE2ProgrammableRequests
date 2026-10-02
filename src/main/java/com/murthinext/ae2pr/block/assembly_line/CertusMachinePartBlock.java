@@ -83,12 +83,14 @@ public class CertusMachinePartBlock extends Block implements EntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
             BlockEntityType<T> type) {
-        if (level.isClientSide || !state.is(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get())) {
+        if (level.isClientSide) {
             return null;
         }
         return (tickLevel, pos, tickState, blockEntity) -> {
             if (blockEntity instanceof FluidHatchBlockEntity hatch) {
                 hatch.serverTick();
+            } else if (blockEntity instanceof ItemBusBlockEntity bus) {
+                bus.serverTick();
             }
         };
     }

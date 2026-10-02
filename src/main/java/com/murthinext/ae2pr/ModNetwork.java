@@ -1,5 +1,6 @@
 package com.murthinext.ae2pr;
 
+import com.murthinext.ae2pr.network.AssemblyLineJobPacket;
 import com.murthinext.ae2pr.network.BusSlotClickPacket;
 import com.murthinext.ae2pr.network.MachinePartFluidPacket;
 import com.murthinext.ae2pr.network.MachinePartStackPacket;
@@ -15,7 +16,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 /**
- * 模组自有网络通道（仅用于 S2C 展示数据；C2S 轮数同步复用 AE2 菜单 client action）。
+ * 模组自有网络通道。
  */
 public final class ModNetwork {
     private static final String PROTOCOL_VERSION = "1";
@@ -80,6 +81,12 @@ public final class ModNetwork {
                 BusSlotClickPacket::encode,
                 BusSlotClickPacket::decode,
                 BusSlotClickPacket::handle);
+
+        CHANNEL.registerMessage(nextMessageId++,
+                AssemblyLineJobPacket.class,
+                AssemblyLineJobPacket::encode,
+                AssemblyLineJobPacket::decode,
+                AssemblyLineJobPacket::handle);
     }
 
     public static void sendToPlayer(ServerPlayer player, RepeatOrderStatusPacket packet) {
@@ -107,6 +114,10 @@ public final class ModNetwork {
     }
 
     public static void sendToPlayer(ServerPlayer player, MachinePartStackPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, AssemblyLineJobPacket packet) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
     }
 

@@ -31,10 +31,6 @@ import com.murthinext.ae2pr.ae2pr;
 
 /**
  * 水晶装配线配方。
- * <p>
- * 物品输入默认有序：第 i 个输入对应第 i 个输入总线（从主机侧到另一侧）；
- * 流体输入默认无序：任意输入仓提供即可。两种顺序需求均可在配置文件中调整。
- * 单次执行消耗 {@code duration} tick，产物只输出到输出总线。
  */
 public class CrystalAssemblyLineRecipe implements Recipe<Container> {
 
@@ -61,12 +57,12 @@ public class CrystalAssemblyLineRecipe implements Recipe<Container> {
         this.duration = duration;
     }
 
-    /** 物品输入（有序） */
+    /** 物品输入 */
     public List<ItemInput> getItemInputs() {
         return itemInputs;
     }
 
-    /** 流体输入（无序或有序，取决于配置） */
+    /** 流体输入 */
     public List<FluidStack> getFluidInputs() {
         return fluidInputs;
     }

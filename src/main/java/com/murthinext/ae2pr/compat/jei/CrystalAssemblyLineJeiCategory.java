@@ -1,6 +1,7 @@
 package com.murthinext.ae2pr.compat.jei;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.ChatFormatting;
@@ -34,7 +35,6 @@ public class CrystalAssemblyLineJeiCategory implements IRecipeCategory<CrystalAs
     public static final RecipeType<CrystalAssemblyLineRecipe> RECIPE_TYPE = RecipeType.create(
             ae2pr.MODID, "crystal_assembly_line", CrystalAssemblyLineRecipe.class);
 
-    /** 槽位 18px、边距 4px（与 GT 一致） */
     private static final int SLOT = 18;
     private static final int PADDING = 4;
     private static final int ITEM_COLS = 4;
@@ -51,7 +51,6 @@ public class CrystalAssemblyLineJeiCategory implements IRecipeCategory<CrystalAs
     private static final int INFO_Y = GRID_HEIGHT + 4;
     private static final int WIDTH = OUTPUT_X + SLOT + PADDING;
     private static final int HEIGHT = INFO_Y + 3 * 10 + 2;
-    /** 本模组自绘的 JEI 风格配方箭头（22x16 内容，256x256 画布） */
     private static final ResourceLocation ARROW = new ResourceLocation(ae2pr.MODID,
             "textures/gui/jei/recipe_arrow.png");
 
@@ -97,7 +96,7 @@ public class CrystalAssemblyLineJeiCategory implements IRecipeCategory<CrystalAs
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CrystalAssemblyLineRecipe recipe, IFocusGroup focuses) {
-        // 物品输入：4x4，有序（左→右、上→下）
+        // 物品输入
         List<CrystalAssemblyLineRecipe.ItemInput> itemInputs = recipe.getItemInputs();
         for (int i = 0; i < MAX_ITEM_INPUTS; i++) {
             IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.INPUT,
@@ -108,15 +107,17 @@ public class CrystalAssemblyLineJeiCategory implements IRecipeCategory<CrystalAs
             }
             CrystalAssemblyLineRecipe.ItemInput input = itemInputs.get(i);
             final int inputIndex = i;
-            slot.addIngredients(input.ingredient());
-            slot.addRichTooltipCallback((view, tooltip) -> {
-                tooltip.add(Component.translatable("jei.ae2pr.crystal_assembly_line.count", input.count())
-                        .withStyle(ChatFormatting.GRAY));
-                tooltip.add(orderTooltip(inputIndex, Config.assemblyItemsOrdered()));
-            });
+            // 消耗数量直接写入 ItemStack
+            List<ItemStack> stacks = new ArrayList<>(input.ingredient().getItems().length);
+            for (ItemStack stack : input.ingredient().getItems()) {
+                stacks.add(stack.copyWithCount(input.count()));
+            }
+            slot.addItemStacks(stacks);
+            slot.addRichTooltipCallback(
+                    (view, tooltip) -> tooltip.add(orderTooltip(inputIndex, Config.assemblyItemsOrdered())));
         }
 
-        // 流体输入：1 列 4 行
+        // 流体输入
         List<FluidStack> fluidInputs = recipe.getFluidInputs();
         for (int i = 0; i < MAX_FLUID_INPUTS; i++) {
             IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.INPUT,
@@ -133,7 +134,7 @@ public class CrystalAssemblyLineJeiCategory implements IRecipeCategory<CrystalAs
                     (view, tooltip) -> tooltip.add(orderTooltip(fluidIndex, Config.assemblyFluidsOrdered())));
         }
 
-        // 产物：最右一个槽位（与输入槽同尺寸）
+        // 产物
         List<ItemStack> outputs = recipe.getItemOutputs();
         IRecipeSlotBuilder outputSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_X, OUTPUT_Y);
         outputSlot.setStandardSlotBackground();
@@ -161,7 +162,7 @@ public class CrystalAssemblyLineJeiCategory implements IRecipeCategory<CrystalAs
         }
     }
 
-    /** 有序时标注该输入的序号（主机侧→远端）。 */
+    /** 有序时标注该输入的序号。 */
     private static Component orderTooltip(int index, boolean ordered) {
         if (!ordered) {
             return Component.translatable("jei.ae2pr.crystal_assembly_line.slot.unordered")

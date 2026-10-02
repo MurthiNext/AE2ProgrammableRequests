@@ -3,7 +3,7 @@ package com.murthinext.ae2pr;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 /**
- * 重复下单相关配置。
+ * 配置文件。
  */
 public final class Config {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -62,10 +62,10 @@ public final class Config {
                 .comment("流体输入是否有序")
                 .define("fluidInputsOrdered", false);
         ASSEMBLY_BASE_PARALLEL = BUILDER
-                .comment("最短结构（5 片）的并行数")
+                .comment("最短结构（5 片）的最大并行数")
                 .defineInRange("baseParallel", 64, 1, 1_000_000);
         ASSEMBLY_PARALLEL_PER_SLICE = BUILDER
-                .comment("结构每超出最短长度 1 片增加的并行数")
+                .comment("结构每超出最短长度 1 片增加的最大并行数")
                 .defineInRange("parallelPerSlice", 64, 0, 1_000_000);
         ASSEMBLY_MAX_SLICES = BUILDER
                 .comment("结构允许的最大片数（最长长度，默认 31 格）")

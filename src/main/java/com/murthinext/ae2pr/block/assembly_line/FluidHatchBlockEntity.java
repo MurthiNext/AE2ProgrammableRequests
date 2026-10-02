@@ -1,11 +1,16 @@
 package com.murthinext.ae2pr.block.assembly_line;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -19,6 +24,9 @@ import com.murthinext.ae2pr.ModBlockEntities;
  * <p>
  * 容器槽为「输入 → 输出」两格：输入格放入流体容器，每 {@link #TRANSFER_INTERVAL} tick 处理一次，
  * 空容器从罐中取液、满容器向罐中注液，处理后的容器移到输出格（输出格被占用时等待）。
+ * <p>
+ * 对外通过 {@code FLUID_HANDLER} 能力暴露罐体，供其他模组的物流（如 AE2 输出/存储总线）交互；
+ * 默认开启自动搬运：从朝向面容器拉取流体，可在界面左侧工具栏关闭。
  */
 public class FluidHatchBlockEntity extends BlockEntity {
 
@@ -32,8 +40,18 @@ public class FluidHatchBlockEntity extends BlockEntity {
     private static final String TANK_ID = "tank";
     private static final String INPUT_ID = "input";
     private static final String OUTPUT_ID = "output";
+    private static final String AUTO_TRANSFER_ID = "autoTransfer";
 
-    private final FluidTank tank = new FluidTank(CAPACITY);
+    /** 自动搬运开关：从朝向面容器拉取流体，默认启用。 */
+    private boolean autoTransfer = true;
+
+    private final FluidTank tank = new FluidTank(CAPACITY) {
+        @Override
+        protected void onContentsChanged() {
+            setChanged();
+        }
+    };
+    private final LazyOptional<IFluidHandler> tankCapability = LazyOptional.of(() -> tank);
     /** 容器输入格 */
     private final ItemStackHandler inputSlot = new ItemStackHandler(1) {
         @Override
@@ -69,6 +87,20 @@ public class FluidHatchBlockEntity extends BlockEntity {
         return tank;
     }
 
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
+        if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            return tankCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        tankCapability.invalidate();
+    }
+
     public ItemStackHandler getInputSlot() {
         return inputSlot;
     }
@@ -77,13 +109,50 @@ public class FluidHatchBlockEntity extends BlockEntity {
         return outputSlot;
     }
 
-    /** 服务端 tick：定期处理输入格的流体容器。 */
+    public boolean isAutoTransfer() {
+        return autoTransfer;
+    }
+
+    public void setAutoTransfer(boolean autoTransfer) {
+        this.autoTransfer = autoTransfer;
+        setChanged();
+    }
+
+    /** 服务端 tick：自动拉取流体 + 定期处理输入格的流体容器。 */
     public void serverTick() {
+        pullFluid();
         if (++transferCounter < TRANSFER_INTERVAL) {
             return;
         }
         transferCounter = 0;
         processContainer();
+    }
+
+    /** 从朝向面的外部流体容器拉取流体，直到罐满或外部无可取之物。 */
+    private void pullFluid() {
+        if (!autoTransfer || level == null || level.isClientSide) {
+            return;
+        }
+        Direction facing = getBlockState().getValue(CertusMachinePartBlock.FACING);
+        BlockEntity target = level.getBlockEntity(worldPosition.relative(facing));
+        if (target == null) {
+            return;
+        }
+        IFluidHandler source = target.getCapability(ForgeCapabilities.FLUID_HANDLER, facing.getOpposite())
+                .orElse(null);
+        if (source == null) {
+            return;
+        }
+        FluidStack drained = source.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
+        if (drained.isEmpty()) {
+            return;
+        }
+        int accepted = tank.fill(drained, IFluidHandler.FluidAction.SIMULATE);
+        if (accepted <= 0) {
+            return;
+        }
+        FluidStack moved = source.drain(accepted, IFluidHandler.FluidAction.EXECUTE);
+        tank.fill(moved, IFluidHandler.FluidAction.EXECUTE);
     }
 
     /**
@@ -181,6 +250,7 @@ public class FluidHatchBlockEntity extends BlockEntity {
         tag.put(TANK_ID, tank.writeToNBT(new CompoundTag()));
         tag.put(INPUT_ID, inputSlot.serializeNBT());
         tag.put(OUTPUT_ID, outputSlot.serializeNBT());
+        tag.putBoolean(AUTO_TRANSFER_ID, autoTransfer);
     }
 
     @Override
@@ -194,6 +264,9 @@ public class FluidHatchBlockEntity extends BlockEntity {
         }
         if (tag.contains(OUTPUT_ID)) {
             outputSlot.deserializeNBT(tag.getCompound(OUTPUT_ID));
+        }
+        if (tag.contains(AUTO_TRANSFER_ID)) {
+            autoTransfer = tag.getBoolean(AUTO_TRANSFER_ID);
         }
     }
 }

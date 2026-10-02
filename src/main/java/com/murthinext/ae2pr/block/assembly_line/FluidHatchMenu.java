@@ -49,6 +49,8 @@ public class FluidHatchMenu extends AbstractContainerMenu {
     private final FluidHatchBlockEntity blockEntity;
     private FluidStack lastSentFluid = FluidStack.EMPTY;
     private boolean fluidSynced;
+    private boolean lastAutoTransfer;
+    private boolean autoTransferSynced;
 
     private FluidHatchMenu(int id, Inventory playerInventory, BlockPos pos, @Nullable FluidHatchBlockEntity blockEntity) {
         super(TYPE, id);
@@ -91,18 +93,33 @@ public class FluidHatchMenu extends AbstractContainerMenu {
         return pos;
     }
 
-    /** 服务端每 tick：罐内流体变化时向打开界面的玩家发送同步包；首次广播强制同步一次。 */
+    /** 服务端每 tick：罐内流体或自动搬运开关变化时向打开界面的玩家发送同步包；首次广播强制同步一次。 */
     @Override
     public void broadcastChanges() {
         if (blockEntity != null && owner instanceof ServerPlayer serverPlayer) {
             FluidStack current = blockEntity.getTank().getFluid();
-            if (!fluidSynced || !sameFluid(current, lastSentFluid)) {
+            boolean autoTransfer = blockEntity.isAutoTransfer();
+            if (!fluidSynced || !autoTransferSynced || autoTransfer != lastAutoTransfer
+                    || !sameFluid(current, lastSentFluid)) {
                 fluidSynced = true;
+                autoTransferSynced = true;
                 lastSentFluid = current.copy();
-                ModNetwork.sendToPlayer(serverPlayer, new MachinePartFluidPacket(pos, lastSentFluid));
+                lastAutoTransfer = autoTransfer;
+                ModNetwork.sendToPlayer(serverPlayer,
+                        new MachinePartFluidPacket(pos, lastSentFluid, autoTransfer));
             }
         }
         super.broadcastChanges();
+    }
+
+    /** 工具栏按钮点击：id 0 = 切换自动搬运。 */
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id == 0 && blockEntity != null && !player.level().isClientSide) {
+            blockEntity.setAutoTransfer(!blockEntity.isAutoTransfer());
+            return true;
+        }
+        return false;
     }
 
     private static boolean sameFluid(FluidStack a, FluidStack b) {

@@ -16,6 +16,8 @@ item_ids:
 
 它可以帮助你统合各种装配配方。
 
+机器会按输入总线与输入仓内现有原料的份数自动并行（例如配方需要 4 玻璃 + 2 铁锭，放入刚好一份即执行一次），并行上限由结构长度决定；能量按实际并行数从 ME 网络一次性扣除。
+
 <GameScene zoom="3">
   <ImportStructure src="crystal_assembly_line.nbt" />
 </GameScene>
