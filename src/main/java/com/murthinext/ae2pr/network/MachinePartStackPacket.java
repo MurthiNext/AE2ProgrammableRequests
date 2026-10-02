@@ -10,7 +10,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 /**
- * 服务端 -> 客户端：赛特斯石英总线存储（类型 + 数量）与自动搬运开关同步。
+ * 服务端 -> 客户端：赛特斯石英水晶总线存储（类型 + 数量）与自动搬运开关同步。
  * <p>
  * 原版 {@code writeItem} 的数量按 byte 传输（最大 127），因此物品只传 1 件，数量单独用 VarInt 传输。
  */

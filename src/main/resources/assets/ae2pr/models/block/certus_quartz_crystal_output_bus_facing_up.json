@@ -1,13 +1,13 @@
 {
   "parent": "block/block",
   "textures": {
-    "bottom": "ae2pr:block/certus/casing",
-    "top": "ae2pr:block/certus/casing",
-    "side": "ae2pr:block/certus/casing",
+    "bottom": "ae2pr:block/certus_quartz_crystal/casing",
+    "top": "ae2pr:block/certus_quartz_crystal/casing",
+    "side": "ae2pr:block/certus_quartz_crystal/casing",
     "particle": "#side",
     "overlay_pipe": "ae2pr:block/overlay/pipe",
-    "overlay": "ae2pr:block/overlay/item_hatch_input",
-    "overlay_emissive": "ae2pr:block/overlay/pipe_in_emissive"
+    "overlay": "ae2pr:block/overlay/item_hatch_output",
+    "overlay_emissive": "ae2pr:block/overlay/pipe_out_emissive"
   },
   "elements": [
     {

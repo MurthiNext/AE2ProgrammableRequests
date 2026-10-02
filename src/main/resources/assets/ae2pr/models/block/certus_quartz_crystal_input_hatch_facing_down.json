@@ -1,12 +1,12 @@
 {
   "parent": "block/block",
   "textures": {
-    "bottom": "ae2pr:block/certus/casing",
-    "top": "ae2pr:block/certus/casing",
-    "side": "ae2pr:block/certus/casing",
+    "bottom": "ae2pr:block/certus_quartz_crystal/casing",
+    "top": "ae2pr:block/certus_quartz_crystal/casing",
+    "side": "ae2pr:block/certus_quartz_crystal/casing",
     "particle": "#side",
     "overlay_pipe": "ae2pr:block/overlay/pipe",
-    "overlay": "ae2pr:block/overlay/item_hatch_input",
+    "overlay": "ae2pr:block/overlay/fluid_hatch_input",
     "overlay_emissive": "ae2pr:block/overlay/pipe_in_emissive"
   },
   "elements": [
@@ -51,54 +51,54 @@
     {
       "from": [
         0,
-        0,
-        -0.01
+        -0.01,
+        0
       ],
       "to": [
         16,
-        16,
-        -0.01
+        -0.01,
+        16
       ],
       "faces": {
-        "north": {
+        "down": {
           "texture": "#overlay_pipe",
-          "cullface": "north"
+          "cullface": "down"
         }
       }
     },
     {
       "from": [
         0,
-        0,
-        -0.02
+        -0.02,
+        0
       ],
       "to": [
         16,
-        16,
-        -0.02
+        -0.02,
+        16
       ],
       "faces": {
-        "north": {
+        "down": {
           "texture": "#overlay",
-          "cullface": "north"
+          "cullface": "down"
         }
       }
     },
     {
       "from": [
         0,
-        0,
-        -0.03
+        -0.03,
+        0
       ],
       "to": [
         16,
-        16,
-        -0.03
+        -0.03,
+        16
       ],
       "faces": {
-        "north": {
+        "down": {
           "texture": "#overlay_emissive",
-          "cullface": "north"
+          "cullface": "down"
         }
       },
       "forge_data": {

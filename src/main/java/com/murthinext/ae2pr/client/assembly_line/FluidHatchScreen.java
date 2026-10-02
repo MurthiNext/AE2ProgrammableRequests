@@ -22,12 +22,12 @@ import com.murthinext.ae2pr.block.assembly_line.FluidHatchBlockEntity;
 import com.murthinext.ae2pr.block.assembly_line.FluidHatchMenu;
 
 /**
- * 赛特斯石英输入仓界面：机器区左侧为流体罐（按储量平铺流体贴图），右侧为储量信息与容器槽。
+ * 赛特斯石英水晶输入仓界面：机器区左侧为流体罐（按储量平铺流体贴图），右侧为储量信息与容器槽。
  */
 public class FluidHatchScreen extends AbstractContainerScreen<FluidHatchMenu> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(ae2pr.MODID,
-            "textures/gui/certus_quartz_input_hatch.png");
+            "textures/gui/certus_quartz_crystal_input_hatch.png");
 
     /** 罐内填充区（与 GUI 贴图一致） */
     private static final int TANK_X = 22;

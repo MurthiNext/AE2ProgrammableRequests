@@ -36,15 +36,15 @@ public final class ModBlockEntities {
                     AssemblyLineControllerBlockEntity::new,
                     ModBlocks.CRYSTAL_ASSEMBLY_LINE.get()).build(null));
 
-    /** 赛特斯石英机器部件（输入总线 / 输入仓 / 输出总线） */
-    public static final RegistryObject<BlockEntityType<BlockEntity>> CERTUS_MACHINE_PART = BLOCK_ENTITIES
-            .register("certus_machine_part", () -> BlockEntityType.Builder.of(
-                    (pos, state) -> state.is(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get())
+    /** 赛特斯石英水晶机器部件（输入总线 / 输入仓 / 输出总线） */
+    public static final RegistryObject<BlockEntityType<BlockEntity>> CERTUS_QUARTZ_CRYSTAL_MACHINE_PART = BLOCK_ENTITIES
+            .register("certus_quartz_crystal_machine_part", () -> BlockEntityType.Builder.of(
+                    (pos, state) -> state.is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get())
                             ? new FluidHatchBlockEntity(pos, state)
                             : new ItemBusBlockEntity(pos, state),
-                    ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get(),
-                    ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get(),
-                    ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get()).build(null));
+                    ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_BUS.get(),
+                    ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get(),
+                    ModBlocks.CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS.get()).build(null));
 
     /** 福鲁伊克斯水晶能源仓 */
     public static final RegistryObject<BlockEntityType<FluixCrystalEnergyHatchBlockEntity>> FLUIX_CRYSTAL_ENERGY_HATCH = BLOCK_ENTITIES

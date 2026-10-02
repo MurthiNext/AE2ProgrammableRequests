@@ -10,7 +10,7 @@ import net.minecraftforge.network.NetworkEvent;
 import com.murthinext.ae2pr.block.assembly_line.ItemBusMenu;
 
 /**
- * 客户端 -> 服务端：赛特斯石英总线存储区点击（取出/存入），由打开的菜单校验并执行。
+ * 客户端 -> 服务端：赛特斯石英水晶总线存储区点击（取出/存入），由打开的菜单校验并执行。
  */
 public class BusSlotClickPacket {
 

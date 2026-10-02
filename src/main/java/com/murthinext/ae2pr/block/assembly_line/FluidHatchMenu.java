@@ -24,7 +24,7 @@ import com.murthinext.ae2pr.ModNetwork;
 import com.murthinext.ae2pr.network.MachinePartFluidPacket;
 
 /**
- * 赛特斯石英输入仓的容器菜单：容器输入格 + 容器输出格 + 玩家背包。
+ * 赛特斯石英水晶输入仓的容器菜单：容器输入格 + 容器输出格 + 玩家背包。
  * <p>
  * 罐内流体不占槽位，打开界面期间由本菜单在内容变化时发送同步包（仅发给本人）。
  */

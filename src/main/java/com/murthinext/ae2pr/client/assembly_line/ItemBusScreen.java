@@ -22,7 +22,7 @@ import com.murthinext.ae2pr.block.assembly_line.ItemBusMenu;
 import com.murthinext.ae2pr.network.BusSlotClickPacket;
 
 /**
- * 赛特斯石英输入/输出总线界面：机器区展示单类存储（类型 + 数量）与容量，下半区为玩家背包。
+ * 赛特斯石英水晶输入/输出总线界面：机器区展示单类存储（类型 + 数量）与容量，下半区为玩家背包。
  * <p>
  * 存储量可超过原版槽位同步上限，因此存储区不是槽位：物品与数量由同步数据绘制，
  * 点击通过 {@link BusSlotClickPacket} 交由服务端执行。
@@ -30,9 +30,9 @@ import com.murthinext.ae2pr.network.BusSlotClickPacket;
 public class ItemBusScreen extends AbstractContainerScreen<ItemBusMenu> {
 
     private static final ResourceLocation TEXTURE_INPUT = new ResourceLocation(ae2pr.MODID,
-            "textures/gui/certus_quartz_input_bus.png");
+            "textures/gui/certus_quartz_crystal_input_bus.png");
     private static final ResourceLocation TEXTURE_OUTPUT = new ResourceLocation(ae2pr.MODID,
-            "textures/gui/certus_quartz_output_bus.png");
+            "textures/gui/certus_quartz_crystal_output_bus.png");
 
     /** 存储区物品位（与 GUI 贴图一致） */
     private static final int STORAGE_X = 80;

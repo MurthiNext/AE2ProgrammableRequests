@@ -1,9 +1,9 @@
 {
   "parent": "block/block",
   "textures": {
-    "bottom": "ae2pr:block/certus/casing",
-    "top": "ae2pr:block/certus/casing",
-    "side": "ae2pr:block/certus/casing",
+    "bottom": "ae2pr:block/certus_quartz_crystal/casing",
+    "top": "ae2pr:block/certus_quartz_crystal/casing",
+    "side": "ae2pr:block/certus_quartz_crystal/casing",
     "particle": "#side",
     "overlay_pipe": "ae2pr:block/overlay/pipe",
     "overlay": "ae2pr:block/overlay/item_hatch_output",
@@ -52,17 +52,17 @@
       "from": [
         0,
         0,
-        -0.01
+        16.01
       ],
       "to": [
         16,
         16,
-        -0.01
+        16.01
       ],
       "faces": {
-        "north": {
+        "south": {
           "texture": "#overlay_pipe",
-          "cullface": "north"
+          "cullface": "south"
         }
       }
     },
@@ -70,17 +70,17 @@
       "from": [
         0,
         0,
-        -0.02
+        16.02
       ],
       "to": [
         16,
         16,
-        -0.02
+        16.02
       ],
       "faces": {
-        "north": {
+        "south": {
           "texture": "#overlay",
-          "cullface": "north"
+          "cullface": "south"
         }
       }
     },
@@ -88,17 +88,17 @@
       "from": [
         0,
         0,
-        -0.03
+        16.03
       ],
       "to": [
         16,
         16,
-        -0.03
+        16.03
       ],
       "faces": {
-        "north": {
+        "south": {
           "texture": "#overlay_emissive",
-          "cullface": "north"
+          "cullface": "south"
         }
       },
       "forge_data": {

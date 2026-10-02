@@ -15,7 +15,7 @@ import com.murthinext.ae2pr.ModBlocks;
  * <p>
  * 规则：默认<strong>只有同种方块才互相连接</strong>（跨方块种类不连接），
  * 且方块必须在此登记才启用连接纹理；未登记的方块（控制器、装配线外壳、控制外壳）完全不参与连接。
- * 例外：<strong>水晶强化复合机械方块 / 赛特斯石英输入总线 / 输入仓 / 输出总线</strong>归为同一"机身族"，
+ * 例外：<strong>水晶强化复合机械方块 / 赛特斯石英水晶输入总线 / 输入仓 / 输出总线</strong>归为同一"机身族"，
  * 彼此相邻（无论是否成型）都会连接，因为它们最终使用同一张机壳贴图。
  */
 public final class CtmConfig {
@@ -72,9 +72,9 @@ public final class CtmConfig {
     private static int familyKey(BlockState state) {
         Block block = state.getBlock();
         if (block == ModBlocks.CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING.get()
-                || block == ModBlocks.CERTUS_QUARTZ_INPUT_BUS.get()
-                || block == ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get()
-                || block == ModBlocks.CERTUS_QUARTZ_OUTPUT_BUS.get()
+                || block == ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_BUS.get()
+                || block == ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get()
+                || block == ModBlocks.CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS.get()
                 || block == ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get()) {
             return 1;
         }

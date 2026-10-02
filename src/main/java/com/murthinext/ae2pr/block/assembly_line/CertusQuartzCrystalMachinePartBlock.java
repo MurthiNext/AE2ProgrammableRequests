@@ -36,11 +36,11 @@ import com.murthinext.ae2pr.ModBlocks;
 import com.murthinext.ae2pr.ModTags;
 
 /**
- * 赛特斯石英机器部件方块（输入总线 / 输入仓 / 输出总线）。
+ * 赛特斯石英水晶机器部件方块（输入总线 / 输入仓 / 输出总线）。
  * <p>
  * 扳手右键旋转，Shift+右键拆卸。
  */
-public class CertusMachinePartBlock extends Block implements EntityBlock {
+public class CertusQuartzCrystalMachinePartBlock extends Block implements EntityBlock {
 
     /** 扳手旋转顺序 */
     private static final Direction[] ROTATION_ORDER = { Direction.DOWN, Direction.UP, Direction.NORTH,
@@ -49,7 +49,7 @@ public class CertusMachinePartBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
 
-    public CertusMachinePartBlock() {
+    public CertusQuartzCrystalMachinePartBlock() {
         super(Properties.of()
                 .mapColor(MapColor.METAL)
                 .strength(3.0F)
@@ -75,7 +75,7 @@ public class CertusMachinePartBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return state.is(ModBlocks.CERTUS_QUARTZ_INPUT_HATCH.get())
+        return state.is(ModBlocks.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get())
                 ? new FluidHatchBlockEntity(pos, state)
                 : new ItemBusBlockEntity(pos, state);
     }

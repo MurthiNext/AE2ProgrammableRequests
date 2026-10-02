@@ -35,9 +35,9 @@ public final class ModMenus {
     public static final RegistryObject<MenuType<AssemblyLineMenu>> CRYSTAL_ASSEMBLY_LINE = MENUS
             .register("crystal_assembly_line", () -> AssemblyLineMenu.TYPE);
 
-    public static final RegistryObject<MenuType<ItemBusMenu>> CERTUS_QUARTZ_ITEM_BUS = MENUS
-            .register("certus_quartz_item_bus", () -> ItemBusMenu.TYPE);
+    public static final RegistryObject<MenuType<ItemBusMenu>> CERTUS_QUARTZ_CRYSTAL_ITEM_BUS = MENUS
+            .register("certus_quartz_crystal_item_bus", () -> ItemBusMenu.TYPE);
 
-    public static final RegistryObject<MenuType<FluidHatchMenu>> CERTUS_QUARTZ_INPUT_HATCH = MENUS
-            .register("certus_quartz_input_hatch", () -> FluidHatchMenu.TYPE);
+    public static final RegistryObject<MenuType<FluidHatchMenu>> CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH = MENUS
+            .register("certus_quartz_crystal_input_hatch", () -> FluidHatchMenu.TYPE);
 }

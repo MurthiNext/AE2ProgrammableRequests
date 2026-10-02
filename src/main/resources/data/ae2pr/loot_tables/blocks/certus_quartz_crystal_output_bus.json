@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "ae2pr:certus_quartz_input_hatch"
+          "name": "ae2pr:certus_quartz_crystal_output_bus"
         }
       ],
       "conditions": [
