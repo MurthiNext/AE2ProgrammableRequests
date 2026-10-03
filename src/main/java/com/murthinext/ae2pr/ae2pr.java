@@ -3,6 +3,7 @@ package com.murthinext.ae2pr;
 import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEItems;
 import com.mojang.logging.LogUtils;
+import com.murthinext.ae2pr.block.assembly_line.CertusQuartzCrystalMachinePartBlock;
 import com.murthinext.ae2pr.logic.repeat.GenericRepeatOrders;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -39,6 +40,8 @@ public class ae2pr {
         // 通用（VCPU）重复订单：由服务端 tick 驱动，状态包钩子负责轮次推进
         MinecraftForge.EVENT_BUS.addListener(GenericRepeatOrders::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(GenericRepeatOrders::onServerStopped);
+        // 水晶机器部件：潜行时原版会跳过 Block#use，用事件放行以实现扳手 Shift+右键拆卸
+        MinecraftForge.EVENT_BUS.addListener(CertusQuartzCrystalMachinePartBlock::onRightClickBlock);
 
         // 客户端：构建并注册 GuideME 指南
         if (FMLEnvironment.dist == Dist.CLIENT) {

@@ -28,6 +28,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
@@ -147,6 +149,25 @@ public class CertusQuartzCrystalMachinePartBlock extends Block implements Entity
             level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.8F, 1.0F);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    /**
+     * Shift+右键手持扳手时放行方块交互。
+     * <p>
+     * 原版在潜行且手持物品时会跳过 {@link Block#use}，导致 {@link #disassemble} 永远无法触发；
+     * 这里把事件的使用方块结果改为 ALLOW，让两侧照常走 {@link Block#use}。
+     */
+    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getUseBlock() == Event.Result.DENY) {
+            return;
+        }
+        Player player = event.getEntity();
+        if (!player.isSecondaryUseActive() || !event.getItemStack().is(ModTags.WRENCHES)) {
+            return;
+        }
+        if (event.getLevel().getBlockState(event.getPos()).getBlock() instanceof CertusQuartzCrystalMachinePartBlock) {
+            event.setUseBlock(Event.Result.ALLOW);
+        }
     }
 
     private static Direction nextFacing(Direction current) {
