@@ -13,6 +13,7 @@
     "CraftingJobStatusPacketMixin",
     "accessor.CraftingStatusMenuAccessor",
     "CraftingStatusMenuBroadcastMixin",
+    "ItemEntityMixin",
     "MenuOpenerMixin",
     "NetworkHandlerMixin"
   ],

@@ -28,7 +28,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.MULTI_LEVEL_EMITTER.get());
                         output.accept(ModItems.MULTI_THRESHOLD_LEVEL_EMITTER.get());
                         output.accept(ModItems.REDSTONE_REQUESTER.get());
-                        // 水晶装配线
+
                         output.accept(ModItems.CRYSTAL_ASSEMBLY_LINE.get());
                         output.accept(ModItems.CRYSTAL_ASSEMBLY_LINE_UNIT.get());
                         output.accept(ModItems.CRYSTAL_ASSEMBLY_LINE_CASING.get());
@@ -39,6 +39,9 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.CERTUS_QUARTZ_CRYSTAL_INPUT_HATCH.get());
                         output.accept(ModItems.CERTUS_QUARTZ_CRYSTAL_OUTPUT_BUS.get());
                         output.accept(ModItems.FLUIX_CRYSTAL_ENERGY_HATCH.get());
+
+                        output.accept(ModItems.METEOR_STEEL_INGOT.get());
+                        output.accept(ModItems.ALIEN_LAVA_BUCKET.get());
                     })
                     .build());
 }

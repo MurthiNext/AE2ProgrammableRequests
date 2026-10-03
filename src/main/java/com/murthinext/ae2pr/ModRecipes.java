@@ -7,6 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import com.murthinext.ae2pr.recipe.AlienLavaRecipe;
 import com.murthinext.ae2pr.recipe.CrystalAssemblyLineRecipe;
 
 /**
@@ -36,4 +37,17 @@ public final class ModRecipes {
     /** 水晶装配线配方序列化器 */
     public static final RegistryObject<CrystalAssemblyLineRecipe.Serializer> CRYSTAL_ASSEMBLY_LINE = SERIALIZERS
             .register("crystal_assembly_line", CrystalAssemblyLineRecipe.Serializer::new);
+
+    /** 异星熔岩世界交互配方类型 */
+    public static final RegistryObject<RecipeType<AlienLavaRecipe>> ALIEN_LAVA_TYPE = RECIPE_TYPES
+            .register("alien_lava", () -> new RecipeType<AlienLavaRecipe>() {
+                @Override
+                public String toString() {
+                    return ae2pr.MODID + ":alien_lava";
+                }
+            });
+
+    /** 异星熔岩世界交互配方序列化器 */
+    public static final RegistryObject<AlienLavaRecipe.Serializer> ALIEN_LAVA = SERIALIZERS
+            .register("alien_lava", AlienLavaRecipe.Serializer::new);
 }

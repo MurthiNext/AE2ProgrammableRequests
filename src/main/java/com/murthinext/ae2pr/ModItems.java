@@ -5,7 +5,9 @@ import com.murthinext.ae2pr.item.level_emitter.MultiThresholdLevelEmitterPartIte
 import com.murthinext.ae2pr.item.filter_cell.AdvancedFilterCellItem;
 import com.murthinext.ae2pr.item.filter_cell.FilterCellItem;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -39,8 +41,6 @@ public final class ModItems {
     /** ME 红石请求器 */
     public static final RegistryObject<BlockItem> REDSTONE_REQUESTER = ITEMS.register("redstone_requester",
             () -> new BlockItem(ModBlocks.REDSTONE_REQUESTER.get(), new Item.Properties()));
-
-    // ---------------------------------------------------------------- 水晶装配线
 
     /** 水晶强化复合机械方块 */
     public static final RegistryObject<BlockItem> CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING = ITEMS.register(
@@ -87,4 +87,13 @@ public final class ModItems {
     public static final RegistryObject<BlockItem> FLUIX_CRYSTAL_ENERGY_HATCH = ITEMS.register(
             "fluix_crystal_energy_hatch",
             () -> new BlockItem(ModBlocks.FLUIX_CRYSTAL_ENERGY_HATCH.get(), new Item.Properties()));
+
+    /** 陨钢锭 */
+    public static final RegistryObject<Item> METEOR_STEEL_INGOT = ITEMS.register("meteor_steel_ingot",
+            () -> new Item(new Item.Properties()));
+
+    /** 异星熔岩桶 */
+    public static final RegistryObject<BucketItem> ALIEN_LAVA_BUCKET = ITEMS.register("alien_lava_bucket",
+            () -> new BucketItem(ModFluids.ALIEN_LAVA,
+                    new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 }

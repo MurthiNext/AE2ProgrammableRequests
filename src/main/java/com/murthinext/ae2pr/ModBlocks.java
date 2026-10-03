@@ -4,10 +4,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import com.murthinext.ae2pr.block.alien_lava.AlienLavaBlock;
 import com.murthinext.ae2pr.block.assembly_line.AssemblyLineUnitBlock;
 import com.murthinext.ae2pr.block.assembly_line.CertusQuartzCrystalMachinePartBlock;
 import com.murthinext.ae2pr.block.assembly_line.CrystalAssemblyLineBlock;
@@ -27,8 +29,6 @@ public final class ModBlocks {
     /** ME 红石请求器 */
     public static final RegistryObject<RedstoneRequesterBlock> REDSTONE_REQUESTER = BLOCKS.register(
             "redstone_requester", RedstoneRequesterBlock::new);
-
-    // ---------------------------------------------------------------- 水晶装配线
 
     /** 水晶强化复合机械方块 */
     public static final RegistryObject<Block> CRYSTAL_REINFORCED_COMPOSITE_MACHINE_CASING = BLOCKS.register(
@@ -74,6 +74,18 @@ public final class ModBlocks {
     /** 福鲁伊克斯水晶能源仓 */
     public static final RegistryObject<FluixCrystalEnergyHatchBlock> FLUIX_CRYSTAL_ENERGY_HATCH = BLOCKS.register(
             "fluix_crystal_energy_hatch", FluixCrystalEnergyHatchBlock::new);
+
+    /** 异星熔岩 */
+    public static final RegistryObject<AlienLavaBlock> ALIEN_LAVA = BLOCKS.register("alien_lava",
+            () -> new AlienLavaBlock(ModFluids.ALIEN_LAVA, Block.Properties.of()
+                    .mapColor(MapColor.FIRE)
+                    .replaceable()
+                    .noCollission()
+                    .randomTicks()
+                    .strength(100.0F)
+                    .pushReaction(PushReaction.DESTROY)
+                    .lightLevel(state -> 15)
+                    .noLootTable()));
 
     private static Block.Properties casingProperties() {
         return Block.Properties.of()
