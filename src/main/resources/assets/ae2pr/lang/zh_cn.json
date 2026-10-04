@@ -26,7 +26,7 @@
   "gui.ae2pr.multi_threshold_level_emitter.lower": "下限",
   "gui.ae2pr.multi_level_emitter.combine.and": "匹配：全部（AND）",
   "gui.ae2pr.multi_level_emitter.combine.or": "匹配：任一（OR）",
-  "itemGroup.ae2pr": "AE2可编程请求",
+  "itemGroup.ae2pr": "AE2：源请求",
   "block.ae2pr.redstone_requester": "ME红石请求器",
   "gui.ae2pr.redstone_requester": "ME红石请求器",
   "gui.ae2pr.no_requesters": "未找到请求器！",

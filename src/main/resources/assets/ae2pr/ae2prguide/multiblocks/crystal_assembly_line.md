@@ -3,7 +3,7 @@ navigation:
   title: 水晶装配线
   parent: index.md
   icon: crystal_assembly_line
-  position: 4
+  position: 0
 item_ids:
   - ae2pr:crystal_assembly_line
 ---

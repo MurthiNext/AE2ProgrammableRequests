@@ -1,18 +1,14 @@
 ---
 navigation:
-  title: AE2可编程请求
-  position: 0
+  title: AE2：源请求
+  position: 67
 ---
 
-# AE2可编程请求
-
-本模组在维持平衡性的同时，为 AE2 新增了许多可用于优化你的 ME 网络调度的元件。
-
-“万能的红石与 ME 网络已经形成了一重可悲的厚障壁。“——这种情况已得到缓解，也许你的<ItemLink id="ae2:redstone_p2p_tunnel" />终于有用武之地了。
+# AE2：源请求
 
 ## 内容
 
-- [过滤元件](filter_cell.md)
-- [通式标准发信器](multi_level_emitter.md)
-- [通式阈值发信器](multi_threshold_level_emitter.md)
-- [水晶装配线](crystal_assembly_line.md)
+- [过滤元件](machines/filter_cell.md)
+- [通式标准发信器](machines/multi_level_emitter.md)
+- [通式阈值发信器](machines/multi_threshold_level_emitter.md)
+- [水晶装配线](multiblocks/crystal_assembly_line.md)
