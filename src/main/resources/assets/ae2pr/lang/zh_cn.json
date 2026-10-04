@@ -97,5 +97,6 @@
   "jade.ae2pr.crystal_assembly_line.status": "状态：%s",
   "jade.ae2pr.crystal_assembly_line.job": "正在合成：%s x %s",
   "jade.ae2pr.crystal_assembly_line.progress": "进度：%s / %s s",
-  "jade.ae2pr.crystal_assembly_line.energy": "ME 网络能源：%s"
+  "jade.ae2pr.crystal_assembly_line.energy": "ME 网络能源：%s",
+  "config.jade.plugin_ae2pr.assembly_line": "水晶装配线"
 }

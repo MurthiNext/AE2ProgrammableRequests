@@ -1,9 +1,13 @@
 package com.murthinext.ae2pr;
 
+import appeng.api.parts.PartModels;
 import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEItems;
+import appeng.items.parts.PartModelsHelper;
 import com.mojang.logging.LogUtils;
 import com.murthinext.ae2pr.block.assembly_line.CertusQuartzCrystalMachinePartBlock;
+import com.murthinext.ae2pr.block.level_emitter.MultiLevelEmitterPart;
+import com.murthinext.ae2pr.block.level_emitter.MultiThresholdLevelEmitterPart;
 import com.murthinext.ae2pr.logic.repeat.GenericRepeatOrders;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,6 +41,9 @@ public class ae2pr {
         ModRecipes.SERIALIZERS.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        // 部件模型必须在预初始化阶段注册（AE2 在模型加载时会冻结注册表，资源重载时不能再注册）
+        PartModels.registerModels(PartModelsHelper.createModels(MultiLevelEmitterPart.class));
+        PartModels.registerModels(PartModelsHelper.createModels(MultiThresholdLevelEmitterPart.class));
         ModNetwork.register();
         com.murthinext.ae2pr.block.redstone_requester.network.RequesterNetwork.init();
         // 通用（VCPU）重复订单：由服务端 tick 驱动，状态包钩子负责轮次推进

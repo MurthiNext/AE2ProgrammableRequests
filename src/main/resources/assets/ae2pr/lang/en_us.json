@@ -97,5 +97,6 @@
   "jade.ae2pr.crystal_assembly_line.status": "Status: %s",
   "jade.ae2pr.crystal_assembly_line.job": "Crafting: %s x %s",
   "jade.ae2pr.crystal_assembly_line.progress": "Progress: %s / %s s",
-  "jade.ae2pr.crystal_assembly_line.energy": "ME network energy: %s"
+  "jade.ae2pr.crystal_assembly_line.energy": "ME network energy: %s",
+  "config.jade.plugin_ae2pr.assembly_line": "Crystal Assembly Line"
 }

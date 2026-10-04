@@ -9,9 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-import appeng.api.parts.PartModels;
 import appeng.init.client.InitScreens;
-import appeng.items.parts.PartModelsHelper;
 
 import com.murthinext.ae2pr.ModBlocks;
 import com.murthinext.ae2pr.ModMenus;
@@ -23,22 +21,14 @@ import com.murthinext.ae2pr.client.assembly_line.ItemBusScreen;
 import com.murthinext.ae2pr.client.emitter.MultiLevelEmitterScreen;
 import com.murthinext.ae2pr.client.emitter.MultiThresholdLevelEmitterScreen;
 import com.murthinext.ae2pr.client.requester.RedstoneRequesterScreen;
-import com.murthinext.ae2pr.block.level_emitter.MultiLevelEmitterPart;
-import com.murthinext.ae2pr.block.level_emitter.MultiThresholdLevelEmitterPart;
 
 /**
- * 客户端初始化：注册部件模型与界面。
+ * 客户端初始化：注册界面。
  */
 @Mod.EventBusSubscriber(modid = ae2pr.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ClientSetup {
 
     private ClientSetup() {
-    }
-
-    @SubscribeEvent
-    public static void registerPartModels(ModelEvent.RegisterGeometryLoaders event) {
-        PartModels.registerModels(PartModelsHelper.createModels(MultiLevelEmitterPart.class));
-        PartModels.registerModels(PartModelsHelper.createModels(MultiThresholdLevelEmitterPart.class));
     }
 
     @SubscribeEvent
