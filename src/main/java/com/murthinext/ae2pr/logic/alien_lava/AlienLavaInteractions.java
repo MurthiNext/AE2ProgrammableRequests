@@ -107,7 +107,7 @@ public final class AlienLavaInteractions {
      * 异星熔岩每并行一份扣除一点转化次数，次数用尽或材料不足时按实际份数执行。
      */
     private static boolean apply(Level level, BlockPos pos, AlienLavaRecipe recipe, ItemEntity source) {
-        List<ItemEntity> nearby = level.getEntitiesOfClass(ItemEntity.class, new AABB(pos).inflate(1.0D),
+        List<ItemEntity> nearby = level.getEntitiesOfClass(ItemEntity.class, new AABB(pos).inflate(0.0D),
                 entity -> !entity.isRemoved() && entity.isAlive());
         if (nearby.isEmpty()) {
             return false;
